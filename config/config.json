@@ -5,11 +5,11 @@
   },
   "port":8090,
   "mysql":{
-    "username":"work",
-    "pwd":"Ww5201314!",
-    "ip":"47.110.85.147",
-    "port":"3306",
-    "db_name":"es_view",
+    "username":"",
+    "pwd":"!", 
+    "ip":"",
+    "port":"",
+    "db_name":"",
     "max_open_conns":0,
     "max_idle_conns":0
   }
