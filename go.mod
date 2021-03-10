@@ -1,0 +1,28 @@
+module ElasticView
+
+go 1.13
+
+require (
+	github.com/Masterminds/squirrel v1.5.0
+	github.com/dgrijalva/jwt-go v3.2.0+incompatible
+	github.com/garyburd/redigo v1.6.2
+	github.com/gin-contrib/cors v1.3.1
+	github.com/gin-gonic/gin v1.6.3
+	github.com/go-sql-driver/mysql v1.5.0
+	github.com/golang/protobuf v1.4.3 // indirect
+	github.com/google/go-cmp v0.5.5 // indirect
+	github.com/jmoiron/sqlx v1.3.1
+	github.com/jonboulle/clockwork v0.2.2 // indirect
+	github.com/json-iterator/go v1.1.10
+	github.com/lestrrat-go/file-rotatelogs v2.4.0+incompatible
+	github.com/lestrrat-go/strftime v1.0.4 // indirect
+	github.com/mailru/easyjson v0.7.7 // indirect
+	github.com/olivere/elastic v6.2.35+incompatible
+	github.com/olivere/elastic/v7 v7.0.22
+	github.com/rakyll/statik v0.1.7
+	github.com/valyala/fasthttp v1.22.0
+	go.uber.org/zap v1.16.0
+	golang.org/x/text v0.3.5
+	golang.org/x/tools v0.0.0-20201224043029-2b0845dc783e // indirect
+	gopkg.in/yaml.v2 v2.4.0 // indirect
+)
