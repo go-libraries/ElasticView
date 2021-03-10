@@ -1,3 +1,3 @@
 # **ElasticView**
 
-cnpm install &&  npm link webpack
+主要技术:golang + vue
