@@ -1,4 +1,4 @@
 # **ElasticView**
 
-golang + vue
+主要技术栈:golang + vue
  
