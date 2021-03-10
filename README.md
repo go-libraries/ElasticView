@@ -1,4 +1,4 @@
 # **ElasticView**
 
-主要技术:golang + vue
+涓昏鎶�鏈爤:golang + vue
  
