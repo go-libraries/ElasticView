@@ -59,6 +59,8 @@ func Init() *gin.Engine {
 	es := app.Group("/api/es")
 	{
 		es.Any("PingAction", EsController{}.PingAction)
+		es.Any("CatAction", EsController{}.CatAction)
+
 	}
 
 	return app

@@ -1,12 +1,15 @@
 <template>
   <div class="app-container">
     <el-card class="box-card">
-      <el-button type="primary" icon="el-icon-plus" @click="handleAddRole">新建连接信息</el-button>
+      <div class="filter-container">
+        <el-button type="primary" icon="el-icon-plus" class="filter-item" @click="handleAddRole">新建连接信息</el-button>
+
+      </div>
 
       <el-table
         :header-cell-style="{background:'#eef1f6',color:'#606266'}"
         :data="list"
-        style="width: 100%;margin-top:30px;"
+
         border
       >
         <el-table-column

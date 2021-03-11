@@ -1,12 +1,12 @@
 <template>
   <div class="app-container">
     <el-card class="box-card">
-      <el-button type="primary" icon="el-icon-plus" @click="handleAddRole">新建角色</el-button>
-
+      <div class="filter-container">
+        <el-button type="primary" class="filter-item" icon="el-icon-plus" @click="handleAddRole">新建角色</el-button>
+      </div>
       <el-table
         :header-cell-style="{background:'#eef1f6',color:'#606266'}"
         :data="rolesList"
-        style="width: 100%;margin-top:30px;"
         border
         @row-dblclick="handleEdit"
       >
@@ -76,7 +76,8 @@
           <el-button type="primary" icon="el-icon-check" @click="confirmRole">确定</el-button>
         </div>
       </el-dialog>
-    </el-card></div>
+    </el-card>
+  </div>
 </template>
 
 <script>

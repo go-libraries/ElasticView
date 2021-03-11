@@ -9,3 +9,11 @@ export function PingAction(data) {
     data
   })
 }
+
+export function CatAction(data) {
+  return request({
+    url: api + `CatAction`,
+    method: 'post',
+    data
+  })
+}

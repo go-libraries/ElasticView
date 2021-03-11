@@ -6,3 +6,8 @@ type EsConnect struct {
 	Pwd     string `json:"pwd"`
 	Version int    `json:"version"`
 }
+
+type EsCat struct {
+	EsConnect EsConnect `json:"es_connect"`
+	Cat       string    `json:"cat"`
+}

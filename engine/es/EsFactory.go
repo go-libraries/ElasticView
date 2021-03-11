@@ -6,7 +6,12 @@ import (
 	"ElasticView/platform-basic-libs/request"
 )
 
+type Json map[string]interface{}
+
 func GetEsClient(config request.EsConnect) (EsClient, error) {
+	if config.Ip == "" {
+		return nil, errors.New("请先选择ES连接")
+	}
 	switch config.Version {
 	case 6:
 		return NewEsClientV6(config)

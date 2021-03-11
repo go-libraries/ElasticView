@@ -40,7 +40,7 @@ export const asyncRoutes = [
     path: '/connect-tree',
     component: 'layout',
     redirect: '/connect-tree/index',
-    alwaysShow: true,
+    alwaysShow: false,
     meta: {
       title: '连接树管理',
       icon: 'el-icon-link'
@@ -56,6 +56,27 @@ export const asyncRoutes = [
         }
       }
     ]
+  },
+  {
+    path: '/cat',
+    component: 'layout',
+    redirect: '/cat/index',
+    alwaysShow: false,
+    meta: {
+      title: 'ES状态',
+      icon: 'el-icon-pie-chart'
+    },
+    children: [
+      {
+        path: 'index',
+        component: 'views/cat/index',
+        name: 'index',
+        meta: {
+          title: 'ES状态',
+          icon: 'el-icon-pie-chart'
+        }
+      }
+    ]
   }
 ]
 
@@ -65,6 +86,7 @@ export const RoutesComponentmaps = {
   'views/dashboard/index': () => import('@/views/dashboard/index'), // 主页
   'views/permission/role': () => import('@/views/permission/role'), // 角色管理
   'views/permission/user': () => import('@/views/permission/user'), // 用户管理
-  'views/connect-tree/index': () => import('@/views/connect-tree/index')
+  'views/connect-tree/index': () => import('@/views/connect-tree/index'),
+  'views/cat/index': () => import('@/views/cat/index')
 }
 

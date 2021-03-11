@@ -24,18 +24,28 @@ export default {
   data() {
     return {
       opt: [],
-      link: ''
+      link: '',
+      time: null,
+      timeSecend: 10
     }
   },
-  computed: {
-
-  },
-  watch: {
-  },
+  computed: {},
+  watch: {},
   mounted() {
+    const obj = this.$store.state.baseData.EsConnect
+    this.link = obj.remark
     this.getEsOpt()
+    this.startLoop()
+  },
+  destroyed() {
+    this.time = null
   },
   methods: {
+    startLoop() {
+      this.time = setInterval(() => {
+        this.getEsOpt()
+      }, this.timeSecend * 1000)
+    },
     async getEsOpt() {
       const res = await ListAction()
       this.opt = res.data
