@@ -8,7 +8,6 @@
       <el-table
         :header-cell-style="{background:'#eef1f6',color:'#606266'}"
         :data="rolesList"
-        border
       >
         <el-table-column
           label="序号"

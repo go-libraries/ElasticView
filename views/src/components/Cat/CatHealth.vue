@@ -9,7 +9,6 @@
         :header-cell-style="{background:'#eef1f6',color:'#606266'}"
         :data="filterData(list,input)"
         style="width: 100%;margin-top:30px;"
-        border
       >
         <el-table-column
           label="序号"
@@ -32,7 +31,7 @@
             {{ scope.row.status }}
           </template>
         </el-table-column>
-        <el-table-column align="center" label="节点总数" width="100">
+        <el-table-column align="center" label="节点总数" width="100" sortable prop="pri">
           <template slot-scope="scope">
             {{ scope.row["node.total"] }}
           </template>
@@ -42,37 +41,37 @@
             {{ scope.row["node.data"] }}
           </template>
         </el-table-column>
-        <el-table-column align="center" label="分片总数" width="100">
+        <el-table-column align="center" label="分片总数" width="100" sortable prop="shards">
           <template slot-scope="scope">
             {{ scope.row.shards }}
           </template>
         </el-table-column>
-        <el-table-column align="center" label="主分片总数" width="100">
+        <el-table-column align="center" label="主分片总数" width="100" sortable prop="pri">
           <template slot-scope="scope">
             {{ scope.row.pri }}
           </template>
         </el-table-column>
-        <el-table-column align="center" label="复制节点总数" width="100">
+        <el-table-column align="center" label="复制节点总数" width="100" sortable prop="relo">
           <template slot-scope="scope">
             {{ scope.row.relo }}
           </template>
         </el-table-column>
-        <el-table-column align="center" label="初始化节点总数" width="100">
+        <el-table-column align="center" label="初始化节点总数" width="100" sortable prop="init">
           <template slot-scope="scope">
             {{ scope.row.init }}
           </template>
         </el-table-column>
-        <el-table-column align="center" label="未分配分片总数" width="100">
+        <el-table-column align="center" label="未分配分片总数" width="100" sortable prop="unassign">
           <template slot-scope="scope">
             {{ scope.row.unassign }}
           </template>
         </el-table-column>
-        <el-table-column align="center" label="待定任务总数" width="100">
+        <el-table-column align="center" label="待定任务总数" width="100" sortable prop="pending_tasks">
           <template slot-scope="scope">
             {{ scope.row.pending_tasks }}
           </template>
         </el-table-column>
-        <el-table-column align="center" label="等待最长任务的等待时间" width="100">
+        <el-table-column align="center" label="等待最长任务的等待时间" width="100" sortable prop="max_task_wait_time">
           <template slot-scope="scope">
             {{ scope.row.max_task_wait_time }}
           </template>
@@ -82,12 +81,12 @@
             {{ scope.row.active_shards_percent }}
           </template>
         </el-table-column>
-        <el-table-column align="center" label="自标准时间（1970-01-01 00:00:00）以来的秒数" width="100">
+        <el-table-column align="center" label="自标准时间（1970-01-01 00:00:00）以来的秒数" width="100" sortable prop="epoch">
           <template slot-scope="scope">
             {{ scope.row.epoch }}
           </template>
         </el-table-column>
-        <el-table-column align="center" label="时分秒,utc时区" width="100">
+        <el-table-column align="center" label="时分秒,utc时区" width="100" sortable prop="timestamp">
           <template slot-scope="scope">
             {{ scope.row.timestamp }}
           </template>

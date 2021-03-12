@@ -11,7 +11,8 @@ import '@/styles/index.scss' // global css
 
 import VueParticles from 'vue-particles'
 Vue.use(VueParticles)
-
+import VueClipboard from 'vue-clipboard2'
+Vue.use(VueClipboard)
 import App from './App'
 import store from './store'
 import router from './router'

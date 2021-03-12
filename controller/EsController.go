@@ -1,11 +1,17 @@
 package controller
 
 import (
+	"context"
+	"errors"
+	"fmt"
+	"strconv"
+
 	"ElasticView/engine/es"
 	"ElasticView/platform-basic-libs/request"
 	"ElasticView/platform-basic-libs/response"
 
 	"github.com/gin-gonic/gin"
+	"github.com/olivere/elastic"
 )
 
 type EsController struct {
@@ -69,4 +75,40 @@ func (this EsController) CatAction(ctx *gin.Context) {
 	}
 
 	this.Success(ctx, response.SearchSuccess, data)
+}
+
+func (this EsController) RunDslAction(ctx *gin.Context) {
+	esRest := request.EsRest{}
+	err = ctx.Bind(&esRest)
+	if err != nil {
+		this.Error(ctx, err)
+		return
+	}
+	esClinet, err := es.GetEsClient(esRest.EsConnect)
+	if err != nil {
+		this.Error(ctx, err)
+		return
+	}
+
+	res, err := esClinet.(*es.EsClientV6).Client.PerformRequest(context.TODO(), elastic.PerformRequestOptions{
+		Method: esRest.Method,
+		Path:   esRest.Path,
+		Body:   esRest.Body,
+	})
+
+	if err != nil {
+		this.Error(ctx, err)
+		return
+	}
+
+	if res.StatusCode != 200 {
+		this.Output(ctx, map[string]interface{}{
+			"code": res.StatusCode,
+			"msg":  errors.New(fmt.Sprintf("请求异常! 错误码 :" + strconv.Itoa(res.StatusCode))),
+			"data": res.Body,
+		})
+		return
+	}
+
+	this.Success(ctx, response.SearchSuccess, res.Body)
 }

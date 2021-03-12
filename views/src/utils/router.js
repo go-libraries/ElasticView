@@ -77,6 +77,27 @@ export const asyncRoutes = [
         }
       }
     ]
+  },
+  {
+    path: '/rest',
+    component: 'layout',
+    redirect: '/rest/index',
+    alwaysShow: false,
+    meta: {
+      title: 'Dsl编写',
+      icon: 'el-icon-edit'
+    },
+    children: [
+      {
+        path: 'index',
+        component: 'views/rest/index',
+        name: 'index',
+        meta: {
+          title: 'Dsl编写',
+          icon: 'el-icon-edit'
+        }
+      }
+    ]
   }
 ]
 
@@ -87,6 +108,7 @@ export const RoutesComponentmaps = {
   'views/permission/role': () => import('@/views/permission/role'), // 角色管理
   'views/permission/user': () => import('@/views/permission/user'), // 用户管理
   'views/connect-tree/index': () => import('@/views/connect-tree/index'),
-  'views/cat/index': () => import('@/views/cat/index')
+  'views/cat/index': () => import('@/views/cat/index'),
+  'views/rest/index': () => import('@/views/rest/index')
 }
 

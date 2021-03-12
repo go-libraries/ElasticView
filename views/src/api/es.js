@@ -17,3 +17,11 @@ export function CatAction(data) {
     data
   })
 }
+
+export function RunDslAction(data) {
+  return request({
+    url: api + `RunDslAction`,
+    method: 'post',
+    data
+  })
+}

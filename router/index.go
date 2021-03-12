@@ -60,7 +60,7 @@ func Init() *gin.Engine {
 	{
 		es.Any("PingAction", EsController{}.PingAction)
 		es.Any("CatAction", EsController{}.CatAction)
-
+		es.Any("RunDslAction", EsController{}.RunDslAction)
 	}
 
 	return app

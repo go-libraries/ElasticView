@@ -7,7 +7,6 @@
       <el-table
         :header-cell-style="{background:'#eef1f6',color:'#606266'}"
         :data="rolesList"
-        border
         @row-dblclick="handleEdit"
       >
         <el-table-column

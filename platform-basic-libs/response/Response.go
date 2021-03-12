@@ -9,11 +9,11 @@ import (
 	"strings"
 
 	"ElasticView/engine/logs"
-	."ElasticView/platform-basic-libs/my_error"
+	. "ElasticView/platform-basic-libs/my_error"
 	"ElasticView/platform-basic-libs/util"
 
-	jsoniter "github.com/json-iterator/go"
 	"github.com/gin-gonic/gin"
+	jsoniter "github.com/json-iterator/go"
 	"go.uber.org/zap"
 )
 
@@ -71,7 +71,7 @@ func (this *Response) Error(ctx *gin.Context, err error) {
 
 	myErr := ErrorToErrorCode(err)
 
-	logs.Logger.Error("Error",  zap.Strings("err", this.DealErr(myErr)))
+	logs.Logger.Error("Error", zap.Strings("err", this.DealErr(myErr)))
 
 	this.send(ctx.Writer, myErr.Error(), myErr.Code(), errorTrace)
 }
@@ -87,7 +87,7 @@ func (this *Response) send(ctx io.Writer, msg string, code int, data interface{}
 }
 
 //输出
-func (this *Response) Output(ctx gin.Context, data interface{}) {
+func (this *Response) Output(ctx *gin.Context, data interface{}) {
 	util.WriteJSON(ctx.Writer, data)
 	return
 }

@@ -10,7 +10,6 @@
         :header-cell-style="{background:'#eef1f6',color:'#606266'}"
         :data="filterData(list,input)"
         style="width: 100%;margin-top:30px;"
-        border
       >
         <el-table-column
           label="序号"
@@ -37,7 +36,7 @@
             {{ scope.row.node }}
           </template>
         </el-table-column>
-        <el-table-column align="center" label="节点承载分片数量" width="150">
+        <el-table-column align="center" label="节点承载分片数量" width="150" sortable prop="shards">
           <template slot-scope="scope">
             {{ scope.row.shards }}
           </template>
@@ -62,9 +61,9 @@
             {{ scope.row["disk.total"] }}
           </template>
         </el-table-column>
-        <el-table-column align="center" label="节点磁盘占用百分比" width="170">
+        <el-table-column align="center" label="节点磁盘占用百分比" width="170" sortable prop="percent">
           <template slot-scope="scope">
-            {{ scope.row["disk.percent"] }}
+            {{ scope.row["disk.percent"] }}%
           </template>
         </el-table-column>
 

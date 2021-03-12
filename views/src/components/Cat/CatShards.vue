@@ -9,7 +9,6 @@
         :header-cell-style="{background:'#eef1f6',color:'#606266'}"
         :data="filterData(list,input)"
         style="width: 100%;margin-top:30px;"
-        border
       >
         <el-table-column
           label="序号"
@@ -27,7 +26,7 @@
             {{ scope.row.index }}
           </template>
         </el-table-column>
-        <el-table-column align="center" label="分片序号" width="100">
+        <el-table-column align="center" label="分片序号" width="100" sortable prop="shard">
           <template slot-scope="scope">
             {{ scope.row.shard }}
           </template>
@@ -43,7 +42,7 @@
             {{ scope.row.state }}
           </template>
         </el-table-column>
-        <el-table-column align="center" label="该分片存放的文档数量" width="140">
+        <el-table-column align="center" label="该分片存放的文档数量" width="140" sortable prop="docs">
           <template slot-scope="scope">
             {{ scope.row.docs }}
           </template>
@@ -95,6 +94,9 @@ export default {
       CatAction(form).then(res => {
         if (res.code == 0) {
           this.list = res.data
+          for (const k in this.list) {
+            this.list[k]['docs'] = Number(this.list[k]['docs'])
+          }
         } else {
           this.$message({
             type: 'error',

@@ -10,7 +10,7 @@ import (
 )
 
 type EsClientV6 struct {
-	client          *elasticV6.Client
+	Client          *elasticV6.Client
 	esConnectConfig request.EsConnect
 }
 
@@ -31,7 +31,7 @@ func NewEsClientV6(esConnectConfig request.EsConnect) (client EsClient, err erro
 	}
 
 	client = &EsClientV6{
-		client:          esClient,
+		Client:          esClient,
 		esConnectConfig: esConnectConfig,
 	}
 
@@ -39,45 +39,45 @@ func NewEsClientV6(esConnectConfig request.EsConnect) (client EsClient, err erro
 }
 
 func (this *EsClientV6) Ping() (interface{}, int, error) {
-	return this.client.Ping(this.esConnectConfig.Ip).Do(context.Background())
+	return this.Client.Ping(this.esConnectConfig.Ip).Do(context.Background())
 }
 
 func (this *EsClientV6) CreateIndex(indexName string, body interface{}) (interface{}, error) {
-	return this.client.CreateIndex(indexName).BodyJson(body).Do(context.Background())
+	return this.Client.CreateIndex(indexName).BodyJson(body).Do(context.Background())
 }
 
 func (this *EsClientV6) CatIndices() (interface{}, error) {
-	return this.client.CatIndices().Pretty(true).Do(context.Background())
+	return this.Client.CatIndices().Pretty(true).Do(context.Background())
 }
 
 func (this *EsClientV6) CatAliases() (interface{}, error) {
-	return this.client.CatAliases().Pretty(true).Do(context.Background())
+	return this.Client.CatAliases().Pretty(true).Do(context.Background())
 }
 
 func (this *EsClientV6) CatAllocation() (interface{}, error) {
-	return this.client.CatAllocation().Pretty(true).Do(context.Background())
+	return this.Client.CatAllocation().Pretty(true).Do(context.Background())
 }
 
 func (this *EsClientV6) CatCount() (interface{}, error) {
-	return this.client.CatCount().Pretty(true).Do(context.Background())
+	return this.Client.CatCount().Pretty(true).Do(context.Background())
 }
 
 func (this *EsClientV6) CatHealth() (interface{}, error) {
-	return this.client.CatHealth().Pretty(true).Do(context.Background())
+	return this.Client.CatHealth().Pretty(true).Do(context.Background())
 }
 
 func (this *EsClientV6) CatShards() (interface{}, error) {
-	return this.client.CatShards().Pretty(true).Do(context.Background())
+	return this.Client.CatShards().Pretty(true).Do(context.Background())
 }
 
 func (this *EsClientV6) DeleteIndex(indexNameList []string) (interface{}, error) {
-	return this.client.DeleteIndex(indexNameList...).Do(context.Background())
+	return this.Client.DeleteIndex(indexNameList...).Do(context.Background())
 }
 
 func (this *EsClientV6) CloseIndex(indexNameList []string) error {
 	var err error
 	for _, indexName := range indexNameList {
-		_, err = this.client.CloseIndex(indexName).Do(context.Background())
+		_, err = this.Client.CloseIndex(indexName).Do(context.Background())
 		if err != nil {
 			return err
 		}
@@ -88,7 +88,7 @@ func (this *EsClientV6) CloseIndex(indexNameList []string) error {
 func (this *EsClientV6) OpenIndex(indexNameList []string) error {
 	var err error
 	for _, indexName := range indexNameList {
-		_, err = this.client.OpenIndex(indexName).Do(context.Background())
+		_, err = this.Client.OpenIndex(indexName).Do(context.Background())
 		if err != nil {
 			return err
 		}
@@ -105,7 +105,7 @@ func (this *EsClientV6) UnfreezeIndex(indexNameList []string) error {
 }
 
 func (this *EsClientV6) CreateMapping(indexName string, body Json) (interface{}, error) {
-	return this.client.PutMapping().
+	return this.Client.PutMapping().
 		Index(indexName).
 		BodyJson(body).
 		IncludeTypeName(true).
@@ -113,68 +113,76 @@ func (this *EsClientV6) CreateMapping(indexName string, body Json) (interface{},
 }
 
 func (this *EsClientV6) IndexPutSettings(indexName string, body Json) (interface{}, error) {
-	return this.client.IndexPutSettings().Index(indexName).BodyJson(body).Do(context.TODO())
+	return this.Client.IndexPutSettings().Index(indexName).BodyJson(body).Do(context.TODO())
 }
 
 func (this *EsClientV6) Refresh(indexName ...string) (interface{}, error) {
-	return this.client.Refresh(indexName...).Do(context.TODO())
+	return this.Client.Refresh(indexName...).Do(context.TODO())
 }
 
 func (this *EsClientV6) Flush(indexName ...string) (interface{}, error) {
-	return this.client.Flush(indexName...).Do(context.TODO())
+	return this.Client.Flush(indexName...).Do(context.TODO())
 }
 
 func (this *EsClientV6) Fsync(indexName ...string) (interface{}, error) {
-	return this.client.SyncedFlush(indexName...).Do(context.TODO())
+	return this.Client.SyncedFlush(indexName...).Do(context.TODO())
 }
 func (this *EsClientV6) Rollover(alias, indexName string) (interface{}, error) {
-	return this.client.RolloverIndex(alias).NewIndex(indexName).Do(context.TODO())
+	return this.Client.RolloverIndex(alias).NewIndex(indexName).Do(context.TODO())
 }
 
 func (this *EsClientV6) IndexSegments(indexName string) (interface{}, error) {
-	return this.client.IndexSegments(indexName).Pretty(true).Do(context.TODO())
+	return this.Client.IndexSegments(indexName).Pretty(true).Do(context.TODO())
 }
 
 func (this *EsClientV6) Alias(alias, indexName string) (interface{}, error) {
-	return this.client.Aliases().Index(indexName).Alias(alias).Do(context.Background())
+	return this.Client.Aliases().Index(indexName).Alias(alias).Do(context.Background())
 }
 
 func (this *EsClientV6) Reindex(sourceIndex, destinationIndex string) (interface{}, error) {
-	return this.client.Reindex().SourceIndex(sourceIndex).DestinationIndex(destinationIndex).Do(context.Background())
+	return this.Client.Reindex().SourceIndex(sourceIndex).DestinationIndex(destinationIndex).Do(context.Background())
 }
 
 func (this *EsClientV6) TasksList() (interface{}, error) {
-	return this.client.TasksList().Pretty(true).
+	return this.Client.TasksList().Pretty(true).
 		Human(true).
 		//Header("X-Opaque-Id", "123456").
 		Do(context.TODO())
 }
 
 func (this *EsClientV6) IndexStats(indexName []string, metrics []string) (interface{}, error) {
-	return this.client.IndexStats().Index(indexName...).Metric(metrics...).Do(context.Background())
+	return this.Client.IndexStats().Index(indexName...).Metric(metrics...).Do(context.Background())
 }
 
 func (this *EsClientV6) GetMapping(indexName string, body Json, typeName ...string) (interface{}, error) {
-	return this.client.GetMapping().Index(indexName).Type(typeName...).Do(context.Background())
+	return this.Client.GetMapping().Index(indexName).Type(typeName...).Do(context.Background())
 }
 
 func (this *EsClientV6) PutData(indexName string, body Json, typeName ...string) (interface{}, error) {
 	if len(typeName) == 0 {
 		return nil, errors.New("Type 不能为空!")
 	}
-	return this.client.Index().Index(indexName).Type(typeName[0]).BodyJson(body).Do(context.Background())
+	return this.Client.Index().Index(indexName).Type(typeName[0]).BodyJson(body).Do(context.Background())
 }
 
 func (this *EsClientV6) DeleteById(indexName, id string, typeName ...string) (interface{}, error) {
 	if len(typeName) == 0 {
 		return nil, errors.New("Type 不能为空!")
 	}
-	return this.client.Delete().Index(indexName).Type(typeName[0]).Id(id).Do(context.Background())
+	return this.Client.Delete().Index(indexName).Type(typeName[0]).Id(id).Do(context.Background())
 }
 
-func (this *EsClientV6) Search(indexName string, query elasticV6.Query, sort *Sort, page *Page, fields []string, isInclude bool, typeName ...string) (*elasticV6.SearchResult, error) {
+func (this *EsClientV6) Search(
+	indexName string,
+	query elasticV6.Query,
+	sort *Sort,
+	page *Page,
+	fields []string,
+	isInclude bool,
+	typeName ...string,
+) (*elasticV6.SearchResult, error) {
 
-	search := this.client.Search(indexName).Query(query)
+	search := this.Client.Search(indexName).Query(query)
 	if sort != nil {
 		search = search.Sort(sort.Field, sort.Ascending)
 	}
@@ -201,19 +209,19 @@ func (this *EsClientV6) Count(indexName string, query elasticV6.Query, typeName 
 	if len(typeName) == 0 {
 		return 0, errors.New("Type 不能为空!")
 	}
-	return this.client.Count(indexName).Type(typeName[0]).Query(query).Do(context.Background())
+	return this.Client.Count(indexName).Type(typeName[0]).Query(query).Do(context.Background())
 }
 
 func (this *EsClientV6) DeleteByQuery(indexName string, query elasticV6.Query, typeName ...string) (interface{}, error) {
 	if len(typeName) == 0 {
 		return nil, errors.New("Type 不能为空!")
 	}
-	return this.client.DeleteByQuery(indexName).Type(typeName[0]).Query(query).Pretty(true).Do(context.Background())
+	return this.Client.DeleteByQuery(indexName).Type(typeName[0]).Query(query).Pretty(true).Do(context.Background())
 }
 
 func (this *EsClientV6) UpdateByID(indexName string, id string, query elasticV6.Query, typeName ...string) (interface{}, error) {
 	if len(typeName) == 0 {
 		return nil, errors.New("Type 不能为空!")
 	}
-	return this.client.Update().Index(indexName).Type(typeName[0]).Id(id).Doc(query).Do(context.Background())
+	return this.Client.Update().Index(indexName).Type(typeName[0]).Id(id).Doc(query).Do(context.Background())
 }

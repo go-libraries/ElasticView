@@ -9,7 +9,6 @@
         :header-cell-style="{background:'#eef1f6',color:'#606266'}"
         :data="filterData(list,input)"
         style="width: 100%;margin-top:30px;"
-        border
       >
         <el-table-column
           label="序号"
@@ -65,7 +64,7 @@ export default {
   data() {
     return {
       list: [],
-      input: '1'
+      input: ''
     }
   },
   mounted() {
@@ -73,6 +72,7 @@ export default {
   },
   methods: {
     filterData(list, input) {
+      console.log('filterData')
       return filterData(list, input)
     },
     searchData() {

@@ -42,22 +42,22 @@
             {{ scope.row.uuid }}
           </template>
         </el-table-column>
-        <el-table-column align="center" label="索引主分片数" width="100">
+        <el-table-column align="center" label="索引主分片数" width="100" prop="pri" sortable>
           <template slot-scope="scope">
             {{ scope.row.pri }}
           </template>
         </el-table-column>
-        <el-table-column align="center" label="索引副本分片数量" width="100">
+        <el-table-column align="center" label="索引副本分片数量" width="100" prop="rep" sortable>
           <template slot-scope="scope">
             {{ scope.row.rep }}
           </template>
         </el-table-column>
-        <el-table-column align="center" label="索引中文档总数" width="120">
+        <el-table-column align="center" label="索引中文档总数" width="120" prop="docsCount" sortable>
           <template slot-scope="scope">
             {{ scope.row["docs.count"] }}
           </template>
         </el-table-column>
-        <el-table-column align="center" label="索引中删除状态的文档" width="100">
+        <el-table-column align="center" label="索引中删除状态的文档" width="100" prop="docsDeleted" sortable>
           <template slot-scope="scope">
             {{ scope.row["docs.deleted"] }}
           </template>
@@ -104,6 +104,11 @@ export default {
       CatAction(form).then(res => {
         if (res.code == 0) {
           this.list = res.data
+          for (const k in this.list) {
+            this.list[k]['docsCount'] = Number(this.list[k]['docs.count'])
+            this.list[k]['docsDeleted'] = Number(this.list[k]['docs.deleted'])
+            this.list[k]['storeSize'] = Number(this.list[k]['store.size'])
+          }
         } else {
           this.$message({
             type: 'error',

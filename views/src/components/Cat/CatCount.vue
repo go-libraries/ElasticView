@@ -9,7 +9,6 @@
         :header-cell-style="{background:'#eef1f6',color:'#606266'}"
         :data="filterData(list,input)"
         style="width: 100%;margin-top:30px;"
-        border
       >
         <el-table-column
           label="序号"
@@ -32,7 +31,7 @@
             {{ scope.row.timestamp }}
           </template>
         </el-table-column>
-        <el-table-column align="center" label="文档总数" width="500">
+        <el-table-column align="center" label="文档总数" width="500" sortable prop="count">
           <template slot-scope="scope">
             {{ scope.row.count }}
           </template>
