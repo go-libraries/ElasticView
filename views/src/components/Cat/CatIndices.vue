@@ -3,11 +3,13 @@
     <el-card class="box-card">
       <div class="filter-container">
         <el-tag class="filter-item">请输入关键词</el-tag>
-        <el-input v-model="input" class="filter-item" style="width: 300px" />
+        <el-input v-model="input" class="filter-item" style="width: 300px" clearable @input="search" />
+        <el-button type="success" class="filter-item" @click="search">搜索</el-button>
       </div>
       <el-table
+        :loading="connectLoading"
         :header-cell-style="{background:'#eef1f6',color:'#606266'}"
-        :data="filterData(list,input)"
+        :data="list"
         style="width: 100%;margin-top:30px;"
         border
       >
@@ -73,6 +75,17 @@
           </template>
         </el-table-column>
       </el-table>
+      <el-pagination
+        v-if="pageshow"
+        class="pagination-container"
+        :current-page="page"
+        :page-sizes="[10, 20, 30, 50]"
+        :page-size="limit"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="total"
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+      />
     </el-card>
   </div>
 </template>
@@ -84,6 +97,11 @@ export default {
   name: 'CatIndices',
   data() {
     return {
+      total: 0,
+      connectLoading: false,
+      page: 1,
+      limit: 10,
+      pageshow: true,
       list: [],
       input: ''
     }
@@ -92,8 +110,28 @@ export default {
     this.searchData()
   },
   methods: {
+    search() {
+      this.page = 1
+      this.pageshow = false
+      this.searchData()
+      this.$nextTick(() => {
+        this.pageshow = true
+      })
+    },
     filterData(list, input) {
       return filterData(list, input)
+    },
+    // 当每页数量改变
+    handleSizeChange(val) {
+      console.log(`每页 ${val} 条`)
+      this.limit = val
+      this.searchData()
+    },
+    // 当当前页改变
+    handleCurrentChange(val) {
+      console.log(`当前页: ${val}`)
+      this.page = val
+      this.searchData()
     },
     searchData() {
       this.connectLoading = true
@@ -103,12 +141,17 @@ export default {
       }
       CatAction(form).then(res => {
         if (res.code == 0) {
-          this.list = res.data
+          let list = res.data
           for (const k in this.list) {
-            this.list[k]['docsCount'] = Number(this.list[k]['docs.count'])
-            this.list[k]['docsDeleted'] = Number(this.list[k]['docs.deleted'])
-            this.list[k]['storeSize'] = Number(this.list[k]['store.size'])
+            list[k]['docsCount'] = Number(list[k]['docs.count'])
+            list[k]['docsDeleted'] = Number(list[k]['docs.deleted'])
+            list[k]['storeSize'] = Number(list[k]['store.size'])
           }
+          list = filterData(list, this.input.trim())
+          this.list = list.filter((item, index) =>
+            index < this.page * this.limit && index >= this.limit * (this.page - 1)
+          )
+          this.total = list.length
         } else {
           this.$message({
             type: 'error',

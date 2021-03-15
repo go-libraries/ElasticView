@@ -20,6 +20,9 @@ import router from './router'
 import './permission' // permission control
 import './utils/error-log' // error log
 import './icons' // error log
+// 全局注册组件
+import Editor from 'vue2-ace-editor'
+Vue.component('editor', Editor)
 
 import * as filters from './filters' // global filters
 

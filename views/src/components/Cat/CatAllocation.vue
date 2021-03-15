@@ -7,6 +7,7 @@
       </div>
 
       <el-table
+        :loading="connectLoading"
         :header-cell-style="{background:'#eef1f6',color:'#606266'}"
         :data="filterData(list,input)"
         style="width: 100%;margin-top:30px;"
@@ -75,12 +76,14 @@
 <script>
 import { filterData } from '@/utils/table'
 import { CatAction } from '@/api/es'
+
 export default {
   name: 'CatAllocation',
   data() {
     return {
       list: [],
-      input: ''
+      input: '',
+      connectLoading: false
     }
   },
   mounted() {
