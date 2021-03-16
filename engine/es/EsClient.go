@@ -33,4 +33,5 @@ type EsClient interface {
 	DeleteByQuery(indexName string, query elasticV6.Query, typeName ...string) (interface{}, error)
 	TasksList() (interface{}, error)
 	Reindex(sourceIndex, destinationIndex string) (interface{}, error)
+	GetMappings() (interface{}, error)
 }

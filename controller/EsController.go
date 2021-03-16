@@ -2,7 +2,6 @@ package controller
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"strconv"
 
@@ -101,14 +100,14 @@ func (this EsController) RunDslAction(ctx *gin.Context) {
 		return
 	}
 
-	if res.StatusCode != 200 {
+	if res.StatusCode != 200 && res.StatusCode != 201 {
 		this.Output(ctx, map[string]interface{}{
 			"code": res.StatusCode,
-			"msg":  errors.New(fmt.Sprintf("请求异常! 错误码 :" + strconv.Itoa(res.StatusCode))),
+			"msg":  fmt.Sprintf("请求异常! 错误码 :" + strconv.Itoa(res.StatusCode)),
 			"data": res.Body,
 		})
 		return
 	}
 
-	this.Success(ctx, response.SearchSuccess, res.Body)
+	this.Success(ctx, response.OperateSuccess, res.Body)
 }

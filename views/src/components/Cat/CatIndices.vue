@@ -93,6 +93,7 @@
 <script>
 import { filterData } from '@/utils/table'
 import { CatAction } from '@/api/es'
+
 export default {
   name: 'CatIndices',
   data() {
@@ -160,6 +161,7 @@ export default {
         }
         this.connectLoading = false
       }).catch(err => {
+        console.log(err)
         this.$message({
           type: 'error',
           message: '网络异常'

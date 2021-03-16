@@ -58,7 +58,14 @@
         </el-table-column>
         <el-table-column align="center" label="操作" fixed="right" width="300">
           <template slot-scope="scope">
-            <el-button v-loading="scope.row.connectLoading" type="success" size="small" icon="el-icon-link" @click="testConnect(scope)">测试连接</el-button>
+            <el-button
+              v-loading="scope.row.connectLoading"
+              type="success"
+              size="small"
+              icon="el-icon-link"
+              @click="testConnect(scope)"
+            >测试连接
+            </el-button>
             <el-button type="primary" size="small" icon="el-icon-edit" @click="handleEdit(scope)">编辑</el-button>
             <el-button type="danger" size="small" icon="el-icon-delete" @click="handleDelete(scope)">删除</el-button>
           </template>
@@ -91,13 +98,15 @@
           <el-button type="primary" icon="el-icon-check" @click="confirmRole">确认</el-button>
         </div>
       </el-dialog>
-    </el-card> </div>
+    </el-card>
+  </div>
 </template>
 
 <script>
 import { deepClone } from '@/utils'
-import { DeleteAction, ListAction, UpdateAction, InsertAction } from '@/api/es-link'
+import { DeleteAction, InsertAction, ListAction, UpdateAction } from '@/api/es-link'
 import { PingAction } from '@/api/es'
+
 const defaultLink = {
   created: '',
   id: 0,
@@ -124,9 +133,7 @@ export default {
       }
     }
   },
-  computed: {
-
-  },
+  computed: {},
   created() {
     this.getList()
   },
@@ -195,7 +202,9 @@ export default {
             message: 'Delete succed!'
           })
         })
-        .catch(err => { console.error(err) })
+        .catch(err => {
+          console.error(err)
+        })
     },
     async confirmRole() {
       const isEdit = this.dialogType === 'edit'
@@ -247,6 +256,7 @@ export default {
     .roles-table {
       margin-top: 30px;
     }
+
     .permission-tree {
       margin-bottom: 30px;
     }

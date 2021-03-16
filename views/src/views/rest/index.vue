@@ -24,18 +24,40 @@
           @select="mySelect"
         />
 
-        <el-button class="filter-item" type="success" @click="run">RUN-></el-button>
+        <el-button class="filter-item" :loading="loading" type="success" @click="run">RUN-></el-button>
+
+        <download-excel
+          v-show="canExport"
+          ref="download"
+          :fields="json_fields"
+          :data="json_data"
+          :name="String(this.input.path+'.xls')"
+        >
+          <el-button type="primary" class="filter-item">EXPORT-></el-button>
+        </download-excel>
       </div>
-      <json-editor v-model="input.body" styles="width: 30%" :point-out="pointOut" :read="false" title="请求Body" />
+      <json-editor
+        v-model="input.body"
+        styles="width: 30%"
+        :point-out="pointOut"
+        :read="false"
+        title="请求Body"
+        @getValue="getBody"
+      />
       <json-editor v-model="resData" styles="width: 70%" :read="true" title="返回信息" />
     </el-card>
   </div>
 </template>
 
 <script>
+import { clone } from '@/utils/index'
 import { RunDslAction } from '@/api/es'
+import { ListAction } from '@/api/es-map'
+
 import { filterData } from '@/utils/table'
-import { esPathKeyWords, esBodyKeyWords } from '@/utils/base-data'
+
+import { esBodyKeyWords, esPathKeyWords } from '@/utils/base-data'
+
 export default {
   name: 'Index',
   components: {
@@ -43,6 +65,9 @@ export default {
   },
   data() {
     return {
+      loading: false,
+      json_fields: {},
+      json_data: '',
       queryData: esPathKeyWords,
       pointOut: esBodyKeyWords,
       address: 'test',
@@ -54,9 +79,127 @@ export default {
       resData: '{}'
     }
   },
+  computed: {
+    canExport() {
+      this.json_data = ''
+      this.json_fields = {}
+      const resData = JSON.parse(this.resData)
+      if (Array.isArray(resData)) {
+        // this.json_fields[defaultKey] = defaultKey
+
+        if (resData.length <= 0) {
+          return false
+        }
+        this.json_data = this.replaceArrSpece(resData)
+        Object.keys(resData[0]).forEach((key, index) => {
+          this.json_fields[key] = key
+        })
+        return true
+      } else {
+        if (resData.hasOwnProperty('hits')) {
+          if (resData['hits']['hits'].length > 0) {
+            const json_data = resData['hits']['hits']
+            const defaultKeys = ['_index', '_type', '_id']
+            for (const defaultKey of defaultKeys) {
+              this.json_fields[defaultKey] = defaultKey
+            }
+            const arrayColumns = []
+            for (const v of resData['hits']['hits']) {
+              const sourceMap = v['_source']
+              Object.getOwnPropertyNames(sourceMap).forEach((sourceVal, index) => {
+                // 如果是对象
+                if (Object.prototype.toString.call(sourceMap[sourceVal]) === '[object Object]') {
+                  Object.keys(sourceMap[sourceVal]).map(key => {
+                    this.json_fields[sourceVal + '->' + key] = '_source.' + sourceVal + '.' + key
+                  })
+                } else if (Array.isArray(sourceMap[sourceVal])) { // 如果是数组
+                  if (Object.prototype.toString.call(sourceMap[sourceVal][0]) === '[object Object]') {
+                    arrayColumns.push(sourceVal)
+                  }
+                  this.json_fields[sourceVal.toString()] = '_source.' + sourceVal.toString()
+                } else {
+                  this.json_fields[sourceVal.toString()] = '_source.' + sourceVal.toString()
+                }
+              })
+            }
+            arrayColumns.forEach((arrayColumn, index) => {
+              for (const i in json_data) {
+                for (const column in json_data[i]['_source']) {
+                  if (column == arrayColumn) {
+                    json_data[i]['_source'][column] = JSON.stringify(json_data[i]['_source'][column])
+                  }
+                }
+              }
+            })
+
+            this.json_data = json_data
+            return true
+          }
+        }
+      }
+      return false
+    }
+  },
+  created() {
+    this.mergeEsPathKeyWords()
+    const resReqInfo = sessionStorage.getItem('resReqInfo')
+    console.log(resReqInfo == null, typeof resReqInfo, 'resReqInfo')
+    if (resReqInfo != null && resReqInfo != '' && resReqInfo != 'null') {
+      this.input = JSON.parse(resReqInfo)
+    }
+
+    this.run()
+  },
+  destroyed() {
+    const input = this.input
+    const resReqInfo = JSON.stringify(input)
+    sessionStorage.setItem('resReqInfo', resReqInfo)
+  },
   methods: {
+    mergeEsPathKeyWords() {
+      const input = this.$store.state.baseData.EsConnect
+      ListAction(input).then(res => {
+        if (res.code == 0) {
+          const list = res.data
+          const indices = Object.keys(list)
+
+          const queryData = clone(this.queryData)
+          for (const esPathKeyWord of queryData) {
+            if (esPathKeyWord.value.indexOf('{indices}') !== -1) {
+              for (const indice of indices) {
+                const mappings = Object.keys(list[indice]['mappings'])
+                const obj = {
+                  'value': esPathKeyWord.value.replace(/{indices}/g, indice).replace(/{type}/g, mappings[0]),
+                  'data': esPathKeyWord.data.replace(/{indices}/g, indice).replace(/{type}/g, mappings[0])
+                }
+                this.queryData.push(obj)
+              }
+            }
+          }
+        }
+      }).catch(err => {
+        console.log(err)
+        this.$message({
+          type: 'error',
+          message: '网络异常'
+        })
+      })
+    },
+    replaceArrSpece(arr) {
+      for (const index in arr) {
+        for (const index2 in arr[index]) {
+          if (index2.indexOf('.') != -1) {
+            arr[index][index2.split('.').join('->')] = arr[index][index2]
+            delete arr[index][index2]
+          }
+        }
+      }
+      return arr
+    },
+    getBody(v) {
+      this.input.body = v
+    },
     clear() {
-      console.log(111)
       this.$refs.autocomplete.activated = true
       this.$refs.autocomplete.handleFocus()
     },
@@ -73,7 +216,9 @@ export default {
       cb(queryData)
     },
     run() {
-      const input = this.input
+      this.loading = true
+      console.log(this.input, 'input')
+      const input = clone(this.input)
 
       if (input['path'].trim() != '') {
         input['path'] = '/' + input['path']
@@ -81,7 +226,7 @@ export default {
 
       input['es_connect'] = this.$store.state.baseData.EsConnect
       RunDslAction(input).then(res => {
-        if (res.code == 0) {
+        if (res.code == 0 || res.code == 200 || res.code == 201) {
           this.$message({
             type: 'success',
             message: res.msg
@@ -92,15 +237,16 @@ export default {
             message: res.msg
           })
         }
+        this.loading = false
         this.resData = JSON.stringify(res.data, null, '\t')
       }).catch(err => {
         this.$message({
           type: 'error',
           message: '网络异常'
         })
+        this.loading = false
       })
     }
-
   }
 }
 </script>

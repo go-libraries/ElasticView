@@ -158,6 +158,10 @@ func (this *EsClientV6) GetMapping(indexName string, body Json, typeName ...stri
 	return this.Client.GetMapping().Index(indexName).Type(typeName...).Do(context.Background())
 }
 
+func (this *EsClientV6) GetMappings() (interface{}, error) {
+	return this.Client.GetMapping().Do(context.Background())
+}
+
 func (this *EsClientV6) PutData(indexName string, body Json, typeName ...string) (interface{}, error) {
 	if len(typeName) == 0 {
 		return nil, errors.New("Type 不能为空!")

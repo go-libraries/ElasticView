@@ -98,6 +98,27 @@ export const asyncRoutes = [
         }
       }
     ]
+  },
+  {
+    path: '/indices',
+    component: 'layout',
+    redirect: '/indices/index',
+    alwaysShow: false,
+    meta: {
+      title: '索引管理',
+      icon: 'el-icon-folder'
+    },
+    children: [
+      {
+        path: 'index',
+        component: 'views/indices/index',
+        name: 'index',
+        meta: {
+          title: '索引管理',
+          icon: 'el-icon-folder'
+        }
+      }
+    ]
   }
 ]
 
@@ -109,6 +130,7 @@ export const RoutesComponentmaps = {
   'views/permission/user': () => import('@/views/permission/user'), // 用户管理
   'views/connect-tree/index': () => import('@/views/connect-tree/index'),
   'views/cat/index': () => import('@/views/cat/index'),
-  'views/rest/index': () => import('@/views/rest/index')
+  'views/rest/index': () => import('@/views/rest/index'),
+  'views/indices/index': () => import('@/views/indices/index')
 }
 

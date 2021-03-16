@@ -216,3 +216,7 @@ func (this *EsClientV7) DeleteByQuery(indexName string, query elasticV6.Query, t
 func (this *EsClientV7) UpdateByID(indexName string, id string, query elasticV6.Query, typeName ...string) (interface{}, error) {
 	return this.Client.Update().Index(indexName).Id(id).Doc(query).Do(context.Background())
 }
+
+func (this *EsClientV7) GetMappings() (interface{}, error) {
+	return this.Client.GetMapping().Do(context.Background())
+}

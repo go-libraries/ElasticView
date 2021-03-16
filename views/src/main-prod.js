@@ -4,15 +4,16 @@ import Cookies from 'js-cookie'
 
 import 'normalize.css/normalize.css' // a modern alternative to CSS resets
 
-import VDistpicker from 'v-distpicker'
-
-Vue.component('v-distpicker', VDistpicker)
 import '@/styles/index.scss' // global css
 
-import VueParticles from 'vue-particles'
-Vue.use(VueParticles)
+// 复制粘贴
 import VueClipboard from 'vue-clipboard2'
 Vue.use(VueClipboard)
+
+// excel导出
+import JsonExcel from 'vue-json-excel'
+Vue.component('downloadExcel', JsonExcel)
+
 import App from './App'
 import store from './store'
 import router from './router'
@@ -20,6 +21,7 @@ import router from './router'
 import './permission' // permission control
 import './utils/error-log' // error log
 import './icons' // error log
+
 // 全局注册组件
 import Editor from 'vue2-ace-editor'
 Vue.component('editor', Editor)

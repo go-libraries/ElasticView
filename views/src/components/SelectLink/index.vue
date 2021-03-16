@@ -15,18 +15,17 @@
 <script>
 // fuse is a lightweight fuzzy-search module
 // make search results more in line with expectations
-import Fuse from 'fuse.js'
-import path from 'path'
 import { ListAction } from '@/api/es-link'
 
 export default {
+  inject: ['reload'],
   name: 'HeaderSearch',
   data() {
     return {
       opt: [],
       link: '',
       time: null,
-      timeSecend: 10
+      timeSecend: 30
     }
   },
   computed: {},
@@ -58,6 +57,7 @@ export default {
         }
       }
       this.$store.dispatch('baseData/SetEsConnect', obj)
+      this.reload()
       // console.log(this.$store.state.baseData.EsConnect)
     }
   }

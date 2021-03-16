@@ -30,6 +30,7 @@ func Init() *gin.Engine {
 	})
 
 	app.StaticFS("/view", statikFS)
+
 	app.Use(Cors)
 	app.Any("/api/gm_user/login", UserController{}.Login)
 	app.Use(JwtMiddleware)
@@ -61,6 +62,11 @@ func Init() *gin.Engine {
 		es.Any("PingAction", EsController{}.PingAction)
 		es.Any("CatAction", EsController{}.CatAction)
 		es.Any("RunDslAction", EsController{}.RunDslAction)
+
+	}
+	esMap := app.Group("/api/es_map")
+	{
+		esMap.Any("ListAction", EsMapController{}.ListAction)
 	}
 
 	return app
