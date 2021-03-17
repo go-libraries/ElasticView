@@ -4,15 +4,21 @@
       <div class="filter-container">
         <el-tag class="filter-item">请输入关键词</el-tag>
         <el-input v-model="input" class="filter-item" style="width: 300px" clearable @input="search" />
-        <el-button type="success" class="filter-item" @click="search">搜索</el-button>
-        <el-button type="success" class="filter-item" @click="openSettingDialog('')">新建索引</el-button>
+
+        <el-select v-model="status" style="width: 300px" class="filter-item" clearable filterable @change="search">
+          <el-option label="索引健康状态" value="" />
+          <el-option label="green" value="green" />
+          <el-option label="yellow" value="yellow" />
+          <el-option label="red" value="red" />
+        </el-select>
+
+        <el-button type="success" class="filter-item" icon="el-icon-refresh" @click="search">刷新</el-button>
+        <el-button type="success" class="filter-item" icon="el-icon-plus" @click="openSettingDialog('','add')">新建索引</el-button>
       </div>
       <el-table
         :loading="connectLoading"
         :header-cell-style="{background:'#eef1f6',color:'#606266'}"
         :data="list"
-        style="width: 100%;margin-top:30px;"
-        border
       >
         <el-table-column
           label="序号"
@@ -27,12 +33,17 @@
 
         <el-table-column align="center" label="索引健康状态" width="100">
           <template slot-scope="scope">
-            {{ scope.row.health }}
+            <el-button v-if="scope.row.health == 'green'" type="success" circle />
+            <el-button v-if="scope.row.health == 'yellow'" type="warning" circle />
+            <el-button v-if="scope.row.health == 'red'" type="danger" circle />
           </template>
         </el-table-column>
         <el-table-column align="center" label="索引的开启状态" width="100">
           <template slot-scope="scope">
-            {{ scope.row.status }}
+            <el-button v-show="scope.row.status == 'open'" type="success" size="small" icon="el-icon-success">开启
+            </el-button>
+            <el-button v-show="scope.row.status == 'close'" type="danger" size="small" icon="el-icon-circle-close">关闭
+            </el-button>
           </template>
         </el-table-column>
         <el-table-column align="center" label="索引名称" width="200">
@@ -75,12 +86,40 @@
             {{ scope.row["pri.store.size"] }}
           </template>
         </el-table-column>
-        <el-table-column align="center" label="操作" fixed="right" width="400">
+        <el-table-column align="center" label="操作" fixed="right" width="200">
           <template slot-scope="scope">
-            <el-button type="primary" size="small" icon="el-icon-edit" @click="openSettingDialog(scope.row.index)">编辑</el-button>
-            <el-button type="danger" size="small" icon="el-icon-delete" @click="deleteIndex(scope.row)">删除</el-button>
-            <el-button type="success" size="small" icon="el-icon-success" @click="closeIndex(scope.row)">开启</el-button>
-            <el-button type="danger" size="small" icon="el-icon-delete" @click="openIndex(scope.row)">关闭</el-button>
+            <el-button
+              style="margin-top: 10px;"
+              type="primary"
+              size="small"
+              icon="el-icon-setting"
+              @click="openSettingDialog(scope.row.index,'update')"
+            >配置
+            </el-button>
+            <el-button
+              style="margin-top: 10px"
+              type="danger"
+              size="small"
+              icon="el-icon-delete"
+              @click="deleteIndex(scope.row.index)"
+            >删除
+            </el-button>
+            <el-button
+              style="margin-top: 10px"
+              type="success"
+              size="small"
+              icon="el-icon-success"
+              @click="OpenOrCloseIndex(scope.row.index,'open')"
+            >开启
+            </el-button>
+            <el-button
+              style="margin-top: 10px"
+              type="danger"
+              size="small"
+              icon="el-icon-circle-close"
+              @click="OpenOrCloseIndex(scope.row.index,'close')"
+            >关闭
+            </el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -96,14 +135,20 @@
         @current-change="handleCurrentChange"
       />
 
-      <settings v-if="openSettings" :index-name="indexName" :open="openSettings" @close="closeSettings" />
+      <settings
+        v-if="openSettings"
+        :index-name="indexName"
+        :settings-type="settingsType"
+        :open="openSettings"
+        @close="closeSettings"
+      />
     </el-card>
   </div>
 </template>
 
 <script>
 import { filterData } from '@/utils/table'
-import { CatAction } from '@/api/es'
+import { CatAction, RunDslAction } from '@/api/es'
 
 export default {
   name: 'CatIndices',
@@ -112,6 +157,7 @@ export default {
   },
   data() {
     return {
+      settingsType: 'add',
       indexName: '',
       openSettings: false,
       total: 0,
@@ -120,31 +166,109 @@ export default {
       limit: 10,
       pageshow: true,
       list: [],
-      input: ''
+      input: '',
+      status: ''
     }
   },
   mounted() {
     this.searchData()
   },
   methods: {
-    closeIndex(row) {
+    OpenOrCloseIndex(indexName, types) {
+      if (types == '') {
+        return
+      }
+      const typesMap = {
+        'open': '开启',
+        'close': '关闭'
+      }
 
+      this.$confirm('确定' + typesMap[types] + '该索引吗?', '警告', {
+        confirmButtonText: '确认',
+        cancelButtonText: '取消',
+        type: 'warning'
+      })
+        .then(async() => {
+          const input = {}
+          input['es_connect'] = this.$store.state.baseData.EsConnect
+          input['method'] = 'POST'
+          input['path'] = '/' + indexName + '/_' + types
+          const loading = this.$loading({
+            lock: true,
+            text: 'Loading',
+            spinner: 'el-icon-loading',
+            background: 'rgba(0, 0, 0, 0.7)'
+          })
+          RunDslAction(input).then(res => {
+            if (res.code == 0 || res.code == 200) {
+              console.log(res)
+              this.searchData()
+            } else {
+              this.$message({
+                type: 'error',
+                message: res.msg
+              })
+            }
+            loading.close()
+          }).catch(err => {
+            loading.close()
+            this.$message({
+              type: 'error',
+              message: '网络异常'
+            })
+          })
+        })
+        .catch(err => {
+          console.error(err)
+        })
     },
-    openIndex(row) {
 
-    },
-    openSettingDialog(indexName) {
+    openSettingDialog(indexName, settingsType) {
       this.indexName = indexName
+      this.settingsType = settingsType
       this.openSettings = true
     },
     editIndex(row) {
       console.log(row)
     },
-    deleteIndex(row) {
-
+    deleteIndex(indexName) {
+      this.$confirm('确定删除该索引吗?', '警告', {
+        confirmButtonText: '确认',
+        cancelButtonText: '取消',
+        type: 'warning'
+      })
+        .then(async() => {
+          const input = {}
+          input['es_connect'] = this.$store.state.baseData.EsConnect
+          input['method'] = 'DELETE'
+          input['path'] = '/' + indexName
+          RunDslAction(input).then(res => {
+            if (res.code == 0 || res.code == 200) {
+              this.$message({
+                type: 'success',
+                message: indexName + '已删除'
+              })
+              this.searchData()
+            } else {
+              this.$message({
+                type: 'error',
+                message: res.msg
+              })
+            }
+          }).catch(err => {
+            this.$message({
+              type: 'error',
+              message: '网络异常'
+            })
+          })
+        })
+        .catch(err => {
+          console.error(err)
+        })
     },
     closeSettings() {
       this.indexName = ''
+      this.settingsType = 'add'
       this.openSettings = false
     },
     search() {
@@ -184,6 +308,7 @@ export default {
             list[k]['docsDeleted'] = Number(list[k]['docs.deleted'])
             list[k]['storeSize'] = Number(list[k]['store.size'])
           }
+          list = filterData(list, this.status.trim())
           list = filterData(list, this.input.trim())
           this.list = list.filter((item, index) =>
             index < this.page * this.limit && index >= this.limit * (this.page - 1)

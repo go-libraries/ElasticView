@@ -33,7 +33,7 @@
           :data="json_data"
           :name="String(this.input.path+'.xls')"
         >
-          <el-button type="primary" class="filter-item">EXPORT-></el-button>
+          <el-button type="primary" icon="el-icon-download" class="filter-item">导出结果</el-button>
         </download-excel>
       </div>
       <json-editor
@@ -221,10 +221,11 @@ export default {
       const input = clone(this.input)
 
       if (input['path'].trim() != '') {
-        input['path'] = '/' + input['path']
+        input['path'] = '/' + input['path'].trim()
       }
 
       input['es_connect'] = this.$store.state.baseData.EsConnect
+
       RunDslAction(input).then(res => {
         if (res.code == 0 || res.code == 200 || res.code == 201) {
           this.$message({

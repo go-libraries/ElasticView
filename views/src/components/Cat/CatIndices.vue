@@ -11,7 +11,6 @@
         :header-cell-style="{background:'#eef1f6',color:'#606266'}"
         :data="list"
         style="width: 100%;margin-top:30px;"
-        border
       >
         <el-table-column
           label="序号"

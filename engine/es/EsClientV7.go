@@ -3,18 +3,16 @@ package es
 import (
 	"context"
 
-	"ElasticView/platform-basic-libs/request"
-
 	elasticV6 "github.com/olivere/elastic"
 	elasticV7 "github.com/olivere/elastic/v7"
 )
 
 type EsClientV7 struct {
 	Client          *elasticV7.Client
-	esConnectConfig request.EsConnect
+	esConnectConfig EsConnect
 }
 
-func NewEsClientV7(esConnectConfig request.EsConnect) (client EsClient, err error) {
+func NewEsClientV7(esConnectConfig EsConnect) (client EsClient, err error) {
 
 	optList := []elasticV7.ClientOptionFunc{elasticV7.SetSniff(false)}
 
@@ -161,7 +159,9 @@ func (this *EsClientV7) IndexSegments(indexName string) (interface{}, error) {
 }
 
 func (this *EsClientV7) Alias(alias, indexName string) (interface{}, error) {
-	return this.Client.Aliases().Index(indexName).Alias(alias).Do(context.Background())
+	return this.Client.Alias().
+		Action(elasticV7.NewAliasAddAction(alias).Index(indexName).IsWriteIndex(false)).
+		Do(context.TODO())
 }
 
 func (this *EsClientV7) IndexStats(indexName []string, metrics []string) (interface{}, error) {

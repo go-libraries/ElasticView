@@ -2,7 +2,7 @@ package controller
 
 import (
 	"ElasticView/engine/es"
-	"ElasticView/platform-basic-libs/request"
+
 	"ElasticView/platform-basic-libs/response"
 
 	"github.com/gin-gonic/gin"
@@ -13,7 +13,7 @@ type EsMapController struct {
 }
 
 func (this EsMapController) ListAction(ctx *gin.Context) {
-	esConnect := request.EsConnect{}
+	esConnect := es.EsConnect{}
 	err = ctx.Bind(&esConnect)
 	if err != nil {
 		this.Error(ctx, err)

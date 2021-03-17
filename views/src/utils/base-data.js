@@ -269,6 +269,11 @@ export const esPathKeyWords = [
     'value': '{indices}/{type}/_mtermvectors'
   },
   { 'data': '_cluster/nodes/hotthreads', 'value': '_cluster/nodes/hotthreads' },
+
+  {
+    'data': '_all/_settings',
+    'value': '_all/_settings'
+  },
   {
     'data': '_cluster/nodes/hot_threads',
     'value': '_cluster/nodes/hot_threads'

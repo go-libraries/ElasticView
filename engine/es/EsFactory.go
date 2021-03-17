@@ -2,13 +2,9 @@ package es
 
 import (
 	"errors"
-
-	"ElasticView/platform-basic-libs/request"
 )
 
-type Json map[string]interface{}
-
-func GetEsClient(config request.EsConnect) (EsClient, error) {
+func GetEsClient(config EsConnect) (EsClient, error) {
 	if config.Ip == "" {
 		return nil, errors.New("请先选择ES连接")
 	}

@@ -11,7 +11,7 @@ import (
 	"github.com/rakyll/statik/fs"
 )
 
-// statik -src=views/dist
+// statik -src=views/dist -f
 func Init() *gin.Engine {
 	app := gin.Default()
 	statikFS, err := fs.New()
@@ -67,6 +67,12 @@ func Init() *gin.Engine {
 	esMap := app.Group("/api/es_map")
 	{
 		esMap.Any("ListAction", EsMapController{}.ListAction)
+	}
+
+	esIndex := app.Group("/api/es_index")
+	{
+		esIndex.Any("CreateAction", EsIndexController{}.CreateAction)
+		esIndex.Any("GetSettingsAction", EsIndexController{}.GetSettingsAction)
 	}
 
 	return app

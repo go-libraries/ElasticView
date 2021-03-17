@@ -4,17 +4,15 @@ import (
 	"context"
 	"errors"
 
-	"ElasticView/platform-basic-libs/request"
-
 	elasticV6 "github.com/olivere/elastic"
 )
 
 type EsClientV6 struct {
 	Client          *elasticV6.Client
-	esConnectConfig request.EsConnect
+	esConnectConfig EsConnect
 }
 
-func NewEsClientV6(esConnectConfig request.EsConnect) (client EsClient, err error) {
+func NewEsClientV6(esConnectConfig EsConnect) (client EsClient, err error) {
 
 	optList := []elasticV6.ClientOptionFunc{elasticV6.SetSniff(false)}
 
@@ -136,7 +134,10 @@ func (this *EsClientV6) IndexSegments(indexName string) (interface{}, error) {
 }
 
 func (this *EsClientV6) Alias(alias, indexName string) (interface{}, error) {
-	return this.Client.Aliases().Index(indexName).Alias(alias).Do(context.Background())
+
+	return this.Client.Alias().
+		Action(elasticV6.NewAliasAddAction(alias).Index(indexName).IsWriteIndex(false)).
+		Do(context.TODO())
 }
 
 func (this *EsClientV6) Reindex(sourceIndex, destinationIndex string) (interface{}, error) {

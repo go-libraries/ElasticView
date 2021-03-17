@@ -5,3 +5,4 @@
 /.idea/
 /views/package-lock.json
 /test/
+/views/*.log

@@ -34,4 +34,5 @@ type EsClient interface {
 	TasksList() (interface{}, error)
 	Reindex(sourceIndex, destinationIndex string) (interface{}, error)
 	GetMappings() (interface{}, error)
+	IndexPutSettings(indexName string, body Json) (interface{}, error)
 }

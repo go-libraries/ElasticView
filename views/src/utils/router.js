@@ -84,7 +84,7 @@ export const asyncRoutes = [
     redirect: '/rest/index',
     alwaysShow: false,
     meta: {
-      title: 'Dsl编写',
+      title: 'dev Tools',
       icon: 'el-icon-edit'
     },
     children: [
@@ -93,7 +93,7 @@ export const asyncRoutes = [
         component: 'views/rest/index',
         name: 'index',
         meta: {
-          title: 'Dsl编写',
+          title: 'dev Tools',
           icon: 'el-icon-edit'
         }
       }
@@ -103,10 +103,10 @@ export const asyncRoutes = [
     path: '/indices',
     component: 'layout',
     redirect: '/indices/index',
-    alwaysShow: false,
+    alwaysShow: true,
     meta: {
       title: '索引管理',
-      icon: 'el-icon-folder'
+      icon: 'el-icon-coin'
     },
     children: [
       {
@@ -115,7 +115,16 @@ export const asyncRoutes = [
         name: 'index',
         meta: {
           title: '索引管理',
-          icon: 'el-icon-folder'
+          icon: 'el-icon-coin'
+        }
+      },
+      {
+        path: 'reindex',
+        component: 'views/indices/reindex',
+        name: 'reindex',
+        meta: {
+          title: '重建索引',
+          icon: 'el-icon-document-copy'
         }
       }
     ]
@@ -131,6 +140,7 @@ export const RoutesComponentmaps = {
   'views/connect-tree/index': () => import('@/views/connect-tree/index'),
   'views/cat/index': () => import('@/views/cat/index'),
   'views/rest/index': () => import('@/views/rest/index'),
-  'views/indices/index': () => import('@/views/indices/index')
+  'views/indices/index': () => import('@/views/indices/index'),
+  'views/indices/reindex': () => import('@/views/indices/reindex')
 }
 

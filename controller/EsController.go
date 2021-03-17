@@ -6,7 +6,6 @@ import (
 	"strconv"
 
 	"ElasticView/engine/es"
-	"ElasticView/platform-basic-libs/request"
 	"ElasticView/platform-basic-libs/response"
 
 	"github.com/gin-gonic/gin"
@@ -19,7 +18,7 @@ type EsController struct {
 
 //Ping
 func (this EsController) PingAction(ctx *gin.Context) {
-	esConnect := request.EsConnect{}
+	esConnect := es.EsConnect{}
 	err = ctx.Bind(&esConnect)
 	if err != nil {
 		this.Error(ctx, err)
@@ -40,7 +39,7 @@ func (this EsController) PingAction(ctx *gin.Context) {
 
 //Elasticsearch状态
 func (this EsController) CatAction(ctx *gin.Context) {
-	esCat := request.EsCat{}
+	esCat := es.EsCat{}
 	err = ctx.Bind(&esCat)
 	if err != nil {
 		this.Error(ctx, err)
@@ -77,7 +76,7 @@ func (this EsController) CatAction(ctx *gin.Context) {
 }
 
 func (this EsController) RunDslAction(ctx *gin.Context) {
-	esRest := request.EsRest{}
+	esRest := es.EsRest{}
 	err = ctx.Bind(&esRest)
 	if err != nil {
 		this.Error(ctx, err)
