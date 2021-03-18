@@ -25,7 +25,7 @@ export default {
       opt: [],
       link: '',
       time: null,
-      timeSecend: 30
+      timeSecend: 45
     }
   },
   computed: {},
@@ -36,9 +36,14 @@ export default {
     this.getEsOpt()
     this.startLoop()
   },
-  destroyed() {
+
+  beforeDestroy() {
+    // 清除定时器
+    clearInterval(this.time)
     this.time = null
+    console.log('beforeDestroy')
   },
+
   methods: {
     startLoop() {
       this.time = setInterval(() => {

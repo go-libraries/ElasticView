@@ -32,6 +32,11 @@ Vue.use(ELEMENT, {
   size: Cookies.get('size') || 'medium' // set element-ui default size
 })
 
+// 引入form-create 表单生成器
+import formCreate from '@form-create/element-ui'
+
+Vue.use(formCreate)
+
 // 注册全局过滤器
 Object.keys(filters).forEach(key => {
   Vue.filter(key, filters[key])

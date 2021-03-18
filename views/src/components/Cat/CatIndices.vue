@@ -142,7 +142,7 @@ export default {
       CatAction(form).then(res => {
         if (res.code == 0) {
           let list = res.data
-          for (const k in this.list) {
+          for (const k in list) {
             list[k]['docsCount'] = Number(list[k]['docs.count'])
             list[k]['docsDeleted'] = Number(list[k]['docs.deleted'])
             list[k]['storeSize'] = Number(list[k]['store.size'])

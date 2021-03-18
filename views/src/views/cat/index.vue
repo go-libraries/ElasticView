@@ -20,6 +20,9 @@
         <el-tab-pane label="显示索引分片信息" name="CatShards">
           <cat-shards v-if="activeName == 'CatShards'" />
         </el-tab-pane>
+        <el-tab-pane label="显示任务信息" name="CatTask">
+          <cat-task v-if="activeName == 'CatTask'" />
+        </el-tab-pane>
       </el-tabs>
     </el-card>
   </div>
@@ -33,7 +36,9 @@ export default {
     'CatCount': () => import('@/components/Cat/CatCount'),
     'CatHealth': () => import('@/components/Cat/CatHealth'),
     'CatIndices': () => import('@/components/Cat/CatIndices'),
-    'CatShards': () => import('@/components/Cat/CatShards')
+    'CatShards': () => import('@/components/Cat/CatShards'),
+    'CatTask': () => import('@/components/Cat/CatTask')
+
   },
   data() {
     return {

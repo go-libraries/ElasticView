@@ -145,9 +145,10 @@ func (this *EsClientV6) Reindex(sourceIndex, destinationIndex string) (interface
 }
 
 func (this *EsClientV6) TasksList() (interface{}, error) {
-	return this.Client.TasksList().Pretty(true).
+	return this.Client.TasksList().
+		Pretty(true).
 		Human(true).
-		//Header("X-Opaque-Id", "123456").
+		Detailed(true).
 		Do(context.TODO())
 }
 

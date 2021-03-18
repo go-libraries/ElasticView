@@ -137,3 +137,28 @@ func (this EsIndexController) ReindexAction(ctx *gin.Context) {
 		Slices().
 		Size().WaitForActiveShards().Conflicts("")*/
 }
+
+func (this EsIndexController) ReindexListAction(ctx *gin.Context) {
+
+}
+
+func (this EsIndexController) IndexNamesAction(ctx *gin.Context) {
+	esConnect := es.EsConnect{}
+	err = ctx.Bind(&esConnect)
+	if err != nil {
+		this.Error(ctx, err)
+		return
+	}
+	esClinet, err := es.GetEsClient(esConnect)
+	if err != nil {
+		this.Error(ctx, err)
+		return
+	}
+	indexNames, err := esClinet.(*es.EsClientV6).Client.IndexNames()
+	if err != nil {
+		this.Error(ctx, err)
+		return
+	}
+	this.Success(ctx, response.SearchSuccess, indexNames)
+	return
+}

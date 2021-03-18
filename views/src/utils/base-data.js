@@ -797,6 +797,11 @@ export const esPathKeyWords = [
   { 'data': '_search/template/{id}', 'value': '_search/template/{id}' }]
 
 export const esBodyKeyWords = [
+  { caption: 'true', meta: 'true', value: `true` },
+  { caption: 'false', meta: 'false', value: `false` },
+  { caption: 'null', meta: 'null', value: `null` },
+  { caption: '{}', meta: '{}', value: `{}` },
+  { caption: '[]', meta: '[]', value: `[]` },
   { caption: 'aggs aggregations', meta: 'aggs', value: `
   "aggs": {
     "NAME": {

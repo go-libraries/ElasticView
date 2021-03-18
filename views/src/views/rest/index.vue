@@ -4,11 +4,11 @@
       <div class="filter-container">
         <el-tag class="filter-item">请输入Http Method</el-tag>
         <el-select v-model="input.method" class="filter-item" placeholder="请选择版本" filterable>
-          <el-option label="PUT【增加】" value="PUT" />
+          <el-option label="PUT【修改】" value="PUT" />
           <el-option label="GET【查询】" value="GET" />
           <el-option label="DELETE【删除】" value="DELETE" />
-          <el-option label="POST【修改】" value="POST" />
-          <el-option label="HEAD" value="HEAD" />
+          <el-option label="POST【新增】" value="POST" />
+          <el-option label="HEAD【是否存在】" value="HEAD" />
         </el-select>
         <el-tag class="filter-item">请输入Path</el-tag>
         <el-autocomplete
@@ -27,7 +27,7 @@
         <el-button class="filter-item" :loading="loading" type="success" @click="run">RUN-></el-button>
 
         <download-excel
-          v-show="canExport"
+          v-if="canExport"
           ref="download"
           :fields="json_fields"
           :data="json_data"
@@ -84,6 +84,9 @@ export default {
       this.json_data = ''
       this.json_fields = {}
       const resData = JSON.parse(this.resData)
+      if (resData == null) {
+        return false
+      }
       if (Array.isArray(resData)) {
         // this.json_fields[defaultKey] = defaultKey
 
@@ -148,7 +151,7 @@ export default {
       this.input = JSON.parse(resReqInfo)
     }
 
-    this.run()
+    // this.run()
   },
   destroyed() {
     const input = this.input
@@ -168,6 +171,9 @@ export default {
             if (esPathKeyWord.value.indexOf('{indices}') !== -1) {
               for (const indice of indices) {
                 const mappings = Object.keys(list[indice]['mappings'])
+                if (mappings.length == 0) {
+                  mappings[0] = '{type}'
+                }
                 const obj = {
                   'value': esPathKeyWord.value.replace(/{indices}/g, indice).replace(/{type}/g, mappings[0]),
                   'data': esPathKeyWord.data.replace(/{indices}/g, indice).replace(/{type}/g, mappings[0])

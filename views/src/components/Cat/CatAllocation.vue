@@ -62,7 +62,7 @@
             {{ scope.row["disk.total"] }}
           </template>
         </el-table-column>
-        <el-table-column align="center" label="节点磁盘占用百分比" width="170" sortable prop="percent">
+        <el-table-column align="center" label="节点磁盘占用百分比" width="170">
           <template slot-scope="scope">
             {{ scope.row["disk.percent"] }}%
           </template>

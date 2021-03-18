@@ -13,7 +13,8 @@
         </el-select>
 
         <el-button type="success" class="filter-item" icon="el-icon-refresh" @click="search">刷新</el-button>
-        <el-button type="success" class="filter-item" icon="el-icon-plus" @click="openSettingDialog('','add')">新建索引</el-button>
+        <el-button type="success" class="filter-item" icon="el-icon-plus" @click="openSettingDialog('','add')">新建索引
+        </el-button>
       </div>
       <el-table
         :loading="connectLoading"
@@ -66,9 +67,9 @@
             {{ scope.row.rep }}
           </template>
         </el-table-column>
-        <el-table-column align="center" label="索引中文档总数" width="120" prop="docsCount" sortable>
+        <el-table-column align="center" label="索引文档总数" width="120" prop="docsCount" sortable>
           <template slot-scope="scope">
-            {{ scope.row["docs.count"] }}
+            {{ bigNumberTransform(scope.row["docs.count"]) }}
           </template>
         </el-table-column>
         <el-table-column align="center" label="索引中删除状态的文档" width="100" prop="docsDeleted" sortable>
@@ -149,6 +150,7 @@
 <script>
 import { filterData } from '@/utils/table'
 import { CatAction, RunDslAction } from '@/api/es'
+import { bigNumberTransform } from '@/utils/format'
 
 export default {
   name: 'CatIndices',
@@ -174,6 +176,9 @@ export default {
     this.searchData()
   },
   methods: {
+    bigNumberTransform(value) {
+      return bigNumberTransform(value)
+    },
     OpenOrCloseIndex(indexName, types) {
       if (types == '') {
         return
@@ -303,7 +308,7 @@ export default {
       CatAction(form).then(res => {
         if (res.code == 0) {
           let list = res.data
-          for (const k in this.list) {
+          for (const k in list) {
             list[k]['docsCount'] = Number(list[k]['docs.count'])
             list[k]['docsDeleted'] = Number(list[k]['docs.deleted'])
             list[k]['storeSize'] = Number(list[k]['store.size'])

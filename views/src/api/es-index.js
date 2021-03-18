@@ -17,3 +17,11 @@ export function GetSettingsAction(data) {
     data
   })
 }
+
+export function IndexNamesAction(data) {
+  return request({
+    url: api + 'IndexNamesAction',
+    method: 'post',
+    data
+  })
+}

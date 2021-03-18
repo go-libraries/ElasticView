@@ -132,7 +132,7 @@ export default {
       CatAction(form).then(res => {
         if (res.code == 0) {
           let list = res.data
-          for (const k in this.list) {
+          for (const k in list) {
             list[k]['docs'] = Number(list[k]['docs'])
           }
           list = filterData(list, this.input.trim())
