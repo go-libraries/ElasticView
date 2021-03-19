@@ -49,7 +49,15 @@ type EsIndexInfo struct {
 }
 
 type EsReIndexInfo struct {
-	EsConnect        EsConnect `json:"es_connect"`
-	SourceIndex      string    `json:"source_index"`
-	DestinationIndex string    `json:"destination_index"`
+	EsConnect EsConnect `json:"es_connect"`
+	UrlValues struct {
+		Timeout             string `json:"timeout"`
+		RequestsPerSecond   int    `json:"requests_per_second"`
+		Slices              int    `json:"slices"`
+		Scroll              string `json:"scroll"`
+		WaitForActiveShards string `json:"wait_for_active_shards"`
+		Refresh             string `json:"refresh"`
+		WaitForCompletion   *bool  `json:"wait_for_completion"`
+	} `json:"url_values"`
+	Body map[string]interface{} `json:"body"`
 }

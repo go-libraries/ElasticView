@@ -25,3 +25,12 @@ export function IndexNamesAction(data) {
     data
   })
 }
+
+export function ReindexAction(data) {
+  return request({
+    url: api + 'ReindexAction',
+    method: 'post',
+    data
+  })
+}
+

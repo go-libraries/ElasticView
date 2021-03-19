@@ -111,7 +111,7 @@ func (this EsIndexController) GetAliasAction(ctx *gin.Context) {
 }
 
 func (this EsIndexController) ReindexAction(ctx *gin.Context) {
-	/*esReIndexInfo := es.EsReIndexInfo{}
+	esReIndexInfo := es.EsReIndexInfo{}
 	err = ctx.Bind(&esReIndexInfo)
 	if err != nil {
 		this.Error(ctx, err)
@@ -122,20 +122,33 @@ func (this EsIndexController) ReindexAction(ctx *gin.Context) {
 		this.Error(ctx, err)
 		return
 	}
-	if esReIndexInfo.SourceIndex == "" || esReIndexInfo.DestinationIndex == "" {
-		this.Error(ctx, my_error.NewBusiness(es.ParmasNullError, es.IndexNameNullError))
+	reindex := esClinet.(*es.EsClientV6).Client.Reindex()
+	urlValues := esReIndexInfo.UrlValues
+	if urlValues.WaitForActiveShards != "" {
+		reindex = reindex.WaitForActiveShards(urlValues.WaitForActiveShards)
+	}
+	if urlValues.Slices != 0 {
+		reindex = reindex.Slices(urlValues.Slices)
+	}
+	if urlValues.Refresh != "" {
+		reindex = reindex.Refresh(urlValues.Refresh)
+	}
+	if urlValues.Timeout != "" {
+		reindex = reindex.Timeout(urlValues.Refresh)
+	}
+	if urlValues.RequestsPerSecond != 0 {
+		reindex = reindex.RequestsPerSecond(urlValues.RequestsPerSecond)
+	}
+	if urlValues.WaitForCompletion != nil {
+		reindex = reindex.WaitForCompletion(*urlValues.WaitForCompletion)
+	}
+
+	res, err := reindex.Body(esReIndexInfo.Body).Do(context.Background())
+	if err != nil {
+		this.Error(ctx, err)
 		return
 	}
-	src := elastic.NewReindexSource().Index(esReIndexInfo.SourceIndex).RemoteInfo() //.Query()
-	dst := elastic.NewReindexDestination().Index(esReIndexInfo.DestinationIndex).VersionType("").OpType("")
-
-	esClinet.(*es.EsClientV6).Client.
-		Reindex().
-		Source(src).
-		Destination(dst).
-		Refresh("true").
-		Slices().
-		Size().WaitForActiveShards().Conflicts("")*/
+	this.Success(ctx, response.OperateSuccess, res)
 }
 
 func (this EsIndexController) ReindexListAction(ctx *gin.Context) {
