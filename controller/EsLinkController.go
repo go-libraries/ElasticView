@@ -18,7 +18,6 @@ type EsLinkController struct {
 }
 
 func (this EsLinkController) ListAction(ctx *gin.Context) {
-
 	sql, args, err := db.SqlBuilder.
 		Select("*").
 		From("es_link").ToSql()

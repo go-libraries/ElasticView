@@ -12,5 +12,6 @@
     "db_name":"es_view",
     "max_open_conns":10,
     "max_idle_conns":10
-  }
+  },
+  "app_secret": "1340691923@qq.com"
 }

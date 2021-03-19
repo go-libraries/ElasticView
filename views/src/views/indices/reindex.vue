@@ -7,169 +7,183 @@
           <el-button class="filter-item" icon="el-icon-check" @click="commit">确认重建索引</el-button>
         </div>
       </div>
-
+      <back-to-top />
       <el-tabs tab-position="right">
-        <el-tab-pane label="url参数"><el-card class="box-card card">
-          <el-tag effect="dark" type="success">url参数</el-tag>
-          <div style="margin: 20px;" />
-          <el-form label-position="right">
-            <el-form-item label="配置">
-              <el-checkbox-group v-model="urlParmasConfig">
-                <el-checkbox v-for="(v,k,index) in form.urlParmas" :key="index" :label="k" />
-              </el-checkbox-group>
-            </el-form-item>
-            <el-form-item
-              v-if="urlParmasConfig.indexOf('requests_per_second') != -1"
-              label="requests_per_second (每秒数据量阈值控制)"
-            >
-              <el-input v-model="form.urlParmas.requests_per_second" type="number" />
-            </el-form-item>
-            <el-form-item
-              v-if="urlParmasConfig.indexOf('wait_for_active_shards') != -1"
-              label="wait_for_active_shards (重建索引分片响应设置)"
-            >
-              <el-input v-model="form.urlParmas.wait_for_active_shards" />
-            </el-form-item>
-            <el-form-item v-if="urlParmasConfig.indexOf('scroll') != -1" label="scroll (快照查询时间)">
-              <el-input v-model="form.urlParmas.scroll" clearable />
-            </el-form-item>
-            <el-form-item v-if="urlParmasConfig.indexOf('slices') != -1" label="slices (重建并行任务切片)">
-              <el-input v-model="form.urlParmas.slices" type="number" />
-            </el-form-item>
+        <el-tab-pane label="url参数">
+          <el-card class="box-card card">
+            <el-tag effect="dark" type="success">url参数</el-tag>
+            <div style="margin: 20px;" />
+            <el-form label-position="right">
+              <el-form-item label="配置">
+                <el-checkbox-group v-model="urlParmasConfig">
+                  <el-checkbox v-for="(v,k,index) in form.urlParmas" :key="index" :label="k" />
+                </el-checkbox-group>
+              </el-form-item>
+              <el-form-item
+                v-if="urlParmasConfig.indexOf('requests_per_second') != -1"
+                label="requests_per_second (每秒数据量阈值控制)"
+              >
+                <el-input v-model="form.urlParmas.requests_per_second" type="number" />
+              </el-form-item>
+              <el-form-item
+                v-if="urlParmasConfig.indexOf('wait_for_active_shards') != -1"
+                label="wait_for_active_shards (重建索引分片响应设置)"
+              >
+                <el-input v-model="form.urlParmas.wait_for_active_shards" />
+              </el-form-item>
+              <el-form-item v-if="urlParmasConfig.indexOf('scroll') != -1" label="scroll (快照查询时间)">
+                <el-input v-model="form.urlParmas.scroll" clearable />
+              </el-form-item>
+              <el-form-item v-if="urlParmasConfig.indexOf('slices') != -1" label="slices (重建并行任务切片)">
+                <el-input v-model="form.urlParmas.slices" type="number" />
+              </el-form-item>
 
-            <el-form-item v-if="urlParmasConfig.indexOf('refresh') != -1" label="refresh (目标索引是否立即刷新)">
-              <el-select v-model="form.urlParmas.refresh" filterable>
-                <el-option label="true" :value="true" />
-                <el-option label="false" :value="false" />
-                <el-option label="wait_for" value="wait_for" />
+              <el-form-item v-if="urlParmasConfig.indexOf('refresh') != -1" label="refresh (目标索引是否立即刷新)">
+                <el-select v-model="form.urlParmas.refresh" filterable>
+                  <el-option label="true" :value="true" />
+                  <el-option label="false" :value="false" />
+                  <el-option label="wait_for" value="wait_for" />
 
-              </el-select>
-            </el-form-item>
+                </el-select>
+              </el-form-item>
 
-            <el-form-item v-if="urlParmasConfig.indexOf('timeout') != -1" label="timeout (指定等待响应的时间段)">
-              <el-input v-model="form.urlParmas.timeout" clearable />
-            </el-form-item>
-            <el-form-item
-              v-if="urlParmasConfig.indexOf('wait_for_completion') != -1"
-              label="wait_for_completion (是否将请求阻塞，直到操作完成为止)"
-            >
-              <el-select v-model="form.urlParmas.wait_for_completion" filterable>
-                <el-option label="是" :value="true" />
-                <el-option label="否" :value="false" />
-              </el-select>
-            </el-form-item>
+              <el-form-item v-if="urlParmasConfig.indexOf('timeout') != -1" label="timeout (指定等待响应的时间段)">
+                <el-input v-model="form.urlParmas.timeout" clearable />
+              </el-form-item>
+              <el-form-item
+                v-if="urlParmasConfig.indexOf('wait_for_completion') != -1"
+                label="wait_for_completion (是否将请求阻塞，直到操作完成为止)"
+              >
+                <el-select v-model="form.urlParmas.wait_for_completion" filterable>
+                  <el-option label="是" :value="true" />
+                  <el-option label="否" :value="false" />
+                </el-select>
+              </el-form-item>
 
-          </el-form>
-        </el-card></el-tab-pane>
-        <el-tab-pane label="索引"><el-card class="box-card card" style="width: 45%;">
-                                  <el-tag effect="dark">源索引</el-tag>
-                                  <div style="margin: 20px;" />
-                                  <el-form>
-                                    <el-form-item label="配置">
-                                      <el-checkbox-group v-model="sourceConfig">
-                                        <el-checkbox v-for="(v,k,index) in form.source" v-if="k != 'index'" :key="index" :label="k" />
-                                      </el-checkbox-group>
-                                    </el-form-item>
-                                    <el-form-item v-if="sourceConfig.indexOf('remote') != -1">
-                                      <el-form>
-                                        <el-form-item label="host (远程连接信息)">
-                                          <el-input v-model="form.source.remote.host" placeholder="远程连接信息" clearable />
-                                        </el-form-item>
-                                        <el-form-item label="username (用户名)">
-                                          <el-input v-model="form.source.remote.username" placeholder="用户名" clearable />
-                                        </el-form-item>
-                                        <el-form-item label="password (密码)">
-                                          <el-input v-model="form.source.remote.password" placeholder="密码" clearable />
-                                        </el-form-item>
-                                        <el-form-item label="socket_timeout">
-                                          <el-input v-model="form.source.remote.socket_timeout" placeholder="socket_timeout" clearable />
-                                        </el-form-item>
-                                        <el-form-item label="connect_timeout">
-                                          <el-input
-                                            v-model="form.source.remote.connect_timeout"
-                                            placeholder="connect_timeout"
-                                            clearable
-                                          />
-                                        </el-form-item>
-                                      </el-form>
-                                    </el-form-item>
-                                    <el-form-item label="索引名">
-                                      <el-select
-                                        v-model="form.source.index"
-                                        placeholder="请选择索引名"
-                                        filterable
-                                        allow-create
-                                        multiple
-                                        clearable
-                                        @change="changeSourceIndex"
-                                      >
-                                        <el-option
+            </el-form>
+          </el-card>
+        </el-tab-pane>
+        <el-tab-pane label="索引">
+          <el-card class="box-card card" style="width: 45%;">
+            <el-tag effect="dark">源索引</el-tag>
+            <div style="margin: 20px;" />
+            <el-form>
+              <el-form-item label="配置">
+                <el-checkbox-group v-model="sourceConfig">
+                  <el-checkbox v-for="(v,k,index) in form.source" v-if="k != 'index'" :key="index" :label="k" />
+                </el-checkbox-group>
+              </el-form-item>
+              <el-form-item v-if="sourceConfig.indexOf('remote') != -1">
+                <el-form>
+                  <el-form-item label="从连接树中连接">
+                    <el-select
+                      v-model="form.source.remote.link"
+                      filterable
+                      default-first-option
+                      placeholder="请选择ES连接"
+                      @change="changeLink"
+                    >
+                      <el-option v-for="item in linkOpt" :key="item.id" :value="item.remark" :label="item.remark" />
+                    </el-select>
+                  </el-form-item>
+                  <el-form-item label="host (主机)">
+                    <el-input v-model="form.source.remote.host" placeholder="主机" clearable />
+                  </el-form-item>
+                  <el-form-item label="username (用户名)">
+                    <el-input v-model="form.source.remote.username" placeholder="用户名" clearable />
+                  </el-form-item>
+                  <el-form-item label="password (密码)">
+                    <el-input v-model="form.source.remote.password" placeholder="密码" clearable />
+                  </el-form-item>
+                  <el-form-item label="socket_timeout">
+                    <el-input v-model="form.source.remote.socket_timeout" placeholder="socket_timeout" clearable />
+                  </el-form-item>
+                  <el-form-item label="connect_timeout">
+                    <el-input
+                      v-model="form.source.remote.connect_timeout"
+                      placeholder="connect_timeout"
+                      clearable
+                    />
+                  </el-form-item>
+                </el-form>
+              </el-form-item>
+              <el-form-item label="索引名">
+                <el-select
+                  v-model="form.source.index"
+                  placeholder="请选择索引名"
+                  filterable
+                  allow-create
+                  multiple
+                  clearable
+                  @change="changeSourceIndex"
+                >
+                  <el-option
 
-                                          v-for="(item,index) of indexNameList"
-                                          :key="index"
-                                          :label="item"
-                                          :value="item"
-                                        />
-                                      </el-select>
-                                    </el-form-item>
-                                    <el-form-item v-if="sourceConfig.indexOf('type') != -1" label="类型名">
-                                      <el-select v-model="form.source.type" placeholder="请选择索引名" filterable allow-create multiple clearable>
-                                        <el-option
-                                          v-for="(item,index) of mappingConfig"
-                                          :key="index"
-                                          :label="item"
-                                          :value="item"
-                                        />
-                                      </el-select>
-                                    </el-form-item>
-                                    <el-form-item v-if="sourceConfig.indexOf('_source') != -1" label="_source (字段列表)">
-                                      <el-select
-                                        v-model="form.source._source.excludes"
-                                        placeholder="排除字段"
-                                        filterable
-                                        allow-create
-                                        multiple
-                                        clearable
-                                      />
-                                      <el-select
-                                        v-model="form.source._source.includes"
-                                        placeholder="包含字段"
-                                        filterable
-                                        allow-create
-                                        multiple
-                                        clearable
-                                      />
-                                    </el-form-item>
-                                    <el-form-item v-if="sourceConfig.indexOf('sort') != -1" label="sort (排序)">
-                                      <el-tag effect="dark">字段</el-tag>
-                                      <el-input v-model="form.source.sort.key" style="width: 200px" />
-                                      <el-tag effect="dark">是否正序</el-tag>
-                                      <el-select v-model="form.source.sort.sortType" placeholder="是否正序" filterable filterable>
-                                        <el-option
-                                          key="index"
-                                          label="是"
-                                          value="asc"
-                                        />
-                                        <el-option
-                                          key="index"
-                                          label="否"
-                                          value="desc"
-                                        />
-                                      </el-select>
-                                    </el-form-item>
+                    v-for="(item,index) of indexNameList"
+                    :key="index"
+                    :label="item"
+                    :value="item"
+                  />
+                </el-select>
+              </el-form-item>
+              <el-form-item v-if="sourceConfig.indexOf('type') != -1" label="type (类型名)">
+                <el-select v-model="form.source.type" placeholder="请选择类型名" filterable allow-create multiple clearable>
+                  <el-option
+                    v-for="(item,index) of mappingConfig"
+                    :key="index"
+                    :label="item"
+                    :value="item"
+                  />
+                </el-select>
+              </el-form-item>
+              <el-form-item v-if="sourceConfig.indexOf('_source') != -1" label="_source (字段列表)">
+                <el-select
+                  v-model="form.source._source.excludes"
+                  placeholder="排除字段"
+                  filterable
+                  allow-create
+                  multiple
+                  clearable
+                />
+                <el-select
+                  v-model="form.source._source.includes"
+                  placeholder="包含字段"
+                  filterable
+                  allow-create
+                  multiple
+                  clearable
+                />
+              </el-form-item>
+              <el-form-item v-if="sourceConfig.indexOf('sort') != -1" label="sort (排序)">
+                <el-tag effect="dark">字段</el-tag>
+                <el-input v-model="form.source.sort.key" style="width: 200px" />
+                <el-tag effect="dark">是否正序</el-tag>
+                <el-select v-model="form.source.sort.sortType" placeholder="是否正序" filterable filterable>
+                  <el-option
+                    key="index"
+                    label="是"
+                    value="asc"
+                  />
+                  <el-option
+                    key="index"
+                    label="否"
+                    value="desc"
+                  />
+                </el-select>
+              </el-form-item>
 
-                                    <el-form-item v-if="sourceConfig.indexOf('query') != -1" label="QUERY DSL">
-                                      <json-editor
-                                        v-model="form.source.query"
-                                        styles="width: 100%"
-                                        :point-out="pointOut"
-                                        :read="false"
-                                        title="QUERY"
-                                        @getValue="getBody"
-                                      />
-                                    </el-form-item>
-                                  </el-form>
-                                </el-card>
+              <el-form-item v-if="sourceConfig.indexOf('query') != -1" label="QUERY DSL">
+                <json-editor
+                  v-model="form.source.query"
+                  styles="width: 100%"
+                  :point-out="pointOut"
+                  :read="false"
+                  title="QUERY"
+                  @getValue="getBody"
+                />
+              </el-form-item>
+            </el-form>
+          </el-card>
           <el-card class="box-card card" style="width: 45%;">
             <el-tag effect="dark" type="danger">目标索引</el-tag>
             <div style="margin: 20px;" />
@@ -217,57 +231,63 @@
                 <el-input v-model="form.dest.pipeline" style="width: 300px" clearable />
               </el-form-item>
             </el-form>
-          </el-card></el-tab-pane>
-        <el-tab-pane label="脚本"><el-card class="box-card card">
-          <el-tag effect="dark" type="warning">脚本</el-tag>
-          <div style="margin: 20px;" />
-          <el-form>
-            <el-form-item label="配置">
-              <el-checkbox-group v-model="scriptConfig">
-                <el-checkbox v-for="(v,k,index) in form.script" v-if="k != 'index'" :key="index" :label="k" />
-              </el-checkbox-group>
-            </el-form-item>
-            <el-form-item v-if="scriptConfig.indexOf('source') != -1" label="script.source 定义脚本语言">
-              <el-input v-model="form.script.source" clearable />
-            </el-form-item>
-            <el-form-item v-if="scriptConfig.indexOf('lang') != -1" label="script.lang 定义脚本实现的代码">
-              <el-input v-model="form.script.lang" clearable />
-            </el-form-item>
-            <el-form-item v-if="scriptConfig.indexOf('params') != -1" label="定义脚本语言的参数">
-              <json-editor
-                v-model="form.script.params"
-                style="height: 300px"
-                styles="width: 100%"
-                :read="false"
-                title="定义脚本语言的参数"
-                @getValue="getParams"
-              />
-            </el-form-item>
-          </el-form>
-        </el-card></el-tab-pane>
-        <el-tab-pane label="额外参数"> <el-card class="box-card card">
-          <el-tag effect="dark" type="info">额外参数</el-tag>
-          <div style="margin: 20px;" />
-          <el-form>
-            <el-form-item label="配置">
-              <el-checkbox-group v-model="extendConfig">
-                <el-checkbox v-for="(v,k,index) in form.extend" v-if="k != 'index'" :key="index" :label="k" />
-              </el-checkbox-group>
-            </el-form-item>
-            <el-form-item v-if="extendConfig.indexOf('conflicts') != -1" label="conflicts(版本冲突时中止)">
-              <el-select v-model="form.extend.conflicts" filterable>
-                <el-option label="proceed(遇到冲突时继续)" value="proceed" />
-                <el-option label="abort(遇到冲突时中止)" value="internal" />
-              </el-select>
-            </el-form-item>
-            <el-form-item v-if="extendConfig.indexOf('size') != -1" label="size (每批要编制索引的文档数)">
-              <el-input v-model="form.extend.size" type="number" style="width: 200px" />
-            </el-form-item>
-          </el-form>
+          </el-card>
+        </el-tab-pane>
+        <el-tab-pane label="脚本">
+          <el-card class="box-card card">
+            <el-tag effect="dark" type="warning">脚本</el-tag>
+            <div style="margin: 20px;" />
+            <el-form>
+              <el-form-item label="配置">
+                <el-checkbox-group v-model="scriptConfig">
+                  <el-checkbox v-for="(v,k,index) in form.script" v-if="k != 'index'" :key="index" :label="k" />
+                </el-checkbox-group>
+              </el-form-item>
+              <el-form-item v-if="scriptConfig.indexOf('source') != -1" label="script.source 定义脚本语言">
+                <el-input v-model="form.script.source" clearable />
+              </el-form-item>
+              <el-form-item v-if="scriptConfig.indexOf('lang') != -1" label="script.lang 定义脚本实现的代码">
+                <el-input v-model="form.script.lang" clearable />
+              </el-form-item>
+              <el-form-item v-if="scriptConfig.indexOf('params') != -1" label="定义脚本语言的参数">
+                <json-editor
+                  v-model="form.script.params"
+                  style="height: 300px"
+                  styles="width: 100%"
+                  :read="false"
+                  title="定义脚本语言的参数"
+                  @getValue="getParams"
+                />
+              </el-form-item>
+            </el-form>
+          </el-card>
+        </el-tab-pane>
+        <el-tab-pane label="额外参数">
+          <el-card class="box-card card">
+            <el-tag effect="dark" type="info">额外参数</el-tag>
+            <div style="margin: 20px;" />
+            <el-form>
+              <el-form-item label="配置">
+                <el-checkbox-group v-model="extendConfig">
+                  <el-checkbox v-for="(v,k,index) in form.extend" v-if="k != 'index'" :key="index" :label="k" />
+                </el-checkbox-group>
+              </el-form-item>
+              <el-form-item v-if="extendConfig.indexOf('conflicts') != -1" label="conflicts(版本冲突时中止)">
+                <el-select v-model="form.extend.conflicts" filterable>
+                  <el-option label="proceed(遇到冲突时继续)" value="proceed" />
+                  <el-option label="abort(遇到冲突时中止)" value="internal" />
+                </el-select>
+              </el-form-item>
+              <el-form-item v-if="extendConfig.indexOf('size') != -1" label="size (每批要编制索引的文档数)">
+                <el-input v-model="form.extend.size" type="number" style="width: 200px" />
+              </el-form-item>
+            </el-form>
 
-        </el-card></el-tab-pane>
+          </el-card>
+        </el-tab-pane>
       </el-tabs>
     </el-card>
+
   </div>
 </template>
 
@@ -275,10 +295,12 @@
 import { esBodyKeyWords } from '@/utils/base-data'
 import { ListAction } from '@/api/es-map'
 import { ReindexAction } from '@/api/es-index'
+import { ListAction as LinkOptAction } from '@/api/es-link'
 
 export default {
   name: 'Reindex',
   components: {
+    'BackToTop': () => import('@/components/BackToTop/index'),
     'JsonEditor': () => import('@/components/JsonEditor/index')
   },
   data() {
@@ -324,6 +346,7 @@ export default {
             sortType: 'asc'
           },
           remote: {
+            link: '',
             host: 'http://127.0.0.1:9200', // 远程es的ip和port列表
             username: 'elastic',
             password: '',
@@ -349,14 +372,30 @@ export default {
         }
       },
       mappings: {},
-      mappingConfig: []
+      mappingConfig: [],
+      linkOpt: []
     }
   },
   mounted() {
     this.es_connect = this.$store.state.baseData.EsConnect
+    this.getLinkList()
     this.getIndexList()
   },
   methods: {
+    changeLink(link) {
+      console.log(link)
+      for (const v of this.linkOpt) {
+        if (v.remark == link) {
+          this.form.source.remote.host = v.ip
+          this.form.source.remote.username = v.user
+          this.form.source.remote.password = v.pwd
+        }
+      }
+    },
+    async getLinkList() {
+      const res = await LinkOptAction()
+      this.linkOpt = res.data
+    },
     async commit() {
       const body = {
         source: {
@@ -379,22 +418,32 @@ export default {
         urlParmas[urlParma] = this.form.urlParmas[urlParma]
       }
       for (const source of this.sourceConfig) {
-        if (source == 'sort') {
-          body['source']['sort'] = {}
-          body['source']['sort'][this.form.source.sort.key] = this.form.source.sort.sortType
-        } else if (source == 'query') {
-          try {
-            body['source']['query'] = JSON.parse(this.form.source.query)
-          } catch (e) {
-            console.log(e)
-            this.$message({
-              type: 'error',
-              message: 'query json解析失败'
-            })
-            return
-          }
-        } else {
-          body['source'][source] = this.form.source[source]
+        switch (source) {
+          case 'sort':
+            body['source']['sort'] = {}
+            body['source']['sort'][this.form.source.sort.key] = this.form.source.sort.sortType
+            break
+          case 'query':
+            try {
+              body['source']['query'] = JSON.parse(this.form.source.query)
+            } catch (e) {
+              console.log(e)
+              this.$message({
+                type: 'error',
+                message: 'query json解析失败'
+              })
+              return
+            }
+            break
+          case 'remote':
+            body['source'][source] = this.form.source[source]
+            delete body['source'][source]['link']
+            if (this.form.source.remote.socket_timeout == '' || this.form.source.remote.connect_timeout == '') {
+              delete body['source'][source]['socket_timeout']
+              delete body['source'][source]['connect_timeout']
+            }
+          default:
+            body['source'][source] = this.form.source[source]
         }
       }
       for (const dest of this.destConfig) {
@@ -450,11 +499,19 @@ export default {
           type: 'success'
         })
       } else {
-        this.$message({
-          type: 'error',
-          message: msg
-        })
-        return
+        if (msg.indexOf('whitelisted') != -1) {
+          this.$message({
+            type: 'error',
+            message: msg + '在源es与目标es上都需要进行配置白名单，具体解决办法 :https://my.oschina.net/xiaominmin/blog/1627579'
+          })
+          return
+        } else {
+          this.$message({
+            type: 'error',
+            message: msg
+          })
+          return
+        }
       }
     },
     refresh() {

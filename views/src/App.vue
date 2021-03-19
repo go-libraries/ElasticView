@@ -7,7 +7,7 @@
 </template>
 
 <script>
-
+import { Base64 } from 'js-base64'
 export default {
   name: 'App',
   data() {
@@ -16,17 +16,18 @@ export default {
     }
   },
   created() {
-    // 在页面加载时读取sessionStorage里的状态信息
+    // 在页面加载时读取sessionStorage里的状态信息Base64
     if (sessionStorage.getItem('EsConnect')) {
-      const EsConnect = JSON.parse(sessionStorage.getItem('EsConnect'))
-      console.log(EsConnect)
+      const base64EsConnect = sessionStorage.getItem('EsConnect')
+      const esConnect = Base64.decode(base64EsConnect.toString())
+      const EsConnect = JSON.parse(esConnect)
       this.$store.dispatch('baseData/SetEsConnect', EsConnect)
     }
 
     // 在页面刷新时将vuex里的信息保存到sessionStorage里
     window.addEventListener('beforeunload', () => {
-      const EsConnect = JSON.stringify(this.$store.state.baseData.EsConnect)
-      sessionStorage.setItem('EsConnect', EsConnect)
+      const esConnect = Base64.encode(JSON.stringify(this.$store.state.baseData.EsConnect))
+      sessionStorage.setItem('EsConnect', esConnect.toString())
     })
   },
   provide() { // 父组件中通过provide来提供变量，在子组件中通过inject来注入变量。

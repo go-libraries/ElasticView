@@ -8,7 +8,6 @@ import (
 	"ElasticView/platform-basic-libs/util"
 
 	jwt "github.com/dgrijalva/jwt-go"
-
 )
 
 var jwtSecret = util.Str2bytes("1340691923@qq.com")

@@ -1,12 +1,17 @@
 package util
 
 import (
+	"bytes"
 	"crypto"
+	"crypto/aes"
+	"crypto/cipher"
 	"crypto/hmac"
 	"crypto/md5"
 	"crypto/sha1"
 	"crypto/sha256"
+	"encoding/base64"
 	"encoding/hex"
+	"fmt"
 )
 
 // Hash 散列函数 返回空值则为错误
@@ -73,4 +78,53 @@ func HmacSha256(data string, secret string) string {
 	h := hmac.New(sha256.New, []byte(secret))
 	h.Write([]byte(data))
 	return hex.EncodeToString(h.Sum(nil))
+}
+
+func PwdEncode(pwd string, key string) string {
+	strbytes := []byte(fmt.Sprintf("%s:%s", pwd, key))
+	encoded := base64.StdEncoding.EncodeToString(strbytes)
+	return encoded
+}
+
+func PwdDecode(pwd string, key string) (string, error) {
+	decoded, err := base64.StdEncoding.DecodeString(fmt.Sprintf("%s:%s", pwd, key))
+	if err != nil {
+		return "", nil
+	}
+	return string(decoded), nil
+}
+
+// =================== CBC ======================
+func AesEncryptCBC(origData []byte, key []byte) (encrypted []byte) {
+	// 分组秘钥
+	// NewCipher该函数限制了输入k的长度必须为16, 24或者32
+	block, _ := aes.NewCipher(key)
+	blockSize := block.BlockSize()                              // 获取秘钥块的长度
+	origData = pkcs5Padding(origData, blockSize)                // 补全码
+	blockMode := cipher.NewCBCEncrypter(block, key[:blockSize]) // 加密模式
+	encrypted = make([]byte, len(origData))                     // 创建数组
+	blockMode.CryptBlocks(encrypted, origData)                  // 加密
+	return encrypted
+}
+
+func AesDecryptCBC(encrypted []byte, key []byte) (decrypted []byte) {
+	block, _ := aes.NewCipher(key)                              // 分组秘钥
+	blockSize := block.BlockSize()                              // 获取秘钥块的长度
+	blockMode := cipher.NewCBCDecrypter(block, key[:blockSize]) // 加密模式
+	decrypted = make([]byte, len(encrypted))                    // 创建数组
+	blockMode.CryptBlocks(decrypted, encrypted)                 // 解密
+	decrypted = pkcs5UnPadding(decrypted)                       // 去除补全码
+	return decrypted
+}
+
+func pkcs5Padding(ciphertext []byte, blockSize int) []byte {
+	padding := blockSize - len(ciphertext)%blockSize
+	padtext := bytes.Repeat([]byte{byte(padding)}, padding)
+	return append(ciphertext, padtext...)
+}
+
+func pkcs5UnPadding(origData []byte) []byte {
+	length := len(origData)
+	unpadding := int(origData[length-1])
+	return origData[:(length - unpadding)]
 }

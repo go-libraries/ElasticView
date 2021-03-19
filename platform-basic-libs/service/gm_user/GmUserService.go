@@ -5,13 +5,12 @@ import (
 	"ElasticView/platform-basic-libs/jwt"
 )
 
-
-
 type GmUserService struct {
 }
 
 func (this GmUserService) CheckLogin(username, password string) (token string, err error) {
 	var model2 model.GmUserModel
+
 	gmUser, err := model2.GetUserByUP(username, password)
 	if err != nil {
 		return

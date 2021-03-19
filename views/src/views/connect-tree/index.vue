@@ -3,9 +3,8 @@
     <el-card class="box-card">
       <div class="filter-container">
         <el-button type="primary" icon="el-icon-plus" class="filter-item" @click="handleAddRole">新建连接信息</el-button>
-
       </div>
-
+      <back-to-top />
       <el-table
         :header-cell-style="{background:'#eef1f6',color:'#606266'}"
         :data="list"
@@ -21,7 +20,7 @@
           </template>
         </el-table-column>
 
-        <el-table-column align="center" label="IP" width="220">
+        <el-table-column align="center" label="HOST" width="220">
           <template slot-scope="scope">
             {{ scope.row.ip }}
           </template>
@@ -119,6 +118,9 @@ const defaultLink = {
 }
 
 export default {
+  components: {
+    'BackToTop': () => import('@/components/BackToTop/index')
+  },
   data() {
     return {
       connectLoading: false,

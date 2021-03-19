@@ -1,5 +1,6 @@
 <template>
   <div class="app-container">
+    <back-to-top />
     <el-card class="box-card">
       <el-tabs v-model="activeName">
         <el-tab-pane label="查看索引信息" name="CatIndices">
@@ -31,6 +32,7 @@
 <script>
 export default {
   components: {
+    'BackToTop': () => import('@/components/BackToTop/index'),
     'CatAliases': () => import('@/components/Cat/CatAliases'),
     'CatAllocation': () => import('@/components/Cat/CatAllocation'),
     'CatCount': () => import('@/components/Cat/CatCount'),
@@ -45,14 +47,11 @@ export default {
       activeName: 'CatIndices'
     }
   },
-  computed: {
-
-  },
+  computed: {},
   created() {
 
   },
-  methods: {
-  }
+  methods: {}
 }
 </script>
 
@@ -61,6 +60,7 @@ export default {
     .roles-table {
       margin-top: 30px;
     }
+
     .permission-tree {
       margin-bottom: 30px;
     }

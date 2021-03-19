@@ -5,7 +5,7 @@
       filterable
       default-first-option
       placeholder="请选择ES连接"
-      @change="change(link)"
+      @change="change"
     >
       <el-option v-for="item in opt" :key="item.id" :value="item.remark" :label="item.remark" />
     </el-select>

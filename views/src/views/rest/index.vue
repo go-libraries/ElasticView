@@ -46,6 +46,7 @@
       />
       <json-editor v-model="resData" styles="width: 70%" :read="true" title="返回信息" />
     </el-card>
+    <back-to-top />
   </div>
 </template>
 
@@ -61,6 +62,7 @@ import { esBodyKeyWords, esPathKeyWords } from '@/utils/base-data'
 export default {
   name: 'Index',
   components: {
+    'BackToTop': () => import('@/components/BackToTop/index'),
     'JsonEditor': () => import('@/components/JsonEditor/index')
   },
   data() {

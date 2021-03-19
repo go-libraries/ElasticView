@@ -16,6 +16,7 @@
         <el-button type="success" class="filter-item" icon="el-icon-plus" @click="openSettingDialog('','add')">新建索引
         </el-button>
       </div>
+      <back-to-top />
       <el-table
         :loading="connectLoading"
         :header-cell-style="{background:'#eef1f6',color:'#606266'}"
@@ -155,7 +156,8 @@ import { bigNumberTransform } from '@/utils/format'
 export default {
   name: 'CatIndices',
   components: {
-    'Settings': () => import('@/views/indices/settings')
+    'Settings': () => import('@/views/indices/settings'),
+    'BackToTop': () => import('@/components/BackToTop/index')
   },
   data() {
     return {
