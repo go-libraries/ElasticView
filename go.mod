@@ -4,6 +4,7 @@ go 1.13
 
 require (
 	github.com/Masterminds/squirrel v1.5.0
+	github.com/cch123/elasticsql v1.0.1
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/garyburd/redigo v1.6.2
 	github.com/gin-contrib/cors v1.3.1

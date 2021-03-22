@@ -25,3 +25,12 @@ export function RunDslAction(data) {
     data
   })
 }
+
+export function SqlToDslAction(data) {
+  return request({
+    url: api + `SqlToDslAction`,
+    method: 'get',
+    params: data
+  })
+}
+

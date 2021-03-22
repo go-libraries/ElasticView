@@ -126,6 +126,15 @@ export const asyncRoutes = [
           title: '重建索引',
           icon: 'el-icon-document-copy'
         }
+      },
+      {
+        path: 'sql',
+        component: 'views/indices/sql',
+        name: 'sql',
+        meta: {
+          title: 'sql',
+          icon: 'el-icon-document-copy'
+        }
       }
     ]
   }
@@ -141,6 +150,7 @@ export const RoutesComponentmaps = {
   'views/cat/index': () => import('@/views/cat/index'),
   'views/rest/index': () => import('@/views/rest/index'),
   'views/indices/index': () => import('@/views/indices/index'),
-  'views/indices/reindex': () => import('@/views/indices/reindex')
+  'views/indices/reindex': () => import('@/views/indices/reindex'),
+  'views/indices/sql': () => import('@/views/indices/sql')
 }
 

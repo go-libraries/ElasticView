@@ -62,11 +62,11 @@ func Init() *gin.Engine {
 		es.Any("PingAction", EsController{}.PingAction)
 		es.Any("CatAction", EsController{}.CatAction)
 		es.Any("RunDslAction", EsController{}.RunDslAction)
-
+		es.Any("SqlToDslAction", EsController{}.SqlToDslAction)
 	}
 	esMap := app.Group("/api/es_map")
 	{
-		esMap.Any("ListAction", EsMapController{}.ListAction)
+		esMap.Any("ListAction", EsMappingController{}.ListAction)
 	}
 
 	esIndex := app.Group("/api/es_index")
@@ -75,7 +75,6 @@ func Init() *gin.Engine {
 		esIndex.Any("GetSettingsAction", EsIndexController{}.GetSettingsAction)
 		esIndex.Any("IndexNamesAction", EsIndexController{}.IndexNamesAction)
 		esIndex.Any("ReindexAction", EsIndexController{}.ReindexAction)
-
 	}
 
 	return app

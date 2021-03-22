@@ -8,11 +8,11 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type EsMapController struct {
+type EsMappingController struct {
 	BaseController
 }
 
-func (this EsMapController) ListAction(ctx *gin.Context) {
+func (this EsMappingController) ListAction(ctx *gin.Context) {
 	esConnect := es.EsConnect{}
 	err = ctx.Bind(&esConnect)
 	if err != nil {

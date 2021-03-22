@@ -8,6 +8,7 @@ import (
 	"ElasticView/engine/es"
 	"ElasticView/platform-basic-libs/response"
 
+	"github.com/cch123/elasticsql"
 	"github.com/gin-gonic/gin"
 	"github.com/olivere/elastic"
 )
@@ -109,4 +110,14 @@ func (this EsController) RunDslAction(ctx *gin.Context) {
 	}
 
 	this.Success(ctx, response.OperateSuccess, res.Body)
+}
+
+func (this EsController) SqlToDslAction(ctx *gin.Context) {
+	sql := ctx.Request.FormValue("sql")
+	dsl, _, err := elasticsql.ConvertPretty(sql)
+	if err != nil {
+		this.Error(ctx, err)
+		return
+	}
+	this.Success(ctx, "sql Convert Success !", dsl)
 }
