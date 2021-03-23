@@ -11,6 +11,7 @@ import (
 	"ElasticView/platform-basic-libs/util"
 
 	"github.com/gin-gonic/gin"
+	jsoniter "github.com/json-iterator/go"
 )
 
 type EsLinkController struct {
@@ -43,7 +44,7 @@ func (this EsLinkController) InsertAction(ctx *gin.Context) {
 		this.Error(ctx, err)
 		return
 	}
-
+	var json = jsoniter.ConfigCompatibleWithStandardLibrary
 	esB, err := json.Marshal(esLinkModel)
 
 	if err != nil {

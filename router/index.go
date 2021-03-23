@@ -49,6 +49,13 @@ func Init() *gin.Engine {
 		gmUser.Any("InsertUser", UserController{}.UserAddAction)
 		gmUser.Any("DelUser", UserController{}.DeleteUserAction)
 	}
+
+	guid := app.Group("/api/gm_guid")
+	{
+		guid.Any("Finish", GuidController{}.Finish)
+		guid.Any("IsFinish", GuidController{}.IsFinish)
+	}
+
 	esLink := app.Group("/api/es_link")
 	{
 		esLink.Any("InsertAction", EsLinkController{}.InsertAction)

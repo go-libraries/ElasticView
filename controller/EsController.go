@@ -114,10 +114,13 @@ func (this EsController) RunDslAction(ctx *gin.Context) {
 
 func (this EsController) SqlToDslAction(ctx *gin.Context) {
 	sql := ctx.Request.FormValue("sql")
-	dsl, _, err := elasticsql.ConvertPretty(sql)
+	dsl, table, err := elasticsql.ConvertPretty(sql)
 	if err != nil {
 		this.Error(ctx, err)
 		return
 	}
-	this.Success(ctx, "sql Convert Success !", dsl)
+	this.Success(ctx, "sql Convert Success !", map[string]interface{}{
+		"dsl":       dsl,
+		"tableName": table,
+	})
 }

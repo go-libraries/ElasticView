@@ -93,7 +93,7 @@ export const asyncRoutes = [
         component: 'views/rest/index',
         name: 'index',
         meta: {
-          title: 'dev Tools',
+          title: 'DSL面板',
           icon: 'el-icon-edit'
         }
       }
