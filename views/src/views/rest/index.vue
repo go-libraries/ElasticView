@@ -15,9 +15,9 @@
           ref="autocomplete"
           v-model="input.path"
           clearable
-          class="filter-item select-path"
+          class="filter-item select-path autocomplete"
           placeholder="请输入内容"
-          style="width: 900px"
+
           :fetch-suggestions="querySearch"
           @clear="clear"
           @keyup.enter.native="run"
@@ -31,7 +31,7 @@
 
           v-if="canExport"
           ref="download"
-          style="width: 100px;display: inline;"
+          class="download"
           :fields="json_fields"
           :data="json_data"
           :name="String(this.input.path+'.xls')"
@@ -367,6 +367,26 @@ export default {
 </script>
 
 <style scoped>
+  .download{
+    display: inline;
+    width: 100px;
+  }
+  .sql-format{
+    width: 100px;
+    font-size: 8px;
+  }
+  .go{
+    width: 80px;
+    font-size: 8px;
+  }
+  .select-method{
+    width: 120px;
+    font-size: 8px;
+  }
+  .autocomplete{
+    width: 600px;
+    font-size: 8px;
+  }
   /deep/ :focus {
     outline: 0;
   }

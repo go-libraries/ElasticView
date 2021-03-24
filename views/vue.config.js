@@ -1,4 +1,7 @@
 'use strict'
+
+
+
 const path = require('path')
 const defaultSettings = require('./src/settings.js')
 // 导入compression-webpack-plugin
@@ -113,6 +116,23 @@ module.exports = {
         options.compilerOptions.preserveWhitespace = true
         return options
       })
+      .end()
+
+    config.module
+      .rule('scss')
+      .oneOf('vue')
+      .use('px2rem-loader')
+      .loader('px2rem-loader')
+      .before('postcss-loader') // this makes it work.
+      .options({ remUnit: 150, remPrecision: 8 })
+      .end()
+    config.module
+      .rule('css')
+      .oneOf('vue')
+      .use('px2rem-loader')
+      .loader('px2rem-loader')
+      .before('postcss-loader') // this makes it work.
+      .options({ remUnit: 150, remPrecision: 8 })
       .end()
 
     config

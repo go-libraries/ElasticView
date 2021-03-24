@@ -1,11 +1,12 @@
 <template>
   <div :style="styles" class="float">
     <span style="text-align: center;display:block;" class="font1">
-      <el-button icon="el-icon-refresh" @click="format">美化</el-button>
+      <el-button size="small" icon="el-icon-refresh" @click="format">美化</el-button>
       <el-button
         v-clipboard:copy="value"
         v-clipboard:success="onCopy"
         v-clipboard:error="onError"
+        size="small"
         icon="el-icon-document-copy"
       >点击复制</el-button>
     </span>

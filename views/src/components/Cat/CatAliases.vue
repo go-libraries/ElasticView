@@ -3,7 +3,7 @@
     <el-card class="box-card">
       <div class="filter-container">
         <el-tag class="filter-item">请输入关键词</el-tag>
-        <el-input v-model="input" class="filter-item" style="width: 300px" />
+        <el-input v-model="input" class="filter-item keyword" />
       </div>
       <el-table
         :loading="connectLoading"
@@ -107,5 +107,7 @@ export default {
 </script>
 
 <style scoped>
-
+.keyword{
+  width: 300px
+}
 </style>

@@ -10,6 +10,7 @@ import '@/styles/index.scss' // global css
 import VueClipboard from 'vue-clipboard2'
 Vue.use(VueClipboard)
 
+import './utils/flexible'
 // excel导出
 import JsonExcel from 'vue-json-excel'
 Vue.component('downloadExcel', JsonExcel)

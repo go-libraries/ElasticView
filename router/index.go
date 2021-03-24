@@ -82,6 +82,8 @@ func Init() *gin.Engine {
 		esIndex.Any("GetSettingsAction", EsIndexController{}.GetSettingsAction)
 		esIndex.Any("IndexNamesAction", EsIndexController{}.IndexNamesAction)
 		esIndex.Any("ReindexAction", EsIndexController{}.ReindexAction)
+		esIndex.Any("GetAliasAction", EsIndexController{}.GetAliasAction)
+
 	}
 
 	return app

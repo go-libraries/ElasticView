@@ -3,11 +3,12 @@
     <span style="text-align: center;display:block;" class="font1">
 
       <el-tag v-if="title != ''" type="primary"> {{ title }}</el-tag>
-      <el-button icon="el-icon-refresh" type="success" @click="format">美化</el-button>
+      <el-button icon="el-icon-refresh" size="small" type="success" @click="format">美化</el-button>
       <el-button
         v-clipboard:copy="value"
         v-clipboard:success="onCopy"
         v-clipboard:error="onError"
+        size="small"
         type="success"
         icon="el-icon-document-copy"
       >点击复制</el-button>

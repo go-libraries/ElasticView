@@ -34,3 +34,11 @@ export function ReindexAction(data) {
   })
 }
 
+export function GetAliasAction(data) {
+  return request({
+    url: api + 'GetAliasAction',
+    method: 'post',
+    data
+  })
+}
+

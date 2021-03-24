@@ -93,6 +93,13 @@
           </el-form-item>
         </el-form>
         <div style="text-align:right;">
+          <el-button
+            v-loading="testConnectLoading"
+            type="success"
+            icon="el-icon-link"
+            @click="testConnectForm"
+          >测试连接
+          </el-button>
           <el-button type="danger" icon="el-icon-close" @click="dialogVisible=false">取消</el-button>
           <el-button type="primary" icon="el-icon-check" @click="confirmRole">确认</el-button>
         </div>
@@ -123,6 +130,7 @@ export default {
   },
   data() {
     return {
+      testConnectLoading: false,
       connectLoading: false,
       link: Object.assign({}, defaultLink),
       list: [],
@@ -140,9 +148,31 @@ export default {
     this.getList()
   },
   methods: {
+    testConnectForm() {
+      this.testConnectLoading = true
+      PingAction(this.link).then(res => {
+        if (res.code == 0) {
+          this.$message({
+            type: 'success',
+            message: `连接成功,ES版本为 :${res.data.version.number}`
+          })
+        } else {
+          this.$message({
+            type: 'error',
+            message: res.msg
+          })
+        }
+        this.testConnectLoading = false
+      }).catch(err => {
+        this.$message({
+          type: 'error',
+          message: '网络异常'
+        })
+        this.testConnectLoading = false
+      })
+    },
     testConnect(scope) {
       this.list[scope.$index].connectLoading = true
-
       PingAction(scope.row).then(res => {
         if (res.code == 0) {
           this.$message({
