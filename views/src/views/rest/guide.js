@@ -5,7 +5,6 @@ const steps = [
     popover: {
       title: '选择请求方式',
       description: '系统内置了 POST，GET，PUT，DELETE，HEAD 五种请求方式'
-
     }
   },
   {
@@ -19,7 +18,6 @@ const steps = [
     popover: {
       title: '发起请求',
       description: '用户填好请求方式后，即可点击 ->GO 发起请求'
-
     }
   }, {
     element: '.sql-format',
@@ -29,11 +27,16 @@ const steps = [
 
     }
   }, {
+    element: '.search-history',
+    popover: {
+      title: '历史记录',
+      description: '当前用户所用过的GET请求的历史记录，显示离当前时间最近的20条记录'
+    }
+  }, {
     element: '.req-body',
     popover: {
       title: 'JSON 请求体',
       description: '当请求 需要JSON 请求体时用到，系统内置了部分提示 例如 term,bool，match等'
-
     }
   }, {
     element: '.res-body',

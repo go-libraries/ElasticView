@@ -3,24 +3,24 @@
     <back-to-top />
     <el-card class="box-card">
       <el-tabs v-model="activeName">
-        <el-tab-pane label="图表化" name="chart" />
+
         <el-tab-pane label="查看索引信息" name="CatIndices">
-          <cat v-if="activeName == 'CatIndices'" cat-type="CatIndices" :table-info="catData[activeName]" />
+          <cat v-if="activeName == 'CatIndices'" :cat-type="activeName" :table-info="catData[activeName]" />
         </el-tab-pane>
         <el-tab-pane label="显示别名,过滤器,路由信息" name="CatAliases">
-          <cat v-if="activeName == 'CatAliases'" cat-type="CatAliases" :table-info="catData[activeName]" />
+          <cat v-if="activeName == 'CatAliases'":cat-type="activeName" :table-info="catData[activeName]" />
         </el-tab-pane>
         <el-tab-pane label="显示每个节点分片数量、占用空间" name="CatAllocation">
-          <cat v-if="activeName == 'CatAllocation'" cat-type="CatAllocation" :table-info="catData[activeName]" />
+          <cat v-if="activeName == 'CatAllocation'" :cat-type="activeName" :table-info="catData[activeName]" />
         </el-tab-pane>
         <el-tab-pane label="显示索引文档的数量" name="CatCount">
-          <cat v-if="activeName == 'CatCount'" cat-type="CatCount" :table-info="catData[activeName]" />
+          <cat v-if="activeName == 'CatCount'" :cat-type="activeName" :table-info="catData[activeName]" />
         </el-tab-pane>
         <el-tab-pane label="查看集群健康状况" name="CatHealth">
-          <cat v-if="activeName == 'CatHealth'" cat-type="CatHealth" :table-info="catData[activeName]" />
+          <cat v-if="activeName == 'CatHealth'" :cat-type="activeName" :table-info="catData[activeName]" />
         </el-tab-pane>
         <el-tab-pane label="显示索引分片信息" name="CatShards">
-          <cat v-if="activeName == 'CatShards'" cat-type="CatShards" :table-info="catData[activeName]" />
+          <cat v-if="activeName == 'CatShards'" :cat-type="activeName" :table-info="catData[activeName]" />
         </el-tab-pane>
       </el-tabs>
     </el-card>

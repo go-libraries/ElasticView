@@ -97,7 +97,12 @@
       />
     </el-drawer>
     <back-to-top />
-    <history v-if="dialogVisible" :dialog-visible="dialogVisible" @getHistoryData="getHistoryData" @close="closeHistory" />
+    <history
+      v-if="dialogVisible"
+      :dialog-visible="dialogVisible"
+      @getHistoryData="getHistoryData"
+      @close="closeHistory"
+    />
   </div>
 </template>
 
@@ -365,10 +370,30 @@ export default {
       const queryData = filterData(this.queryData, queryString)
       cb(queryData)
     },
-    go() {
-      this.loading = true
-
+    MeetingConfirmBox(title) {
+      return new Promise((resolve, reject) => {
+        this.$confirm(title, '警告', {
+          confirmButtonText: '确认',
+          cancelButtonText: '取消',
+          type: 'warning'
+        })
+          .then(() => resolve(true))
+          .catch(err => resolve(false))
+      })
+    },
+    async go() {
       const input = clone(this.input)
+
+      if (input['method'] == 'DELETE' || input['path'].indexOf('_delete_by_query') != -1) {
+        const isFinish = await this.MeetingConfirmBox('确定执行删除操作吗')
+        if (!isFinish) {
+          this.$message({
+            type: 'success',
+            message: '已取消'
+          })
+          return
+        }
+      }
 
       if (input['path'].trim().length > 0) {
         if (input['path'].trim().substr(0, 1) != '/') {
@@ -377,8 +402,9 @@ export default {
       }
 
       input['es_connect'] = this.$store.state.baseData.EsConnect
-
+      this.loading = true
       RunDslAction(input).then(res => {
+        this.loading = false
         if (res.code == 0 || res.code == 200 || res.code == 201) {
           this.$message({
             type: 'success',
@@ -390,14 +416,14 @@ export default {
             message: res.msg
           })
         }
-        this.loading = false
         this.resData = JSON.stringify(res.data, null, '\t')
       }).catch(err => {
+        console.log(err)
+        this.loading = false
         this.$message({
           type: 'error',
           message: '网络异常'
         })
-        this.loading = false
       })
     }
   }
@@ -405,10 +431,11 @@ export default {
 </script>
 
 <style scoped>
-  .search-history{
+  .search-history {
     width: 100px;
     font-size: 8px;
   }
+
   .download {
     display: inline;
     width: 100px;
@@ -423,12 +450,14 @@ export default {
     width: 100px;
     font-size: 8px;
   }
+
   .autocomplete {
     width: 600px;
     font-size: 8px;
   }
+
   .select-method {
-    width: 120px;
+    width: 180px;
     font-size: 8px;
   }
 

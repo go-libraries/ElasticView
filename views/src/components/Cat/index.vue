@@ -50,7 +50,7 @@ import { filterData } from '@/utils/table'
 import { CatAction } from '@/api/es'
 
 export default {
-  name: 'CatShards',
+  name: 'Index',
   props: {
     catType: {
       type: String,
@@ -102,13 +102,15 @@ export default {
     searchData() {
       this.connectLoading = true
       const form = {
-        cat: this.CatType,
+        cat: this.catType,
         es_connect: this.$store.state.baseData.EsConnect
       }
       CatAction(form).then(res => {
         if (res.code == 0) {
           let list = res.data
-
+          if (list == null) {
+            return
+          }
           for (const index in list) {
             const obj = list[index]
             // 把 . 转成 ->

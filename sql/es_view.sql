@@ -1,4 +1,4 @@
-/*
+﻿/*
 Navicat MySQL Data Transfer
 
 Source Server         : 47.110.85.147
@@ -71,3 +71,27 @@ CREATE TABLE `gm_user` (
 -- Records of gm_user
 -- ----------------------------
 INSERT INTO `gm_user` VALUES ('1', 'admin', 'admin', '1', '肖文龙');
+
+
+CREATE TABLE `gm_dsl_history` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `uid` int(11) DEFAULT '0',
+  `method` varchar(50) DEFAULT '',
+  `path` varchar(255) DEFAULT '',
+  `body` text,
+  `created` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=35 DEFAULT CHARSET=utf8mb4;
+
+
+
+CREATE TABLE `gm_guid` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `uid` int(11) NOT NULL,
+  `guid_name` varchar(100) NOT NULL,
+  `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `guid_name` (`uid`,`guid_name`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4;
+
+
