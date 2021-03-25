@@ -28,17 +28,13 @@ func (this GuidController) Finish(ctx *gin.Context) {
 		this.Error(ctx, err)
 		return
 	}
-	sql, args, err := db.SqlBuilder.Insert(gmGuidModel.TableName()).SetMap(map[string]interface{}{
-		"uid":       c.ID,
-		"guid_name": gmGuidModel.GuidName,
-	}).ToSql()
+	_, err = db.SqlBuilder.
+		Insert(gmGuidModel.TableName()).
+		SetMap(map[string]interface{}{
+			"uid":       c.ID,
+			"guid_name": gmGuidModel.GuidName,
+		}).RunWith(db.Sqlx).Exec()
 
-	if err != nil {
-		this.Error(ctx, err)
-		return
-	}
-
-	_, err = db.Sqlx.Exec(sql, args...)
 	if err != nil {
 		this.Error(ctx, err)
 		return
@@ -59,10 +55,13 @@ func (this GuidController) IsFinish(ctx *gin.Context) {
 		this.Error(ctx, err)
 		return
 	}
-	sql, args, err := db.SqlBuilder.Select("count(*)").From(gmGuidModel.TableName()).Where(db.Eq{
-		"uid":       c.ID,
-		"guid_name": gmGuidModel.GuidName,
-	}).ToSql()
+	sql, args, err := db.SqlBuilder.
+		Select("count(*)").
+		From(gmGuidModel.TableName()).
+		Where(db.Eq{
+			"uid":       c.ID,
+			"guid_name": gmGuidModel.GuidName,
+		}).ToSql()
 
 	if err != nil {
 		this.Error(ctx, err)

@@ -52,13 +52,25 @@
         </el-table-column>
         <el-table-column align="center" label="索引的开启状态" width="100">
           <template slot-scope="scope">
-            <el-button v-show="scope.row.status == 'open'" type="success" size="small" icon="el-icon-success" @click="OpenOrCloseIndex(scope.row.index,'close',1)">开启
+            <el-button
+              v-show="scope.row.status == 'open'"
+              type="success"
+              size="small"
+              icon="el-icon-success"
+              @click="OpenOrCloseIndex(scope.row.index,'close',1)"
+            >开启
             </el-button>
-            <el-button v-show="scope.row.status == 'close'" type="danger" size="small" icon="el-icon-circle-close" @click="OpenOrCloseIndex(scope.row.index,'open',1)">关闭
+            <el-button
+              v-show="scope.row.status == 'close'"
+              type="danger"
+              size="small"
+              icon="el-icon-circle-close"
+              @click="OpenOrCloseIndex(scope.row.index,'open',1)"
+            >关闭
             </el-button>
           </template>
         </el-table-column>
-        <el-table-column align="center" label="索引名称" width="200">
+        <el-table-column align="center" label="索引名称" width="180">
           <template slot-scope="scope">
             {{ scope.row.index }}
           </template>
@@ -68,34 +80,34 @@
             {{ scope.row.uuid }}
           </template>
         </el-table-column>
-        <el-table-column align="center" label="索引主分片数" width="100" prop="pri" sortable>
+        <el-table-column align="center" label="索引主分片数" width="80" prop="pri" sortable>
           <template slot-scope="scope">
             {{ scope.row.pri }}
           </template>
         </el-table-column>
-        <el-table-column align="center" label="索引副本分片数量" width="100" prop="rep" sortable>
+        <el-table-column align="center" label="索引副本分片数量" width="80" prop="rep" sortable>
           <template slot-scope="scope">
             {{ scope.row.rep }}
           </template>
         </el-table-column>
-        <el-table-column align="center" label="索引文档总数" width="120" prop="docsCount" sortable>
+        <el-table-column align="center" label="索引文档总数" width="80" prop="docs->count" sortable>
           <template slot-scope="scope">
-            {{ bigNumberTransform(scope.row["docs.count"]) }}
+            {{ bigNumberTransform(scope.row["docs->count"]) }}
           </template>
         </el-table-column>
-        <el-table-column align="center" label="索引中删除状态的文档" width="100" prop="docsDeleted" sortable>
+        <el-table-column align="center" label="索引中删除状态的文档" width="80" prop="docs->deleted" sortable>
           <template slot-scope="scope">
-            {{ scope.row["docs.deleted"] }}
+            {{ scope.row["docs->deleted"] }}
           </template>
         </el-table-column>
-        <el-table-column align="center" label="主分片+副本分分片的大小" width="130">
+        <el-table-column align="center" label="主分片+副本分分片的大小" width="120" prop="store->size" sortable>
           <template slot-scope="scope">
-            {{ scope.row["store.size"] }}
+            {{ scope.row["store->size"] }}
           </template>
         </el-table-column>
-        <el-table-column align="center" label="主分片的大小" width="150">
+        <el-table-column align="center" label="主分片的大小" width="150" prop="pri->store->size" sortable>
           <template slot-scope="scope">
-            {{ scope.row["pri.store.size"] }}
+            {{ scope.row["pri->store->size"] }}
           </template>
         </el-table-column>
         <el-table-column align="center" label="操作" fixed="right" width="300">
@@ -320,9 +332,7 @@ export default {
 
   data() {
     return {
-      aliasList: [
-
-      ],
+      aliasList: [],
       pointOut: esSettingsWords,
       settings: {},
       readOnlyAllowDeleteLoading: false,
@@ -343,7 +353,7 @@ export default {
       limit: 10,
       pageshow: true,
       list: [],
-      input: 'test1',
+      input: '',
       status: ''
     }
   },
@@ -672,11 +682,19 @@ export default {
       CatAction(form).then(res => {
         if (res.code == 0) {
           let list = res.data
-          for (const k in list) {
-            list[k]['docsCount'] = Number(list[k]['docs.count'])
-            list[k]['docsDeleted'] = Number(list[k]['docs.deleted'])
-            list[k]['storeSize'] = Number(list[k]['store.size'])
+
+          for (const index in list) {
+            const obj = list[index]
+            // 把 . 转成 ->
+            for (const key in obj) {
+              let value = parseInt(obj[key])
+              if (isNaN(value)) {
+                value = obj[key]
+              }
+              list[index][key.split('.').join('->')] = value
+            }
           }
+
           list = filterData(list, this.status.trim())
           list = filterData(list, this.input.trim())
           this.list = list.filter((item, index) =>
@@ -704,18 +722,22 @@ export default {
 </script>
 
 <style scoped>
-  .operate{
+  .operate {
 
   }
-  .aliasName{
+
+  .aliasName {
     width: 400px;
   }
-  .margin-left-10{
+
+  .margin-left-10 {
     margin-left: 10px
   }
-  .width300{
+
+  .width300 {
     width: 300px;
   }
+
   /deep/ :focus {
     outline: 0;
   }

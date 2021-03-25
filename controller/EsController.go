@@ -4,8 +4,11 @@ import (
 	"context"
 	"fmt"
 	"strconv"
+	"strings"
 
 	"ElasticView/engine/es"
+	"ElasticView/model"
+	"ElasticView/platform-basic-libs/jwt"
 	"ElasticView/platform-basic-libs/response"
 
 	"github.com/cch123/elasticsql"
@@ -87,6 +90,28 @@ func (this EsController) RunDslAction(ctx *gin.Context) {
 	if err != nil {
 		this.Error(ctx, err)
 		return
+	}
+	esRest.Method = strings.ToUpper(esRest.Method)
+	if esRest.Method == "GET" {
+		c, err := jwt.ParseToken(ctx.GetHeader("X-Token"))
+		if err != nil {
+			this.Error(ctx, err)
+			return
+		}
+
+		gmDslHistoryModel := model.GmDslHistoryModel{
+			Uid:    int(c.ID),
+			Method: esRest.Method,
+			Path:   esRest.Path,
+			Body:   esRest.Body,
+		}
+
+		err = gmDslHistoryModel.Insert()
+
+		if err != nil {
+			this.Error(ctx, err)
+			return
+		}
 	}
 
 	res, err := esClinet.(*es.EsClientV6).Client.PerformRequest(context.TODO(), elastic.PerformRequestOptions{

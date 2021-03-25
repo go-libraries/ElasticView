@@ -61,18 +61,17 @@ func (this EsLinkController) InsertAction(ctx *gin.Context) {
 	delete(insertMap, "created")
 	delete(insertMap, "updated")
 
-	sql, args, err := db.SqlBuilder.Insert("es_link").SetMap(insertMap).ToSql()
+	_, err = db.SqlBuilder.
+		Insert("es_link").
+		SetMap(insertMap).
+		RunWith(db.Sqlx).
+		Exec()
 	if err != nil {
 		this.Error(ctx, err)
 		return
 	}
-	var esLinkList []model.EsLinkModel
-	_, err = db.Sqlx.Exec(sql, args...)
-	if err != nil {
-		this.Error(ctx, err)
-		return
-	}
-	this.Success(ctx, response.OperateSuccess, esLinkList)
+
+	this.Success(ctx, response.OperateSuccess, nil)
 }
 
 func (this EsLinkController) UpdateAction(ctx *gin.Context) {
@@ -100,18 +99,18 @@ func (this EsLinkController) UpdateAction(ctx *gin.Context) {
 	delete(insertMap, "created")
 	delete(insertMap, "updated")
 
-	sql, args, err := db.SqlBuilder.Update("es_link").SetMap(insertMap).Where(db.Eq{"id": esLinkModel.ID}).ToSql()
+	_, err = db.SqlBuilder.
+		Update("es_link").
+		SetMap(insertMap).
+		Where(db.Eq{"id": esLinkModel.ID}).
+		RunWith(db.Sqlx).
+		Exec()
 	if err != nil {
 		this.Error(ctx, err)
 		return
 	}
-	var esLinkList []model.EsLinkModel
-	_, err = db.Sqlx.Exec(sql, args...)
-	if err != nil {
-		this.Error(ctx, err)
-		return
-	}
-	this.Success(ctx, response.OperateSuccess, esLinkList)
+
+	this.Success(ctx, response.OperateSuccess, nil)
 }
 
 func (this EsLinkController) DeleteAction(ctx *gin.Context) {
@@ -127,19 +126,14 @@ func (this EsLinkController) DeleteAction(ctx *gin.Context) {
 
 	id := util.CtxFormIntDefault(ctx, "id", 0)
 
-	sql, args, err := db.SqlBuilder.
+	_, err = db.SqlBuilder.
 		Delete("es_link").
-		Where(db.Eq{"id": id}).ToSql()
-	log.Println(sql, args)
+		Where(db.Eq{"id": id}).RunWith(db.Sqlx).Exec()
+
 	if err != nil {
 		this.Error(ctx, err)
 		return
 	}
-	var esLinkList []model.EsLinkModel
-	_, err = db.Sqlx.Exec(sql, args...)
-	if err != nil {
-		this.Error(ctx, err)
-		return
-	}
-	this.Success(ctx, response.DeleteSuccess, esLinkList)
+
+	this.Success(ctx, response.DeleteSuccess, nil)
 }

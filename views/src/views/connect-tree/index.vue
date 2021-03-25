@@ -101,7 +101,7 @@
           >测试连接
           </el-button>
           <el-button type="danger" icon="el-icon-close" @click="dialogVisible=false">取消</el-button>
-          <el-button type="primary" icon="el-icon-check" @click="confirmRole">确认</el-button>
+          <el-button type="primary" icon="el-icon-check" @click="confirm">确认</el-button>
         </div>
       </el-dialog>
     </el-card>
@@ -238,7 +238,14 @@ export default {
           console.error(err)
         })
     },
-    async confirmRole() {
+    async confirm() {
+      if (this.link.remark == '') {
+        this.$message({
+          type: 'error',
+          message: res.msg
+        })
+        return
+      }
       const isEdit = this.dialogType === 'edit'
 
       if (isEdit) {

@@ -118,13 +118,13 @@ module.exports = {
       })
       .end()
 
-    config.module
+   /* config.module
       .rule('scss')
       .oneOf('vue')
       .use('px2rem-loader')
       .loader('px2rem-loader')
       .before('postcss-loader') // this makes it work.
-      .options({ remUnit: 150, remPrecision: 8 })
+      .options({ remUnit: 190, remPrecision: 4 })
       .end()
     config.module
       .rule('css')
@@ -132,9 +132,9 @@ module.exports = {
       .use('px2rem-loader')
       .loader('px2rem-loader')
       .before('postcss-loader') // this makes it work.
-      .options({ remUnit: 150, remPrecision: 8 })
+      .options({ remUnit: 190, remPrecision: 4 })
       .end()
-
+*/
     config
       // https://webpack.js.org/configuration/devtool/#development
       .when(process.env.NODE_ENV === 'development',

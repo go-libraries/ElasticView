@@ -24,11 +24,34 @@
           @select="mySelect"
         />
 
-        <el-button class="filter-item go" style="display: inline;" :loading="loading" type="success" icon="el-icon-right" @click="go">GO</el-button>
-        <el-button v-show="input.method == 'GET'" class="filter-item sql-format" style="display: inline;" type="warning" icon="el-icon-refresh" @click="openDrag">SQL转换
+        <el-button
+          class="filter-item go"
+          style="display: inline;"
+          :loading="loading"
+          type="success"
+          icon="el-icon-right"
+          @click="go"
+        >GO
+        </el-button>
+        <el-button
+          v-show="input.method == 'GET'"
+          class="filter-item sql-format"
+          style="display: inline;"
+          type="warning"
+          icon="el-icon-refresh"
+          @click="openDrag"
+        >SQL转换
+        </el-button>
+        <el-button
+          class="filter-item search-history"
+          style="display: inline;"
+          type="warning"
+          icon="el-icon-search"
+          @click.native="dialogVisible = true"
+        >
+          搜索历史
         </el-button>
         <download-excel
-
           v-if="canExport"
           ref="download"
           class="download"
@@ -38,7 +61,9 @@
           :before-generate="startDownload"
           :before-finish="endDownload"
         >
-          <el-button v-loading="downloadLoading" type="primary" icon="el-icon-download" class="filter-item download">下载</el-button>
+          <el-button v-loading="downloadLoading" type="primary" icon="el-icon-download" class="filter-item download">
+            下载
+          </el-button>
         </download-excel>
       </div>
 
@@ -63,7 +88,8 @@
       destroy-on-close
       size="50%"
     >
-      <el-button style="margin: 20px" type="warning" icon="el-icon-refresh" @click="sqlToDsl">开始转换</el-button> <el-link type="success" disabled>表名可用索引名代替</el-link>
+      <el-button style="margin: 20px" type="warning" icon="el-icon-refresh" @click="sqlToDsl">开始转换</el-button>
+      <el-link type="success" disabled>表名可用索引名代替</el-link>
       <sql-editor
         v-model="sqlStr"
         styles="width: 100%"
@@ -71,6 +97,7 @@
       />
     </el-drawer>
     <back-to-top />
+    <history v-if="dialogVisible" :dialog-visible="dialogVisible" @getHistoryData="getHistoryData" @close="closeHistory" />
   </div>
 </template>
 
@@ -91,10 +118,12 @@ export default {
   components: {
     'SqlEditor': () => import('@/components/SqlEditor/index'),
     'BackToTop': () => import('@/components/BackToTop/index'),
-    'JsonEditor': () => import('@/components/JsonEditor/index')
+    'JsonEditor': () => import('@/components/JsonEditor/index'),
+    'History': () => import('@/views/rest/components/history')
   },
   data() {
     return {
+      dialogVisible: false,
       driver: null,
       modName: 'DSL面板',
       downloadLoading: false,
@@ -145,6 +174,9 @@ export default {
             const arrayColumns = []
             for (const v of resData['hits']['hits']) {
               const sourceMap = v['_source']
+              if (sourceMap == null) {
+                continue
+              }
               Object.getOwnPropertyNames(sourceMap).forEach((sourceVal, index) => {
                 // 如果是对象
                 if (Object.prototype.toString.call(sourceMap[sourceVal]) === '[object Object]') {
@@ -170,7 +202,6 @@ export default {
                 }
               }
             })
-
             this.json_data = json_data
             return true
           }
@@ -194,6 +225,14 @@ export default {
     sessionStorage.setItem('resReqInfo', resReqInfo)
   },
   methods: {
+    getHistoryData(v) {
+      this.input.path = v['path']
+      this.input.method = v['method']
+      this.input.body = v['body']
+    },
+    closeHistory(v) {
+      this.dialogVisible = v
+    },
     async finishGuid() {
       const { data, code, msg } = await Finish({ 'guid_name': this.modName })
     },
@@ -203,7 +242,6 @@ export default {
       if (!data) {
         console.log('开始新手引导')
         this.driver = new Driver({
-
           className: 'scoped-class',
           animate: true,
           opacity: 0.75,
@@ -367,26 +405,33 @@ export default {
 </script>
 
 <style scoped>
-  .download{
+  .search-history{
+    width: 100px;
+    font-size: 8px;
+  }
+  .download {
     display: inline;
     width: 100px;
   }
-  .sql-format{
+
+  .sql-format {
     width: 100px;
     font-size: 8px;
   }
-  .go{
-    width: 80px;
+
+  .go {
+    width: 100px;
     font-size: 8px;
   }
-  .select-method{
-    width: 120px;
-    font-size: 8px;
-  }
-  .autocomplete{
+  .autocomplete {
     width: 600px;
     font-size: 8px;
   }
+  .select-method {
+    width: 120px;
+    font-size: 8px;
+  }
+
   /deep/ :focus {
     outline: 0;
   }

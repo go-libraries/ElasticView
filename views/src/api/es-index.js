@@ -42,3 +42,11 @@ export function GetAliasAction(data) {
   })
 }
 
+export function OperateAliasAction(data) {
+  return request({
+    url: api + 'OperateAliasAction',
+    method: 'post',
+    data
+  })
+}
+

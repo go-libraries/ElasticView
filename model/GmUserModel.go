@@ -5,7 +5,6 @@ import (
 	"ElasticView/engine/logs"
 
 	"go.uber.org/zap"
-
 )
 
 type GmUserModel struct {

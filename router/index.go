@@ -83,7 +83,13 @@ func Init() *gin.Engine {
 		esIndex.Any("IndexNamesAction", EsIndexController{}.IndexNamesAction)
 		esIndex.Any("ReindexAction", EsIndexController{}.ReindexAction)
 		esIndex.Any("GetAliasAction", EsIndexController{}.GetAliasAction)
+		esIndex.Any("OperateAliasAction", EsIndexController{}.OperateAliasAction)
+	}
 
+	dslHistory := app.Group("/api/dslHistory")
+	{
+		dslHistory.Any("CleanAction", DslHistoryController{}.CleanAction)
+		dslHistory.Any("ListAction", DslHistoryController{}.ListAction)
 	}
 
 	return app
