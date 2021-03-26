@@ -46,7 +46,9 @@ export default {
       this.$emit('change', this.indexName)
     },
     getIndexList() {
-      IndexNamesAction(this.$store.state.baseData.EsConnect).then(res => {
+      const input = {}
+      input['es_connect'] = this.$store.state.baseData.EsConnectID
+      IndexNamesAction(input).then(res => {
         if (res.code == 0) {
           this.indexList = res.data
         } else {

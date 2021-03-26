@@ -217,7 +217,7 @@ export default {
         return
       }
       const input = {}
-      input['es_connect'] = this.$store.state.baseData.EsConnect
+      input['es_connect'] = this.$store.state.baseData.EsConnectID
       input['settings'] = clone(this.form)
       input['index_name'] = this.indexName
       input['types'] = this.settingsType
@@ -265,7 +265,7 @@ export default {
     },
     catIndexSettings() {
       const input = {}
-      input['es_connect'] = this.$store.state.baseData.EsConnect
+      input['es_connect'] = this.$store.state.baseData.EsConnectID
       input['index_name'] = this.indexName
       GetSettingsAction(input).then(res => {
         if (res.code == 0 || res.code == 200) {
@@ -351,7 +351,7 @@ export default {
     },
     catIndexStatus() {
       const input = {}
-      input['es_connect'] = this.$store.state.baseData.EsConnect
+      input['es_connect'] = this.$store.state.baseData.EsConnectID
       input['method'] = 'GET'
       input['path'] = '/_cat/indices/' + this.indexName + '?h=status'
       RunDslAction(input).then(res => {

@@ -4,21 +4,25 @@ import (
 	"fmt"
 	"log"
 	"time"
+
 	"github.com/Masterminds/squirrel"
 	"github.com/jmoiron/sqlx"
 )
 
 var Sqlx *sqlx.DB
 var SqlBuilder = squirrel.StatementBuilder
+
 type Eq = squirrel.Eq
 type Or = squirrel.Or
 type Like = squirrel.Like
+type Gte = squirrel.GtOrEq
+type Lte = squirrel.LtOrEq
 type SelectBuilder = squirrel.SelectBuilder
 type InsertBuilder = squirrel.InsertBuilder
 type UpdateBuilder = squirrel.UpdateBuilder
 
 // NewMySQL 创建一个连接MySQL的实体池
-func NewSQLX(dbSource string, maxOpenConns, maxIdleConns int){
+func NewSQLX(dbSource string, maxOpenConns, maxIdleConns int) {
 
 	db, err := sqlx.Open("mysql", dbSource)
 	if err != nil {

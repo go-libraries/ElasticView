@@ -70,7 +70,7 @@ export default {
       input['types'] = 3
       input['new_index_list'] = this.anotherIndex
       input['alias_name'] = alias.trim()
-      input['es_connect'] = this.$store.state.baseData.EsConnect
+      input['es_connect'] = this.$store.state.baseData.EsConnectID
       const { data, code, msg } = await OperateAliasAction(input)
       console.log(data, code, msg)
       if (code == 0) {
@@ -105,7 +105,7 @@ export default {
     async getAlias() {
       this.aliasList = []
       const input = {}
-      input['es_connect'] = this.$store.state.baseData.EsConnect
+      input['es_connect'] = this.$store.state.baseData.EsConnectID
       input['index_name'] = this.indexName
       const { data, code, msg } = await GetAliasAction(input)
       console.log(data, code, msg)
@@ -126,7 +126,7 @@ export default {
       input['types'] = 1
       input['index_name'] = this.indexName
       input['alias_name'] = alias.trim()
-      input['es_connect'] = this.$store.state.baseData.EsConnect
+      input['es_connect'] = this.$store.state.baseData.EsConnectID
       const { data, code, msg } = await OperateAliasAction(input)
       console.log(data, code, msg)
       if (code == 0) {
@@ -154,7 +154,7 @@ export default {
       input['types'] = 4
       input['index_name'] = this.indexName
       input['new_alias_name_list'] = aliasList
-      input['es_connect'] = this.$store.state.baseData.EsConnect
+      input['es_connect'] = this.$store.state.baseData.EsConnectID
       const { data, code, msg } = await OperateAliasAction(input)
       if (code == 0) {
         this.$message({
@@ -179,7 +179,7 @@ export default {
         input['types'] = 2
         input['index_name'] = this.indexName
         input['alias_name'] = alias.trim()
-        input['es_connect'] = this.$store.state.baseData.EsConnect
+        input['es_connect'] = this.$store.state.baseData.EsConnectID
         const { data, code, msg } = await OperateAliasAction(input)
         if (code == 0) {
           this.$message({

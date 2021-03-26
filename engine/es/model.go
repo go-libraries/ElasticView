@@ -21,44 +21,55 @@ func NewPage(page int, pageSize int) *Page {
 	}
 }
 
+type EsConnectID struct {
+	EsConnectID int `json:"es_connect"`
+}
+
 type EsConnect struct {
-	Ip      string `json:"ip"`
-	User    string `json:"user"`
-	Pwd     string `json:"pwd"`
-	Version int    `json:"version"`
+	Ip      string `json:"ip" db:"ip"`
+	User    string `json:"user" db:"user"`
+	Pwd     string `json:"pwd" db:"pwd"`
+	Version int    `json:"version" db:"version"`
 }
 
 type EsCat struct {
-	EsConnect EsConnect `json:"es_connect"`
-	Cat       string    `json:"cat"`
+	EsConnect int    `json:"es_connect"`
+	Cat       string `json:"cat"`
 }
 
 type EsRest struct {
-	EsConnect EsConnect `json:"es_connect"`
-	Method    string    `json:"method"`
-	Body      string    `json:"body"`
-	Path      string    `json:"path"`
+	EsConnect int    `json:"es_connect"`
+	Method    string `json:"method"`
+	Body      string `json:"body"`
+	Path      string `json:"path"`
 }
 
 type EsIndexInfo struct {
-	EsConnect EsConnect `json:"es_connect"`
-	Settings  Json      `json:"settings"`
-	IndexName string    `json:"index_name"`
-	Types     string    `json:"types"`
+	EsConnect int    `json:"es_connect"`
+	Settings  Json   `json:"settings"`
+	IndexName string `json:"index_name"`
+	Types     string `json:"types"`
+}
+
+type EsMappingInfo struct {
+	IndexNameList []string `json:"index_name_list"`
+	EsConnect     int      `json:"es_connect"`
+	Mappings      Json     `json:"mappings"`
+	IndexName     string   `json:"index_name"`
 }
 
 type EsAliasInfo struct {
-	EsConnect        EsConnect `json:"es_connect"`
-	Settings         Json      `json:"settings"`
-	IndexName        string    `json:"index_name"`
-	AliasName        string    `json:"alias_name"`
-	NewAliasNameList []string  `json:"new_alias_name_list"`
-	NewIndexList     []string  `json:"new_index_list"`
-	Types            int       `json:"types"`
+	EsConnect        int      `json:"es_connect"`
+	Settings         Json     `json:"settings"`
+	IndexName        string   `json:"index_name"`
+	AliasName        string   `json:"alias_name"`
+	NewAliasNameList []string `json:"new_alias_name_list"`
+	NewIndexList     []string `json:"new_index_list"`
+	Types            int      `json:"types"`
 }
 
 type EsReIndexInfo struct {
-	EsConnect EsConnect `json:"es_connect"`
+	EsConnect int `json:"es_connect"`
 	UrlValues struct {
 		Timeout             string `json:"timeout"`
 		RequestsPerSecond   int    `json:"requests_per_second"`

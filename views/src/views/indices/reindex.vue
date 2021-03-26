@@ -303,16 +303,7 @@ export default {
   },
   data() {
     return {
-      es_connect: {
-        ip: '',
-        user: '',
-        pwd: '',
-        remark: '',
-        version: 0,
-        created: '',
-        id: 0,
-        updated: ''
-      },
+      es_connect: 0,
       extendConfig: [],
       typeList: [],
       pointOut: esBodyKeyWords,
@@ -375,7 +366,7 @@ export default {
     }
   },
   mounted() {
-    this.es_connect = this.$store.state.baseData.EsConnect
+    this.es_connect = this.$store.state.baseData.EsConnectID
     this.getLinkList()
     this.getIndexList()
   },
@@ -547,7 +538,9 @@ export default {
       console.log(111)
     },
     async getIndexList() {
-      const { data, code, msg } = await ListAction(this.$store.state.baseData.EsConnect)
+      const input = {}
+      input['es_connect'] = this.$store.state.baseData.EsConnectID
+      const { data, code, msg } = await ListAction(input)
       if (code == 0) {
         this.indexNameList = Object.keys(data)
         this.mappings = data

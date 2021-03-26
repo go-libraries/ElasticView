@@ -43,13 +43,14 @@ func (this EsController) PingAction(ctx *gin.Context) {
 
 //Elasticsearch状态
 func (this EsController) CatAction(ctx *gin.Context) {
+
 	esCat := es.EsCat{}
 	err = ctx.Bind(&esCat)
 	if err != nil {
 		this.Error(ctx, err)
 		return
 	}
-	esClinet, err := es.GetEsClient(esCat.EsConnect)
+	esClinet, err := es.GetEsClientByID(esCat.EsConnect)
 	if err != nil {
 		this.Error(ctx, err)
 		return
@@ -58,17 +59,17 @@ func (this EsController) CatAction(ctx *gin.Context) {
 
 	switch esCat.Cat {
 	case "CatHealth":
-		data, err = esClinet.CatHealth()
+		data, err = esClinet.(*es.EsClientV6).Client.CatHealth().Human(true).Do(context.Background())
 	case "CatShards":
-		data, err = esClinet.CatShards()
+		data, err = esClinet.(*es.EsClientV6).Client.CatShards().Human(true).Do(context.Background())
 	case "CatCount":
-		data, err = esClinet.CatCount()
+		data, err = esClinet.(*es.EsClientV6).Client.CatCount().Human(true).Do(context.Background())
 	case "CatAllocation":
-		data, err = esClinet.CatAllocation()
+		data, err = esClinet.(*es.EsClientV6).Client.CatAllocation().Human(true).Do(context.Background())
 	case "CatAliases":
-		data, err = esClinet.CatAliases()
+		data, err = esClinet.(*es.EsClientV6).Client.CatAliases().Human(true).Do(context.Background())
 	case "CatIndices":
-		data, err = esClinet.CatIndices()
+		data, err = esClinet.(*es.EsClientV6).Client.CatIndices().Human(true).Do(context.Background())
 	}
 
 	if err != nil {
@@ -86,7 +87,7 @@ func (this EsController) RunDslAction(ctx *gin.Context) {
 		this.Error(ctx, err)
 		return
 	}
-	esClinet, err := es.GetEsClient(esRest.EsConnect)
+	esClinet, err := es.GetEsClientByID(esRest.EsConnect)
 	if err != nil {
 		this.Error(ctx, err)
 		return
@@ -144,7 +145,7 @@ func (this EsController) SqlToDslAction(ctx *gin.Context) {
 		this.Error(ctx, err)
 		return
 	}
-	this.Success(ctx, "sql Convert Success !", map[string]interface{}{
+	this.Success(ctx, "转换成功!", map[string]interface{}{
 		"dsl":       dsl,
 		"tableName": table,
 	})

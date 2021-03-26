@@ -19,7 +19,11 @@ func (this DslHistoryController) ListAction(ctx *gin.Context) {
 		return
 	}
 	gmDslHistoryModel := model.GmDslHistoryModel{}
-
+	err = ctx.Bind(&gmDslHistoryModel)
+	if err != nil {
+		this.Error(ctx, err)
+		return
+	}
 	gmDslHistoryModel.Uid = int(c.ID)
 
 	list, err := gmDslHistoryModel.List()

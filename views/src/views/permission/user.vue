@@ -6,7 +6,7 @@
         <el-button type="primary" icon="el-icon-plus" class="filter-item" @click="handleAddRole">新建用户</el-button>
       </div>
       <el-table
-        :header-cell-style="{background:'#eef1f6',color:'#606266'}"
+
         :data="rolesList"
       >
         <el-table-column

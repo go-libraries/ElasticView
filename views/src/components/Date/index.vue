@@ -1,21 +1,34 @@
 <template>
   <div class="filter-item">
     时间范围：
-    <el-radio-group v-model="today">
-      <el-radio-button label="0">今天</el-radio-button>
-      <el-radio-button label="1">昨天</el-radio-button>
-      <el-radio-button label="6">最近7天</el-radio-button>
-      <el-radio-button label="29">最近30天</el-radio-button>
-    </el-radio-group>
+
     <el-date-picker
+      v-if="simple_format == false"
       v-model="date"
       type="daterange"
       align="right"
+
       unlink-panels
       range-separator="至"
       start-placeholder="开始日期"
       end-placeholder="结束日期"
       value-format="yyyy-MM-dd"
+
+      :picker-options="pickerOptions"
+      @change="searchData"
+    />
+    <el-date-picker
+      v-else
+      v-model="date"
+      type="datetimerange"
+      align="right"
+      :default-time="['00:00:00', '23:59:59']"
+      unlink-panels
+      range-separator="至"
+      start-placeholder="开始日期"
+      end-placeholder="结束日期"
+      format="yyyy-MM-dd HH:mm:ss"
+      value-format="yyyy-MM-dd HH:mm:ss"
       :picker-options="pickerOptions"
       @change="searchData"
     />
@@ -23,97 +36,46 @@
 </template>
 
 <script>
+import { pickerOptions } from '@/utils/date'
+
 import { dateFormat } from '@/utils/date'
 const day = 3600 * 1000 * 24
 export default {
   name: 'Index',
   props: [
-    'dates'
+    'dates',
+    'simpleFormat'
   ],
   data() {
     return {
-      today: 0,
       date: this.dates,
-      pickerOptions: {
-        shortcuts: [{
-          text: '最近7天',
-          onClick(picker) {
-            const end = new Date()
-            const start = new Date()
-            start.setTime(start.getTime() - day * 7)
-            picker.$emit('pick', [start, end])
-          }
-        }, {
-          text: '最近30天',
-          onClick(picker) {
-            const end = new Date()
-            const start = new Date()
-            start.setTime(start.getTime() - day * 30)
-            picker.$emit('pick', [start, end])
-          }
-        }, {
-          text: '最近60天',
-          onClick(picker) {
-            const end = new Date()
-            const start = new Date()
-            start.setTime(start.getTime() - day * 60)
-            picker.$emit('pick', [start, end])
-          }
-        }, {
-          text: '最近90天',
-          onClick(picker) {
-            const end = new Date()
-            const start = new Date()
-            start.setTime(start.getTime() - day * 90)
-            picker.$emit('pick', [start, end])
-          }
-        }, {
-          text: '最近180天',
-          onClick(picker) {
-            const end = new Date()
-            const start = new Date()
-            start.setTime(start.getTime() - day * 180)
-            picker.$emit('pick', [start, end])
-          }
-        }, {
-          text: '最近360天',
-          onClick(picker) {
-            const end = new Date()
-            const start = new Date()
-            start.setTime(start.getTime() - day * 360)
-            picker.$emit('pick', [start, end])
-          }
-        }]
-      }
-    }
-  },
-  watch: {
-    today(newVal, oldVal) {
-      this.setTime(newVal)
-      this.$emit('changeDate', this.date)
-      this.$emit('searchData', 1)
+      simple_format: this.simple_format,
+      pickerOptions: {}
     }
   },
   mounted() {
-    this.setTime(1)
+    this.pickerOptions = pickerOptions
   },
-
   methods: {
-    setTime(sum) {
-      const end = new Date()
-      const start = new Date()
-      start.setTime(start.getTime() - day * sum)
-      this.date[0] = dateFormat('YYYY-mm-dd', start)
-      this.date[1] = dateFormat('YYYY-mm-dd', end)
-    },
     searchData() {
-      this.$emit('changeDate', this.date)
-      this.$emit('searchData', 1)
+      if (this.date == null) {
+        this.$emit('changeDate', [])
+      } else {
+        this.$emit('changeDate', this.date)
+      }
     }
   }
 }
 </script>
 
 <style scoped>
+  .xwl>>>.el-input__inner{
+
+    color:#000000!important;
+    font-family: cursive!important;
+    border-top:  1px red !important;
+    border-left:  1px red !important;
+    border-right:  1px red !important;
+  }
 
 </style>

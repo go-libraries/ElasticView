@@ -5,7 +5,7 @@
         <el-button type="primary" class="filter-item" icon="el-icon-plus" @click="handleAddRole">新建角色</el-button>
       </div>
       <el-table
-        :header-cell-style="{background:'#eef1f6',color:'#606266'}"
+
         :data="rolesList"
         @row-dblclick="handleEdit"
       >

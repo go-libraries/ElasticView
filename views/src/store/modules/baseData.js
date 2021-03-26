@@ -9,12 +9,13 @@ const state = {
     created: '',
     id: 0,
     updated: ''
-  }
+  },
+  EsConnectID: 0
 }
 
 const mutations = {
   SET_EsConnect: (state, EsConnect) => {
-    state.EsConnect = EsConnect
+    state.EsConnectID = EsConnect
   }
 }
 

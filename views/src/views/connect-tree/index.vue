@@ -6,7 +6,7 @@
       </div>
       <back-to-top />
       <el-table
-        :header-cell-style="{background:'#eef1f6',color:'#606266'}"
+
         :data="list"
       >
         <el-table-column

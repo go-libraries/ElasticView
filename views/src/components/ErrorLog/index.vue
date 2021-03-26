@@ -12,7 +12,7 @@
         <el-button size="mini" type="primary" icon="el-icon-delete" @click="clearAll">Clear All</el-button>
       </div>
       <el-table
-        :header-cell-style="{background:'#eef1f6',color:'#606266'}"
+
         :data="errorLogs"
         border
       >

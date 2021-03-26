@@ -7,7 +7,9 @@
       placeholder="请选择ES连接"
       @change="change"
     >
-      <el-option v-for="item in opt" :key="item.id" :value="item.remark" :label="item.remark" />
+
+      <el-option :value="Number(0)" label="请选择ES连接" />
+      <el-option v-for="item in opt" :key="item.id" :value="Number(item.id)" :label="item.remark" />
     </el-select>
   </div>
 </template>
@@ -31,8 +33,8 @@ export default {
   computed: {},
   watch: {},
   mounted() {
-    const obj = this.$store.state.baseData.EsConnect
-    this.link = obj.remark
+    const obj = this.$store.state.baseData.EsConnectID
+    this.link = Number(obj)
     this.getEsOpt()
     this.startLoop()
   },
@@ -55,15 +57,9 @@ export default {
       this.opt = res.data
     },
     change(link) {
-      let obj = {}
-      for (const v of this.opt) {
-        if (v.remark == link) {
-          obj = v
-        }
-      }
-      this.$store.dispatch('baseData/SetEsConnect', obj)
+      this.$store.dispatch('baseData/SetEsConnect', link)
       this.reload()
-      // console.log(this.$store.state.baseData.EsConnect)
+      // console.log(this.$store.state.baseData.EsConnectID)
     }
   }
 

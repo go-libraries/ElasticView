@@ -9,7 +9,7 @@
 
       <el-table
         :loading="connectLoading"
-        :header-cell-style="{background:'#eef1f6',color:'#606266'}"
+
         :data="list"
       >
         <el-table-column
@@ -25,7 +25,7 @@
 
         <el-table-column v-for="(info,index) in tableInfo" :key="index" align="center" :label="tableInfo[index].desc" :width="info.width" :prop="info.data.toString()" :sortable="info.sort">
           <template slot-scope="scope">
-            {{ scope.row[info.data] }}
+            {{ scope.row[info.data.split('->').join('.') ] }}
           </template>
         </el-table-column>
 
@@ -103,7 +103,7 @@ export default {
       this.connectLoading = true
       const form = {
         cat: this.catType,
-        es_connect: this.$store.state.baseData.EsConnect
+        es_connect: this.$store.state.baseData.EsConnectID
       }
       CatAction(form).then(res => {
         if (res.code == 0) {

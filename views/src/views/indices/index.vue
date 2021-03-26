@@ -3,16 +3,18 @@
     <el-card class="box-card">
       <div class="filter-container">
         <el-tag class="filter-item">请输入关键词</el-tag>
+
         <el-input v-model="input" class="filter-item width300" clearable @input="search" />
 
-        <el-select v-model="status" class="filter-item width300" clearable filterable @change="search">
+        <el-select v-model="status" class="filter-item width150" clearable filterable @change="search">
           <el-option label="索引健康状态" value="" />
           <el-option label="green" value="green" />
           <el-option label="yellow" value="yellow" />
           <el-option label="red" value="red" />
         </el-select>
 
-        <el-button type="success" class="filter-item" icon="el-icon-refresh" @click="search">刷新</el-button>
+        <el-button type="primary" class="filter-item" icon="el-icon-refresh" @click="search">刷新</el-button>
+
         <el-button type="success" class="filter-item" icon="el-icon-plus" @click="openSettingDialog('','add')">新建索引
         </el-button>
         <el-button
@@ -25,11 +27,13 @@
           切换为可读写状态
         </el-button>
 
+        <el-button v-loading="loadingGroup[7]" type="info" class="filter-item" icon="el-icon-s-open" @click="runCommand('/_all/_flush',7)">将所有索引刷新到磁盘</el-button>
+
       </div>
       <back-to-top />
       <el-table
         :loading="connectLoading"
-        :header-cell-style="{background:'#eef1f6',color:'#606266'}"
+
         :data="list"
       >
         <el-table-column
@@ -92,25 +96,25 @@
         </el-table-column>
         <el-table-column align="center" label="索引文档总数" width="80" prop="docs->count" sortable>
           <template slot-scope="scope">
-            {{ bigNumberTransform(scope.row["docs->count"]) }}
+            {{ bigNumberTransform(scope.row["docs.count"]) }}
           </template>
         </el-table-column>
         <el-table-column align="center" label="索引中删除状态的文档" width="80" prop="docs->deleted" sortable>
           <template slot-scope="scope">
-            {{ scope.row["docs->deleted"] }}
+            {{ scope.row["docs.deleted"] }}
           </template>
         </el-table-column>
         <el-table-column align="center" label="主分片+副本分分片的大小" width="120" prop="store->size" sortable>
           <template slot-scope="scope">
-            {{ scope.row["store->size"] }}
+            {{ scope.row["store.size"] }}
           </template>
         </el-table-column>
         <el-table-column align="center" label="主分片的大小" width="150" prop="pri->store->size" sortable>
           <template slot-scope="scope">
-            {{ scope.row["pri->store->size"] }}
+            {{ scope.row["pri.store.size"] }}
           </template>
         </el-table-column>
-        <el-table-column align="center" label="操作" fixed="right" width="300">
+        <el-table-column align="center" label="操作" fixed="right" width="400">
           <template slot-scope="scope">
             <el-button-group>
               <el-button
@@ -119,6 +123,23 @@
                 icon="el-icon-setting"
                 @click="openSettingDialog(scope.row.index,'update')"
               >修改配置
+              </el-button>
+
+              <el-button
+                v-if="Object.keys(mappings[scope.row.index].mappings).length > 0"
+                type="primary"
+                size="small"
+                icon="el-icon-plus"
+                @click="openMappingEditDialog(scope.row.index,true)"
+              >新增映射字段
+              </el-button>
+              <el-button
+                v-if="Object.keys(mappings[scope.row.index].mappings).length == 0"
+                type="warning"
+                size="small"
+                icon="el-icon-circle-plus-outline"
+                @click="openMappingEditDialog(scope.row.index,false)"
+              >新增映射结构
               </el-button>
               <el-button
                 icon="el-icon-more"
@@ -193,7 +214,6 @@
                 <el-button icon="refresh" @click="resetSettings">重置</el-button>
               </el-form-item>
               <el-form-item>
-
                 <json-editor
                   v-if="activeName == 'editSettings'"
                   v-model="activeData"
@@ -235,7 +255,7 @@
               icon="el-icon-connection"
               class="filter-item"
               :loading="loadingGroup[2]"
-              @click="runCommand('/_forcemerge?max_num_segments=1',2)"
+              @click="runCommandByIndex('/_forcemerge?max_num_segments=1',2)"
             >强制合并索引
             </el-button>
 
@@ -253,7 +273,7 @@
                 :loading="loadingGroup[3]"
                 type="primary"
                 icon="el-icon-refresh"
-                @click="runCommand('/_refresh',3)"
+                @click="runCommandByIndex('/_refresh',3)"
               >刷新索引
               </el-button>
             </el-popover>
@@ -263,7 +283,7 @@
               title="提示"
               width="200"
               trigger="hover"
-              content="为了让数据持久化到磁盘中"
+              content="让数据持久化到磁盘中"
             >
               <el-button
                 slot="reference"
@@ -272,8 +292,8 @@
                 type="info"
                 icon="el-icon-s-open"
                 class="filter-item"
-                @click="runCommand('/_flush',4)"
-              >冲洗索引
+                @click="runCommandByIndex('/_flush',4)"
+              >将索引刷新到磁盘
               </el-button>
             </el-popover>
 
@@ -283,7 +303,7 @@
               type="warning"
               :loading="loadingGroup[5]"
               icon="el-icon-toilet-paper"
-              @click="runCommand('/_cache/clear',5)"
+              @click="runCommandByIndex('/_cache/clear',5)"
             >清理缓存
             </el-button>
 
@@ -301,7 +321,6 @@
         </el-tabs>
 
       </el-drawer>
-
       <settings
         v-if="openSettings"
         :index-name="indexName"
@@ -309,6 +328,15 @@
         :open="openSettings"
         @close="closeSettings"
       />
+      <mappings
+        v-if="openMappings"
+        :index-name="indexName"
+        :mappings="mappingInfo"
+        :title="mappingTitle"
+        :open="openMappings"
+        @close="closeMappings"
+      />
+
     </el-card>
   </div>
 </template>
@@ -320,11 +348,14 @@ import { CatAction, RunDslAction } from '@/api/es'
 import { bigNumberTransform } from '@/utils/format'
 import { CreateAction, GetSettingsAction } from '@/api/es-index'
 import { esSettingsWords } from '@/utils/base-data'
+import { ListAction } from '@/api/es-map'
 
 export default {
   name: 'CatIndices',
+
   components: {
     'Settings': () => import('@/views/indices/components/settings'),
+    'Mappings': () => import('@/views/indices/components/mapping'),
     'BackToTop': () => import('@/components/BackToTop/index'),
     'JsonEditor': () => import('@/components/JsonEditor/index'),
     'Alias': () => import('@/views/indices/components/alias')
@@ -336,17 +367,26 @@ export default {
       pointOut: esSettingsWords,
       settings: {},
       readOnlyAllowDeleteLoading: false,
-      loadingGroup: [
-        false, false, false, false, false, false, false
-      ],
+      loadingGroup: {
+        0: false,
+        1: false,
+        2: false,
+        3: false,
+        4: false,
+        5: false,
+        6: false,
+        7: false
+      },
       forceMergeLoading: false,
       tabLoading: false,
       activeData: '{}',
       activeName: 'Settings',
       drawerShow: false,
       settingsType: 'add',
+      mappingTitle: '',
       indexName: '',
       openSettings: false,
+      openMappings: false,
       total: 0,
       connectLoading: false,
       page: 1,
@@ -354,22 +394,43 @@ export default {
       pageshow: true,
       list: [],
       input: '',
-      status: ''
+      status: '',
+      mappingInfo: {},
+      mappings: {}
     }
   },
   mounted() {
+    this.GetMapAction()
     this.searchData()
   },
   methods: {
-    removeAlias(aliasName) {
+    openMappingEditDialog(indexName, haveMapping) {
+      if (haveMapping) {
+        this.mappingInfo = this.mappings[indexName].mappings
+        this.mappingTitle = '新增字段'
+      } else {
+        this.mappingTitle = '新增结构'
+      }
 
+      this.openMappings = true
     },
-    addAlias() {
-
+    async GetMapAction() {
+      const input = {}
+      input['es_connect'] = this.$store.state.baseData.EsConnectID
+      const { code, data, msg } = await ListAction(input)
+      if (code == 0) {
+        this.mappings = data
+      } else {
+        this.$message({
+          type: 'error',
+          message: res.msg
+        })
+        return
+      }
     },
     submitSettings() {
       const input = {}
-      input['es_connect'] = this.$store.state.baseData.EsConnect
+      input['es_connect'] = this.$store.state.baseData.EsConnectID
       try {
         input['settings'] = JSON.parse(this.activeData)
       } catch (e) {
@@ -389,7 +450,6 @@ export default {
         background: 'rgba(0, 0, 0, 0.7)'
       })
       CreateAction(input).then(res => {
-        console.log(input['settings'])
         if (res.code == 0 || res.code == 200) {
           this.$message({
             type: 'success',
@@ -419,9 +479,10 @@ export default {
     },
     runCommand(command, loadingType) {
       const input = {}
-      input['es_connect'] = this.$store.state.baseData.EsConnect
+      input['es_connect'] = this.$store.state.baseData.EsConnectID
       input['method'] = 'POST'
-      input['path'] = '/' + this.indexName + command
+      input['path'] = command
+
       this.loadingGroup[loadingType] = true
 
       RunDslAction(input).then(res => {
@@ -438,13 +499,44 @@ export default {
           })
         }
         this.loadingGroup[loadingType] = false
-      }).catch(err => {
-        this.loadingGroup[loadingType] = false
-        this.$message({
-          type: 'error',
-          message: '网络异常'
-        })
       })
+        .catch(err => {
+          this.loadingGroup[loadingType] = false
+          this.$message({
+            type: 'error',
+            message: '网络异常'
+          })
+        })
+    },
+    runCommandByIndex(command, loadingType) {
+      const input = {}
+      input['es_connect'] = this.$store.state.baseData.EsConnectID
+      input['method'] = 'POST'
+      input['path'] = '/' + this.indexName + command
+
+      this.loadingGroup[loadingType] = true
+      RunDslAction(input).then(res => {
+        if (res.code == 0 || res.code == 200) {
+          this.$message({
+            type: 'success',
+            message: res.msg
+          })
+          this.search()
+        } else {
+          this.$message({
+            type: 'error',
+            message: res.msg
+          })
+        }
+        this.loadingGroup[loadingType] = false
+      })
+        .catch(err => {
+          this.loadingGroup[loadingType] = false
+          this.$message({
+            type: 'error',
+            message: '网络异常'
+          })
+        })
     },
     async changeTab() {
       let path = ''
@@ -460,7 +552,7 @@ export default {
           break
         case 'editSettings':
           const input = {}
-          input['es_connect'] = this.$store.state.baseData.EsConnect
+          input['es_connect'] = this.$store.state.baseData.EsConnectID
           input['index_name'] = this.indexName
           const { data } = await GetSettingsAction(input)
 
@@ -485,7 +577,7 @@ export default {
           return
       }
       const input = {}
-      input['es_connect'] = this.$store.state.baseData.EsConnect
+      input['es_connect'] = this.$store.state.baseData.EsConnectID
       input['method'] = 'GET'
       input['path'] = path
       this.tabLoading = true
@@ -535,7 +627,7 @@ export default {
       })
         .then(async() => {
           const input = {}
-          input['es_connect'] = this.$store.state.baseData.EsConnect
+          input['es_connect'] = this.$store.state.baseData.EsConnectID
           input['method'] = 'POST'
           input['path'] = '/' + indexName + '/_' + types
           this.loadingGroup[loadingType] = true
@@ -572,7 +664,7 @@ export default {
     },
     readOnlyAllowDelete() {
       const input = {}
-      input['es_connect'] = this.$store.state.baseData.EsConnect
+      input['es_connect'] = this.$store.state.baseData.EsConnectID
       input['method'] = 'PUT'
       input['path'] = '/_settings'
       input['body'] = `{
@@ -604,9 +696,6 @@ export default {
         })
       })
     },
-    editIndex(row) {
-      console.log(row)
-    },
     deleteIndex(indexName, loadingType) {
       this.$confirm('确定删除该索引吗?', '警告', {
         confirmButtonText: '确认',
@@ -615,7 +704,7 @@ export default {
       })
         .then(async() => {
           const input = {}
-          input['es_connect'] = this.$store.state.baseData.EsConnect
+          input['es_connect'] = this.$store.state.baseData.EsConnectID
           input['method'] = 'DELETE'
           input['path'] = '/' + indexName
           this.loadingGroup[loadingType] = true
@@ -650,6 +739,12 @@ export default {
       this.settingsType = 'add'
       this.openSettings = false
     },
+    closeMappings() {
+      this.indexName = ''
+      this.mappingTitle = 'add'
+      this.openMappings = false
+      this.mappingInfo = {}
+    },
     search() {
       this.page = 1
       this.pageshow = false
@@ -677,7 +772,7 @@ export default {
       this.connectLoading = true
       const form = {
         cat: this.$options.name,
-        es_connect: this.$store.state.baseData.EsConnect
+        es_connect: this.$store.state.baseData.EsConnectID
       }
       CatAction(form).then(res => {
         if (res.code == 0) {
@@ -738,6 +833,9 @@ export default {
     width: 300px;
   }
 
+  .width150 {
+    width: 150px;
+  }
   /deep/ :focus {
     outline: 0;
   }

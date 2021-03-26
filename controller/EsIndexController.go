@@ -26,7 +26,7 @@ func (this EsIndexController) CreateAction(ctx *gin.Context) {
 		this.Error(ctx, err)
 		return
 	}
-	esClinet, err := es.GetEsClient(esIndexInfo.EsConnect)
+	esClinet, err := es.GetEsClientByID(esIndexInfo.EsConnect)
 	if err != nil {
 		this.Error(ctx, err)
 		return
@@ -67,7 +67,7 @@ func (this EsIndexController) GetSettingsAction(ctx *gin.Context) {
 		this.Error(ctx, err)
 		return
 	}
-	esClinet, err := es.GetEsClient(esIndexInfo.EsConnect)
+	esClinet, err := es.GetEsClientByID(esIndexInfo.EsConnect)
 	if err != nil {
 		this.Error(ctx, err)
 		return
@@ -96,7 +96,7 @@ func (this EsIndexController) GetAliasAction(ctx *gin.Context) {
 		this.Error(ctx, err)
 		return
 	}
-	esClinet, err := es.GetEsClient(esAliasInfo.EsConnect)
+	esClinet, err := es.GetEsClientByID(esAliasInfo.EsConnect)
 	if err != nil {
 		this.Error(ctx, err)
 		return
@@ -120,7 +120,7 @@ func (this EsIndexController) OperateAliasAction(ctx *gin.Context) {
 		this.Error(ctx, err)
 		return
 	}
-	esClinet, err := es.GetEsClient(esAliasInfo.EsConnect)
+	esClinet, err := es.GetEsClientByID(esAliasInfo.EsConnect)
 	if err != nil {
 		this.Error(ctx, err)
 		return
@@ -188,7 +188,7 @@ func (this EsIndexController) ReindexAction(ctx *gin.Context) {
 		this.Error(ctx, err)
 		return
 	}
-	esClinet, err := es.GetEsClient(esReIndexInfo.EsConnect)
+	esClinet, err := es.GetEsClientByID(esReIndexInfo.EsConnect)
 	if err != nil {
 		this.Error(ctx, err)
 		return
@@ -227,13 +227,13 @@ func (this EsIndexController) ReindexListAction(ctx *gin.Context) {
 }
 
 func (this EsIndexController) IndexNamesAction(ctx *gin.Context) {
-	esConnect := es.EsConnect{}
+	esConnect := es.EsConnectID{}
 	err = ctx.Bind(&esConnect)
 	if err != nil {
 		this.Error(ctx, err)
 		return
 	}
-	esClinet, err := es.GetEsClient(esConnect)
+	esClinet, err := es.GetEsClientByID(esConnect.EsConnectID)
 	if err != nil {
 		this.Error(ctx, err)
 		return

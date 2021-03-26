@@ -23,7 +23,15 @@
           @keyup.enter.native="run"
           @select="mySelect"
         />
+        <el-button
+          class="filter-item "
 
+          icon="el-icon-search"
+          type="text"
+        >
+          <a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/index.html" target="_blank">官方文档</a>
+
+        </el-button>
         <el-button
           class="filter-item go"
           style="display: inline;"
@@ -51,6 +59,7 @@
         >
           搜索历史
         </el-button>
+
         <download-excel
           v-if="canExport"
           ref="download"
@@ -222,18 +231,28 @@ export default {
     if (resReqInfo != null && resReqInfo != '' && resReqInfo != 'null') {
       this.input = JSON.parse(resReqInfo)
     }
+
+    const sqlStr = sessionStorage.getItem('sqlStr')
+
+    if (sqlStr != null && sqlStr != '' && sqlStr != 'null') {
+      this.sqlStr = sqlStr
+    }
+
     this.startGuid()
   },
   destroyed() {
     const input = this.input
+    const sqlStr = this.sqlStr
     const resReqInfo = JSON.stringify(input)
     sessionStorage.setItem('resReqInfo', resReqInfo)
+    sessionStorage.setItem('sqlStr', sqlStr)
   },
   methods: {
     getHistoryData(v) {
       this.input.path = v['path']
       this.input.method = v['method']
       this.input.body = v['body']
+      this.go()
     },
     closeHistory(v) {
       this.dialogVisible = v
@@ -309,7 +328,8 @@ export default {
       done()
     },
     mergeEsPathKeyWords() {
-      const input = this.$store.state.baseData.EsConnect
+      const input = {}
+      input['es_connect'] = this.$store.state.baseData.EsConnectID
       ListAction(input).then(res => {
         if (res.code == 0) {
           const list = res.data
@@ -401,7 +421,7 @@ export default {
         }
       }
 
-      input['es_connect'] = this.$store.state.baseData.EsConnect
+      input['es_connect'] = this.$store.state.baseData.EsConnectID
       this.loading = true
       RunDslAction(input).then(res => {
         this.loading = false

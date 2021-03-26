@@ -18,16 +18,16 @@ export default {
   created() {
     // 在页面加载时读取sessionStorage里的状态信息Base64
     if (sessionStorage.getItem('EsConnect')) {
-      const base64EsConnect = sessionStorage.getItem('EsConnect')
-      const esConnect = Base64.decode(base64EsConnect.toString())
-      const EsConnect = JSON.parse(esConnect)
-      this.$store.dispatch('baseData/SetEsConnect', EsConnect)
+      const esConnect = sessionStorage.getItem('EsConnect')
+      // const esConnect = Base64.decode(base64EsConnect.toString())
+      // const EsConnect = JSON.parse(esConnect)
+      this.$store.dispatch('baseData/SetEsConnect', Number(esConnect))
     }
 
     // 在页面刷新时将vuex里的信息保存到sessionStorage里
     window.addEventListener('beforeunload', () => {
-      const esConnect = Base64.encode(JSON.stringify(this.$store.state.baseData.EsConnect))
-      sessionStorage.setItem('EsConnect', esConnect.toString())
+      // const esConnect = Base64.encode(JSON.stringify(this.$store.state.baseData.EsConnectID))
+      sessionStorage.setItem('EsConnect', this.$store.state.baseData.EsConnectID)
     })
   },
   provide() { // 父组件中通过provide来提供变量，在子组件中通过inject来注入变量。
