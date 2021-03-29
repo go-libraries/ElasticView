@@ -27,12 +27,20 @@
           切换为可读写状态
         </el-button>
 
-        <el-button v-loading="loadingGroup[7]" type="info" class="filter-item" icon="el-icon-s-open" @click="runCommand('/_all/_flush',7)">将所有索引刷新到磁盘</el-button>
+        <el-button
+          v-loading="loadingGroup[7]"
+          type="info"
+          class="filter-item"
+          icon="el-icon-s-open"
+          @click="runCommand('/_all/_flush',7)"
+        >将所有索引刷新到磁盘
+        </el-button>
 
       </div>
       <back-to-top />
+
       <el-table
-        :loading="connectLoading"
+        v-loading="connectLoading"
 
         :data="list"
       >
@@ -188,6 +196,7 @@
 
           </el-tab-pane>
           <el-tab-pane label="映射" name="Mapping">
+
             <json-editor
               v-if="activeName == 'Mapping'"
               v-model="activeData"
@@ -399,7 +408,14 @@ export default {
       mappings: {}
     }
   },
+  destroyed() {
+    sessionStorage.setItem('CatIndices', this.input)
+  },
   mounted() {
+    const input = sessionStorage.getItem('CatIndices')
+    if (input != null) {
+      this.input = input
+    }
     this.GetMapAction()
     this.searchData()
   },
@@ -423,7 +439,7 @@ export default {
       } else {
         this.$message({
           type: 'error',
-          message: res.msg
+          message: msg
         })
         return
       }
@@ -465,10 +481,6 @@ export default {
         loading.close()
       }).catch(err => {
         loading.close()
-        this.$message({
-          type: 'error',
-          message: '网络异常'
-        })
       })
     },
     getSettings(value) {
@@ -502,10 +514,6 @@ export default {
       })
         .catch(err => {
           this.loadingGroup[loadingType] = false
-          this.$message({
-            type: 'error',
-            message: '网络异常'
-          })
         })
     },
     runCommandByIndex(command, loadingType) {
@@ -532,10 +540,6 @@ export default {
       })
         .catch(err => {
           this.loadingGroup[loadingType] = false
-          this.$message({
-            type: 'error',
-            message: '网络异常'
-          })
         })
     },
     async changeTab() {
@@ -593,10 +597,6 @@ export default {
         this.tabLoading = false
       }).catch(err => {
         this.tabLoading = false
-        this.$message({
-          type: 'error',
-          message: '网络异常'
-        })
       })
     },
     openDrawer(indexName) {
@@ -647,10 +647,6 @@ export default {
             this.loadingGroup[loadingType] = false
           }).catch(err => {
             this.loadingGroup[loadingType] = false
-            this.$message({
-              type: 'error',
-              message: '网络异常'
-            })
           })
         })
         .catch(err => {
@@ -690,10 +686,6 @@ export default {
         this.readOnlyAllowDeleteLoading = false
       }).catch(err => {
         this.readOnlyAllowDeleteLoading = false
-        this.$message({
-          type: 'error',
-          message: '网络异常'
-        })
       })
     },
     deleteIndex(indexName, loadingType) {
@@ -724,10 +716,7 @@ export default {
               this.loadingGroup[loadingType] = false
             }
           }).catch(err => {
-            this.$message({
-              type: 'error',
-              message: '网络异常'
-            })
+
           })
         })
         .catch(err => {
@@ -771,7 +760,7 @@ export default {
     searchData() {
       this.connectLoading = true
       const form = {
-        cat: this.$options.name,
+        cat: 'CatIndices',
         es_connect: this.$store.state.baseData.EsConnectID
       }
       CatAction(form).then(res => {
@@ -805,10 +794,7 @@ export default {
         this.connectLoading = false
       }).catch(err => {
         console.log(err)
-        this.$message({
-          type: 'error',
-          message: '网络异常'
-        })
+
         this.connectLoading = false
       })
     }
@@ -836,6 +822,7 @@ export default {
   .width150 {
     width: 150px;
   }
+
   /deep/ :focus {
     outline: 0;
   }

@@ -44,7 +44,8 @@
               <div>{{ scope.row.body }}</div>
                           <span slot="reference">{{ scope.row.body.substr(0, 50) + "..." }}</span>
 
-              </span slot="reference"></el-popover>
+              </span slot="reference">
+            </el-popover>
           </template>
         </el-table-column>
 
@@ -63,6 +64,17 @@
           </template>
         </el-table-column>
       </el-table>
+      <div class="pagination-container">
+        <el-pagination
+          :current-page="input.page"
+          :page-sizes="[10, 20, 30, 50]"
+          :page-size="input.limit"
+          layout="total, sizes, prev, pager, next, jumper"
+          :total="total"
+          @size-change="handleSizeChange"
+          @current-change="searchHistory"
+        />
+      </div>
     </el-dialog>
   </div>
 </template>
@@ -86,15 +98,27 @@ export default {
     return {
       input: {
         indexName: '',
-        date: []
+        date: [],
+        page: 1,
+        limit: 10
       },
-      list: []
+      list: [],
+      total: 0
     }
   },
   mounted() {
     this.searchHistory()
   },
   methods: {
+    handleCurrentChange(v) {
+      console.log(this.input.page)
+      this.input.page = v
+      this.searchHistory(1)
+    },
+    handleSizeChange(v) {
+      this.input.limit = v
+      this.searchHistory(1)
+    },
     changeDate(v) {
       this.input.date = v
       this.searchHistory()
@@ -127,7 +151,9 @@ export default {
     close() {
       this.$emit('close', false)
     },
-    async searchHistory() {
+    async searchHistory(page) {
+      console.log(page)
+      !page ? this.input.page = 1 : this.input.page = page
       const { data, code, msg } = await ListAction(this.input)
       console.log(data)
       if (code != 0) {
@@ -137,7 +163,8 @@ export default {
         })
         return
       } else {
-        this.list = data
+        this.list = data.list
+        this.total = data.count
       }
     }
   }

@@ -20,7 +20,7 @@ func (this EsMappingController) ListAction(ctx *gin.Context) {
 		this.Error(ctx, err)
 		return
 	}
-	esClinet, err := es.GetEsClientByID(esConnect.EsConnectID)
+	esClinet, err := es.GetEsClientV6ByID(esConnect.EsConnectID)
 	if err != nil {
 		this.Error(ctx, err)
 		return
@@ -44,7 +44,7 @@ func (this EsMappingController) UpdateMappingAction(ctx *gin.Context) {
 		this.Error(ctx, err)
 		return
 	}
-	_, err := es.GetEsClientByID(esMappingInfo.EsConnect)
+	_, err := es.GetEsClientV6ByID(esMappingInfo.EsConnect)
 	if err != nil {
 		this.Error(ctx, err)
 		return

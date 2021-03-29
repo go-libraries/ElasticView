@@ -164,10 +164,6 @@ export default {
         }
         this.testConnectLoading = false
       }).catch(err => {
-        this.$message({
-          type: 'error',
-          message: '网络异常'
-        })
         this.testConnectLoading = false
       })
     },
@@ -187,10 +183,6 @@ export default {
         }
         this.list[scope.$index].connectLoading = false
       }).catch(err => {
-        this.$message({
-          type: 'error',
-          message: '网络异常'
-        })
         this.list[scope.$index].connectLoading = false
       })
     },
@@ -242,7 +234,7 @@ export default {
       if (this.link.remark == '') {
         this.$message({
           type: 'error',
-          message: res.msg
+          message: '请填写备注'
         })
         return
       }

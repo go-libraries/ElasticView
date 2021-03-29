@@ -257,10 +257,6 @@ export default {
         loading.close()
       }).catch(err => {
         loading.close()
-        this.$message({
-          type: 'error',
-          message: '网络异常'
-        })
       })
     },
     catIndexSettings() {
@@ -343,10 +339,6 @@ export default {
         }
       }).catch(err => {
         console.log(err)
-        this.$message({
-          type: 'error',
-          message: '网络异常'
-        })
       })
     },
     catIndexStatus() {
@@ -365,10 +357,7 @@ export default {
           })
         }
       }).catch(err => {
-        this.$message({
-          type: 'error',
-          message: '网络异常'
-        })
+
       })
     },
     closeDialog() {

@@ -31,7 +31,12 @@ func (this DslHistoryController) ListAction(ctx *gin.Context) {
 		this.Error(ctx, err)
 		return
 	}
-	this.Success(ctx, response.SearchSuccess, list)
+	count, err := gmDslHistoryModel.Count()
+	if err != nil {
+		this.Error(ctx, err)
+		return
+	}
+	this.Success(ctx, response.SearchSuccess, map[string]interface{}{"list": list, "count": count})
 }
 
 func (this DslHistoryController) CleanAction(ctx *gin.Context) {

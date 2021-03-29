@@ -52,44 +52,44 @@ func Init() *gin.Engine {
 
 	guid := app.Group("/api/gm_guid")
 	{
-		guid.Any("Finish", GuidController{}.Finish)
-		guid.Any("IsFinish", GuidController{}.IsFinish)
+		guid.POST("Finish", GuidController{}.Finish)
+		guid.POST("IsFinish", GuidController{}.IsFinish)
 	}
 
 	esLink := app.Group("/api/es_link")
 	{
-		esLink.Any("InsertAction", EsLinkController{}.InsertAction)
-		esLink.Any("DeleteAction", EsLinkController{}.DeleteAction)
-		esLink.Any("UpdateAction", EsLinkController{}.UpdateAction)
-		esLink.Any("ListAction", EsLinkController{}.ListAction)
+		esLink.POST("InsertAction", EsLinkController{}.InsertAction)
+		esLink.POST("DeleteAction", EsLinkController{}.DeleteAction)
+		esLink.POST("UpdateAction", EsLinkController{}.UpdateAction)
+		esLink.GET("ListAction", EsLinkController{}.ListAction)
 	}
 
 	es := app.Group("/api/es")
 	{
-		es.Any("PingAction", EsController{}.PingAction)
-		es.Any("CatAction", EsController{}.CatAction)
-		es.Any("RunDslAction", EsController{}.RunDslAction)
+		es.POST("PingAction", EsController{}.PingAction)
+		es.POST("CatAction", EsController{}.CatAction)
+		es.POST("RunDslAction", EsController{}.RunDslAction)
 		es.Any("SqlToDslAction", EsController{}.SqlToDslAction)
 	}
 	esMap := app.Group("/api/es_map")
 	{
-		esMap.Any("ListAction", EsMappingController{}.ListAction)
+		esMap.POST("ListAction", EsMappingController{}.ListAction)
 	}
 
 	esIndex := app.Group("/api/es_index")
 	{
-		esIndex.Any("CreateAction", EsIndexController{}.CreateAction)
-		esIndex.Any("GetSettingsAction", EsIndexController{}.GetSettingsAction)
-		esIndex.Any("IndexNamesAction", EsIndexController{}.IndexNamesAction)
-		esIndex.Any("ReindexAction", EsIndexController{}.ReindexAction)
-		esIndex.Any("GetAliasAction", EsIndexController{}.GetAliasAction)
-		esIndex.Any("OperateAliasAction", EsIndexController{}.OperateAliasAction)
+		esIndex.POST("CreateAction", EsIndexController{}.CreateAction)
+		esIndex.POST("GetSettingsAction", EsIndexController{}.GetSettingsAction)
+		esIndex.POST("IndexNamesAction", EsIndexController{}.IndexNamesAction)
+		esIndex.POST("ReindexAction", EsIndexController{}.ReindexAction)
+		esIndex.POST("GetAliasAction", EsIndexController{}.GetAliasAction)
+		esIndex.POST("OperateAliasAction", EsIndexController{}.OperateAliasAction)
 	}
 
 	dslHistory := app.Group("/api/dslHistory")
 	{
-		dslHistory.Any("CleanAction", DslHistoryController{}.CleanAction)
-		dslHistory.Any("ListAction", DslHistoryController{}.ListAction)
+		dslHistory.POST("CleanAction", DslHistoryController{}.CleanAction)
+		dslHistory.POST("ListAction", DslHistoryController{}.ListAction)
 	}
 
 	return app

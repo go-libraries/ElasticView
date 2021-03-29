@@ -1,6 +1,9 @@
 // axios 拦截器
 import store from '@/store'
+
 import { getToken } from '@/utils/auth'
+
+const CancelMsg = '用户已经取消请求'
 
 // create an axios instance
 const service = axios.create({
@@ -9,9 +12,19 @@ const service = axios.create({
   timeout: 60 * 60 * 60 * 60 // request timeout
 })
 
+// 声明一个数组用于存储每个请求的取消函数和axios标识
+
 // request interceptor
 service.interceptors.request.use(
   config => {
+    if (config.data) {
+      if (config.data.hasOwnProperty('cancelToken')) {
+        config.cancelToken = new axios.CancelToken((c) => {
+          store.dispatch('baseData/SET_ReqCancelMap', { token: config.data['cancelToken'], fn: c })
+        })
+      }
+    }
+
     // do something before request is sent
     if (store.getters.token) {
       // let each request carry token
@@ -71,7 +84,15 @@ service.interceptors.response.use(
     }
   },
   error => {
-    console.log('err' + error) // for debug
+    if (error.message == CancelMsg) {
+      ELEMENT.Message({
+        message: '已经手动取消请求', // error.message,
+        type: 'success',
+        duration: 5 * 1000
+      })
+      return Promise.reject(error)
+    }
+    console.error('err', error) // for debug
     ELEMENT.Message({
       message: '网络异常', // error.message,
       type: 'error',

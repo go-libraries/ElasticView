@@ -7,10 +7,14 @@ import (
 	"ElasticView/platform-basic-libs/util"
 )
 
-func GetEsClientByID(id int) (esClient EsClient, err error) {
+func GetEsClientV6ByID(id int) (esClient EsClient, err error) {
 
 	esConnect := EsConnect{}
-	sql, args, err := db.SqlBuilder.Select("ip", "user", "pwd", "version").From("es_link").Where(db.Eq{"id": id}).Limit(1).ToSql()
+	sql, args, err := db.SqlBuilder.
+		Select("ip", "user", "pwd", "version").
+		From("es_link").
+		Where(db.Eq{"id": id}).
+		Limit(1).ToSql()
 	if err != nil {
 		return
 	}
@@ -19,8 +23,10 @@ func GetEsClientByID(id int) (esClient EsClient, err error) {
 	if util.FilterMysqlNilErr(err) {
 		return
 	}
-
-	return GetEsClient(esConnect)
+	if esConnect.Ip == "" {
+		return nil, errors.New("请先选择ES连接")
+	}
+	return NewEsClientV6(esConnect)
 }
 
 func GetEsClient(esConnect EsConnect) (EsClient, error) {

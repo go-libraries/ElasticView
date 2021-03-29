@@ -1,6 +1,10 @@
 package model
 
-import "ElasticView/engine/db"
+import (
+	"log"
+
+	"ElasticView/engine/db"
+)
 
 //http://sql2struct.atotoa.com/
 
@@ -13,6 +17,8 @@ type GmDslHistoryModel struct {
 	Created    string   `gorm:"column:created" json:"created" form:"created" db:"created"`
 	FilterDate []string `json:"date"`
 	IndexName  string   `json:"indexName"`
+	Page       int      `json:"page"`
+	Limit      int      `json:"limit"`
 }
 
 func (this *GmDslHistoryModel) TableName() string {
@@ -46,7 +52,35 @@ func (this *GmDslHistoryModel) List() (gmDslHistoryModelList []GmDslHistoryModel
 		From(this.TableName()).
 		Where(db.Eq{"uid": this.Uid}).
 		OrderBy("id desc").
-		Limit(20)
+		Limit(uint64(this.Limit)).Offset(db.CreatePage(this.Page, this.Limit))
+
+	if this.IndexName != "" {
+		builder = builder.Where(db.Like{"path": db.CreateLike(this.IndexName)})
+	}
+
+	if len(this.FilterDate) > 0 {
+		builder = builder.Where(db.Gte{"created": this.FilterDate[0]}).Where(db.Lte{"created": this.FilterDate[1]})
+	}
+
+	sql, args, err := builder.ToSql()
+	log.Println(sql, args, this)
+	if err != nil {
+		return
+	}
+	err = db.Sqlx.Select(&gmDslHistoryModelList, sql, args...)
+
+	if err != nil {
+		return
+	}
+
+	return
+}
+
+func (this *GmDslHistoryModel) Count() (count int, err error) {
+	builder := db.SqlBuilder.
+		Select("count(*)").
+		From(this.TableName()).
+		Where(db.Eq{"uid": this.Uid})
 
 	if this.IndexName != "" {
 		builder = builder.Where(db.Like{"path": db.CreateLike(this.IndexName)})
@@ -60,6 +94,11 @@ func (this *GmDslHistoryModel) List() (gmDslHistoryModelList []GmDslHistoryModel
 	if err != nil {
 		return
 	}
-	err = db.Sqlx.Select(&gmDslHistoryModelList, sql, args...)
+	err = db.Sqlx.Get(&count, sql, args...)
+
+	if err != nil {
+		return
+	}
+
 	return
 }

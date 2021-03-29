@@ -50,7 +50,7 @@ func (this EsController) CatAction(ctx *gin.Context) {
 		this.Error(ctx, err)
 		return
 	}
-	esClinet, err := es.GetEsClientByID(esCat.EsConnect)
+	esClinet, err := es.GetEsClientV6ByID(esCat.EsConnect)
 	if err != nil {
 		this.Error(ctx, err)
 		return
@@ -81,13 +81,14 @@ func (this EsController) CatAction(ctx *gin.Context) {
 }
 
 func (this EsController) RunDslAction(ctx *gin.Context) {
+
 	esRest := es.EsRest{}
 	err = ctx.Bind(&esRest)
 	if err != nil {
 		this.Error(ctx, err)
 		return
 	}
-	esClinet, err := es.GetEsClientByID(esRest.EsConnect)
+	esClinet, err := es.GetEsClientV6ByID(esRest.EsConnect)
 	if err != nil {
 		this.Error(ctx, err)
 		return

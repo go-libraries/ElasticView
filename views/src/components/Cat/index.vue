@@ -8,8 +8,7 @@
       </div>
 
       <el-table
-        :loading="connectLoading"
-
+        v-loading="connectLoading"
         :data="list"
       >
         <el-table-column
@@ -138,10 +137,7 @@ export default {
         this.connectLoading = false
       }).catch(err => {
         console.log(err)
-        this.$message({
-          type: 'error',
-          message: '网络异常'
-        })
+
         this.connectLoading = false
       })
     }

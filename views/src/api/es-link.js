@@ -5,8 +5,8 @@ const api = '/api/es_link/'
 export function DeleteAction(data) {
   return request({
     url: api + 'DeleteAction',
-    method: 'get',
-    params: data
+    method: 'post',
+    data
   })
 }
 

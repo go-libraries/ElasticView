@@ -20,7 +20,7 @@
 
           :fetch-suggestions="querySearch"
           @clear="clear"
-          @keyup.enter.native="run"
+          @keyup.enter.native="go"
           @select="mySelect"
         />
         <el-button
@@ -30,7 +30,6 @@
           type="text"
         >
           <a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/index.html" target="_blank">官方文档</a>
-
         </el-button>
         <el-button
           class="filter-item go"
@@ -40,6 +39,15 @@
           icon="el-icon-right"
           @click="go"
         >GO
+        </el-button>
+        <el-button
+          v-if="cancelToken != ''"
+          class="filter-item cancel"
+          style="display: inline;"
+          type="danger"
+          icon="el-icon-close"
+          @click="cancelReq"
+        >cancel
         </el-button>
         <el-button
           v-show="input.method == 'GET'"
@@ -59,7 +67,16 @@
         >
           搜索历史
         </el-button>
-
+        <el-button
+          v-if="canExport"
+          class="filter-item "
+          style="display: inline;"
+          type="success"
+          icon="el-icon-refresh"
+          @click.native="tableDialogVisible = true"
+        >
+          返回结果转表格
+        </el-button>
         <download-excel
           v-if="canExport"
           ref="download"
@@ -112,6 +129,12 @@
       @getHistoryData="getHistoryData"
       @close="closeHistory"
     />
+    <res-table
+      v-if="tableDialogVisible"
+      :dialog-visible="tableDialogVisible"
+      :json_data="JSON.parse(resData)"
+      @close="closeResTable"
+    />
   </div>
 </template>
 
@@ -133,10 +156,13 @@ export default {
     'SqlEditor': () => import('@/components/SqlEditor/index'),
     'BackToTop': () => import('@/components/BackToTop/index'),
     'JsonEditor': () => import('@/components/JsonEditor/index'),
-    'History': () => import('@/views/rest/components/history')
+    'History': () => import('@/views/rest/components/history'),
+    'ResTable': () => import('@/views/rest/components/res-table')
   },
   data() {
     return {
+      tableDialogVisible: false,
+      cancelToken: '',
       dialogVisible: false,
       driver: null,
       modName: 'DSL面板',
@@ -168,7 +194,6 @@ export default {
       }
       if (Array.isArray(resData)) {
         // this.json_fields[defaultKey] = defaultKey
-
         if (resData.length <= 0) {
           return false
         }
@@ -217,6 +242,7 @@ export default {
               }
             })
             this.json_data = json_data
+            console.log(json_data)
             return true
           }
         }
@@ -257,6 +283,10 @@ export default {
     closeHistory(v) {
       this.dialogVisible = v
     },
+    closeResTable(v) {
+      this.tableDialogVisible = v
+    },
+
     async finishGuid() {
       const { data, code, msg } = await Finish({ 'guid_name': this.modName })
     },
@@ -354,10 +384,6 @@ export default {
         }
       }).catch(err => {
         console.log(err)
-        this.$message({
-          type: 'error',
-          message: '网络异常'
-        })
       })
     },
     replaceArrSpece(arr) {
@@ -401,6 +427,14 @@ export default {
           .catch(err => resolve(false))
       })
     },
+    cancelReq() {
+      const reqCancelMap = this.$store.state.baseData.reqCancelMap
+      if (reqCancelMap.hasOwnProperty(this.cancelToken)) {
+        reqCancelMap[this.cancelToken]('用户已经取消请求')
+        this.$store.dispatch('baseData/DElETE_ReqCancelMap', this.cancelToken)
+        this.cancelToken = ''
+      }
+    },
     async go() {
       const input = clone(this.input)
 
@@ -421,8 +455,13 @@ export default {
         }
       }
 
-      input['es_connect'] = this.$store.state.baseData.EsConnectID
+      const cancelToken = new Date().getTime()
+      this.cancelToken = cancelToken
       this.loading = true
+
+      input['es_connect'] = this.$store.state.baseData.EsConnectID
+      input['cancelToken'] = cancelToken
+
       RunDslAction(input).then(res => {
         this.loading = false
         if (res.code == 0 || res.code == 200 || res.code == 201) {
@@ -437,13 +476,13 @@ export default {
           })
         }
         this.resData = JSON.stringify(res.data, null, '\t')
+        this.$store.dispatch('baseData/DElETE_ReqCancelMap', this.cancelToken)
+        this.cancelToken = ''
       }).catch(err => {
         console.log(err)
         this.loading = false
-        this.$message({
-          type: 'error',
-          message: '网络异常'
-        })
+        this.$store.dispatch('baseData/DElETE_ReqCancelMap', this.cancelToken)
+        this.cancelToken = ''
       })
     }
   }

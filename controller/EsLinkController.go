@@ -6,9 +6,7 @@ import (
 
 	"ElasticView/engine/db"
 	"ElasticView/model"
-	"ElasticView/platform-basic-libs/request"
 	"ElasticView/platform-basic-libs/response"
-	"ElasticView/platform-basic-libs/util"
 
 	"github.com/gin-gonic/gin"
 	jsoniter "github.com/json-iterator/go"
@@ -115,20 +113,19 @@ func (this EsLinkController) UpdateAction(ctx *gin.Context) {
 
 func (this EsLinkController) DeleteAction(ctx *gin.Context) {
 
-	err := this.CheckParameter([]request.CheckConfigStruct{
-		{request.IdNullError, "id"},
-	}, ctx)
+	var req struct {
+		Id int `json:"id"`
+	}
 
+	err = ctx.Bind(&req)
 	if err != nil {
 		this.Error(ctx, err)
 		return
 	}
 
-	id := util.CtxFormIntDefault(ctx, "id", 0)
-
 	_, err = db.SqlBuilder.
 		Delete("es_link").
-		Where(db.Eq{"id": id}).RunWith(db.Sqlx).Exec()
+		Where(db.Eq{"id": req.Id}).RunWith(db.Sqlx).Exec()
 
 	if err != nil {
 		this.Error(ctx, err)

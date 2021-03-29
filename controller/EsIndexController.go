@@ -26,7 +26,7 @@ func (this EsIndexController) CreateAction(ctx *gin.Context) {
 		this.Error(ctx, err)
 		return
 	}
-	esClinet, err := es.GetEsClientByID(esIndexInfo.EsConnect)
+	esClinet, err := es.GetEsClientV6ByID(esIndexInfo.EsConnect)
 	if err != nil {
 		this.Error(ctx, err)
 		return
@@ -67,7 +67,7 @@ func (this EsIndexController) GetSettingsAction(ctx *gin.Context) {
 		this.Error(ctx, err)
 		return
 	}
-	esClinet, err := es.GetEsClientByID(esIndexInfo.EsConnect)
+	esClinet, err := es.GetEsClientV6ByID(esIndexInfo.EsConnect)
 	if err != nil {
 		this.Error(ctx, err)
 		return
@@ -96,7 +96,7 @@ func (this EsIndexController) GetAliasAction(ctx *gin.Context) {
 		this.Error(ctx, err)
 		return
 	}
-	esClinet, err := es.GetEsClientByID(esAliasInfo.EsConnect)
+	esClinet, err := es.GetEsClientV6ByID(esAliasInfo.EsConnect)
 	if err != nil {
 		this.Error(ctx, err)
 		return
@@ -120,7 +120,7 @@ func (this EsIndexController) OperateAliasAction(ctx *gin.Context) {
 		this.Error(ctx, err)
 		return
 	}
-	esClinet, err := es.GetEsClientByID(esAliasInfo.EsConnect)
+	esClinet, err := es.GetEsClientV6ByID(esAliasInfo.EsConnect)
 	if err != nil {
 		this.Error(ctx, err)
 		return
@@ -188,7 +188,7 @@ func (this EsIndexController) ReindexAction(ctx *gin.Context) {
 		this.Error(ctx, err)
 		return
 	}
-	esClinet, err := es.GetEsClientByID(esReIndexInfo.EsConnect)
+	esClinet, err := es.GetEsClientV6ByID(esReIndexInfo.EsConnect)
 	if err != nil {
 		this.Error(ctx, err)
 		return
@@ -222,10 +222,6 @@ func (this EsIndexController) ReindexAction(ctx *gin.Context) {
 	this.Success(ctx, response.OperateSuccess, res)
 }
 
-func (this EsIndexController) ReindexListAction(ctx *gin.Context) {
-
-}
-
 func (this EsIndexController) IndexNamesAction(ctx *gin.Context) {
 	esConnect := es.EsConnectID{}
 	err = ctx.Bind(&esConnect)
@@ -233,7 +229,7 @@ func (this EsIndexController) IndexNamesAction(ctx *gin.Context) {
 		this.Error(ctx, err)
 		return
 	}
-	esClinet, err := es.GetEsClientByID(esConnect.EsConnectID)
+	esClinet, err := es.GetEsClientV6ByID(esConnect.EsConnectID)
 	if err != nil {
 		this.Error(ctx, err)
 		return
