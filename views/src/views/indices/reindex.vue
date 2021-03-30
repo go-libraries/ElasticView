@@ -158,7 +158,13 @@
                 <el-tag effect="dark">字段</el-tag>
                 <el-input v-model="form.source.sort.key" class="sort-key" />
                 <el-tag effect="dark">是否正序</el-tag>
-                <el-select v-model="form.source.sort.sortType" class="sort-key" placeholder="是否正序" filterable filterable>
+                <el-select
+                  v-model="form.source.sort.sortType"
+                  class="sort-key"
+                  placeholder="是否正序"
+                  filterable
+                  filterable
+                >
                   <el-option
                     key="index"
                     label="是"
@@ -171,7 +177,9 @@
                   />
                 </el-select>
               </el-form-item>
-
+              <el-form-item v-if="sourceConfig.indexOf('size') != -1" label="批次大小配置">
+                <el-input v-model="form.source.size" type="number" class="width30" />
+              </el-form-item>
               <el-form-item v-if="sourceConfig.indexOf('query') != -1" label="QUERY DSL">
                 <json-editor
                   v-model="form.source.query"
@@ -295,6 +303,7 @@ import { esBodyKeyWords } from '@/utils/base-data'
 import { ListAction } from '@/api/es-map'
 import { ReindexAction } from '@/api/es-index'
 import { ListAction as LinkOptAction } from '@/api/es-link'
+
 export default {
   name: 'Reindex',
   components: {
@@ -324,6 +333,7 @@ export default {
         },
         source: {
           index: [],
+          size: 5000,
           type: [],
           query: '{}',
           _source: {
@@ -557,17 +567,22 @@ export default {
 </script>
 
 <style scoped>
-  .width30{
+  .width30 {
     width: 300px
   }
-  .sort-key{
+
+  .sort-key {
     width: 30%
   }
-  .margin-20{
+
+  .margin-20 {
     margin: 20px;
   }
-  .margin-left30
-  {margin-left: 30px;}
+
+  .margin-left30 {
+    margin-left: 30px;
+  }
+
   .card {
     width: 95%;
     float: left;

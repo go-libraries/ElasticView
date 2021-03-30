@@ -2,8 +2,6 @@ package controller
 
 import (
 	"ElasticView/engine/es"
-	"ElasticView/platform-basic-libs/my_error"
-
 	"ElasticView/platform-basic-libs/response"
 
 	"github.com/gin-gonic/gin"
@@ -47,11 +45,6 @@ func (this EsMappingController) UpdateMappingAction(ctx *gin.Context) {
 	_, err := es.GetEsClientV6ByID(esMappingInfo.EsConnect)
 	if err != nil {
 		this.Error(ctx, err)
-		return
-	}
-
-	if esMappingInfo.IndexName == "" {
-		this.Error(ctx, my_error.NewBusiness(es.ParmasNullError, es.IndexNameNullError))
 		return
 	}
 

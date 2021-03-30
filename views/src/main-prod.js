@@ -38,6 +38,12 @@ import formCreate from '@form-create/element-ui'
 
 Vue.use(formCreate)
 
+import plTable from 'pl-table'
+
+import 'pl-table/themes/index.css'
+
+Vue.use(plTable)
+
 // 注册全局过滤器
 Object.keys(filters).forEach(key => {
   Vue.filter(key, filters[key])

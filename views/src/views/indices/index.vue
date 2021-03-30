@@ -28,7 +28,7 @@
         </el-button>
 
         <el-button
-          v-loading="loadingGroup[7]"
+          v-loading="loadingGroup['/_all/_flush']"
           type="info"
           class="filter-item"
           icon="el-icon-s-open"
@@ -41,7 +41,6 @@
 
       <el-table
         v-loading="connectLoading"
-
         :data="list"
       >
         <el-table-column
@@ -196,7 +195,18 @@
 
           </el-tab-pane>
           <el-tab-pane label="映射" name="Mapping">
-
+            <div class="filter-container operate">
+              <el-tag class="filter-item">操作</el-tag>
+              <el-button
+                v-loading="loadingGroup['saveMappinng']"
+                class="filter-item"
+                size="small"
+                type="warning"
+                icon="el-icon-toilet-paper"
+                @click="saveMappinng"
+              >Todo...
+              </el-button>
+            </div>
             <json-editor
               v-if="activeName == 'Mapping'"
               v-model="activeData"
@@ -204,6 +214,7 @@
               styles="width: 100%"
               :only-read="true"
               title="映射"
+              @getValue="getMapping"
             />
           </el-tab-pane>
           <el-tab-pane label="Stats" name="Stats">
@@ -240,9 +251,10 @@
             <alias v-if="activeName == 'alias'" :index-name="indexName" />
           </el-tab-pane>
           <div class="filter-container operate">
+            <el-tag class="filter-item">操作</el-tag>
             <el-button
+              v-loading="loadingGroup['close']"
               type="danger"
-              :loading="loadingGroup[0]"
               size="small"
               icon="el-icon-circle-close"
               class="filter-item"
@@ -251,8 +263,8 @@
             </el-button>
 
             <el-button
+              v-loading="loadingGroup['open']"
               type="success"
-              :loading="loadingGroup[1]"
               size="small"
               icon="el-icon-success"
               class="filter-item"
@@ -260,10 +272,10 @@
             >打开
             </el-button>
             <el-button
+              v-loading="loadingGroup['_forcemerge']"
               size="small"
               icon="el-icon-connection"
               class="filter-item"
-              :loading="loadingGroup[2]"
               @click="runCommandByIndex('/_forcemerge?max_num_segments=1',2)"
             >强制合并索引
             </el-button>
@@ -277,12 +289,12 @@
             >
               <el-button
                 slot="reference"
+                v-loading="loadingGroup['_refresh']"
                 class="filter-item"
                 size="small"
-                :loading="loadingGroup[3]"
                 type="primary"
                 icon="el-icon-refresh"
-                @click="runCommandByIndex('/_refresh',3)"
+                @click="runCommandByIndex('/_refresh','_refresh')"
               >刷新索引
               </el-button>
             </el-popover>
@@ -296,8 +308,8 @@
             >
               <el-button
                 slot="reference"
+                v-loading="loadingGroup['_flush']"
                 size="small"
-                :loading="loadingGroup[4]"
                 type="info"
                 icon="el-icon-s-open"
                 class="filter-item"
@@ -307,20 +319,20 @@
             </el-popover>
 
             <el-button
+              v-loading="loadingGroup['_cache/clear']"
               class="filter-item"
               size="small"
               type="warning"
-              :loading="loadingGroup[5]"
               icon="el-icon-toilet-paper"
               @click="runCommandByIndex('/_cache/clear',5)"
             >清理缓存
             </el-button>
 
             <el-button
+              v-loading="loadingGroup['deleteIndex']"
               class="filter-item"
               type="danger"
               size="small"
-              :loading="loadingGroup[6]"
               icon="el-icon-delete"
               @click="deleteIndex(indexName,6)"
             >删除索引
@@ -351,7 +363,7 @@
 </template>
 
 <script>
-
+import { clone } from '@/utils/index'
 import { filterData } from '@/utils/table'
 import { CatAction, RunDslAction } from '@/api/es'
 import { bigNumberTransform } from '@/utils/format'
@@ -377,15 +389,17 @@ export default {
       settings: {},
       readOnlyAllowDeleteLoading: false,
       loadingGroup: {
-        0: false,
-        1: false,
-        2: false,
-        3: false,
-        4: false,
-        5: false,
-        6: false,
-        7: false
+        'close': false,
+        'open': false,
+        '_forcemerge': false,
+        '_refresh': false,
+        '_flush': false,
+        '_cache/clear': false,
+        'deleteIndex': false,
+        '/_all/_flush': false,
+        'saveMappinng': false
       },
+
       forceMergeLoading: false,
       tabLoading: false,
       activeData: '{}',
@@ -420,6 +434,35 @@ export default {
     this.searchData()
   },
   methods: {
+    getMapping(v) {
+      this.activeData = v
+    },
+    saveMappinng() {
+      let activeData = clone(this.activeData)
+      try {
+        activeData = JSON.parse(activeData)
+      } catch (e) {
+        this.$message({
+          type: 'error',
+          message: 'JSON格式不正确'
+        })
+        return
+      }
+      console.log(activeData, 'activeData')
+      if (!activeData[this.indexName]) {
+        this.$message({
+          type: 'error',
+          message: '映射格式不正确'
+        })
+        return
+      }
+
+      this.loadingGroup['saveMappinng'] = true
+      setTimeout(() => {
+        this.loadingGroup['saveMappinng'] = false
+      }, 3000)
+      console.log('saveMappinng')
+    },
     openMappingEditDialog(indexName, haveMapping) {
       if (haveMapping) {
         this.mappingInfo = this.mappings[indexName].mappings
