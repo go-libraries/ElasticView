@@ -16,7 +16,6 @@ type Claims struct {
 	ID       int32  `json:"id"`
 	Username string `json:"username"`
 	RoleId   int32  `json:"role_id"`
-	Password string `json:"password"`
 	jwt.StandardClaims
 }
 
@@ -29,7 +28,6 @@ func GenerateToken(gmUser model.GmUserModel) (string, error) {
 		gmUser.ID,
 		gmUser.Username,
 		gmUser.RoleId,
-		gmUser.Password,
 		jwt.StandardClaims{
 			ExpiresAt: expireTime.Unix(),
 			Issuer:    "xiao-wen-long",

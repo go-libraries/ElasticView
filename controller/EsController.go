@@ -59,17 +59,17 @@ func (this EsController) CatAction(ctx *gin.Context) {
 
 	switch esCat.Cat {
 	case "CatHealth":
-		data, err = esClinet.(*es.EsClientV6).Client.CatHealth().Human(true).Do(context.Background())
+		data, err = esClinet.(*es.EsClientV6).Client.CatHealth().Human(true).Do(ctx)
 	case "CatShards":
-		data, err = esClinet.(*es.EsClientV6).Client.CatShards().Human(true).Do(context.Background())
+		data, err = esClinet.(*es.EsClientV6).Client.CatShards().Human(true).Do(ctx)
 	case "CatCount":
-		data, err = esClinet.(*es.EsClientV6).Client.CatCount().Human(true).Do(context.Background())
+		data, err = esClinet.(*es.EsClientV6).Client.CatCount().Human(true).Do(ctx)
 	case "CatAllocation":
-		data, err = esClinet.(*es.EsClientV6).Client.CatAllocation().Human(true).Do(context.Background())
+		data, err = esClinet.(*es.EsClientV6).Client.CatAllocation().Human(true).Do(ctx)
 	case "CatAliases":
-		data, err = esClinet.(*es.EsClientV6).Client.CatAliases().Human(true).Do(context.Background())
+		data, err = esClinet.(*es.EsClientV6).Client.CatAliases().Human(true).Do(ctx)
 	case "CatIndices":
-		data, err = esClinet.(*es.EsClientV6).Client.CatIndices().Human(true).Do(context.Background())
+		data, err = esClinet.(*es.EsClientV6).Client.CatIndices().Human(true).Do(ctx)
 	}
 
 	if err != nil {

@@ -17,7 +17,7 @@ type GmUserModel struct {
 
 func (this GmUserModel) Exsit() (b bool) {
 	var count int
-	err := db.Sqlx.Get(&count, "select count(*) from gm_user where username = ? and password = ? and role_id = ? limit 1;", this.Username, this.Password, this.RoleId)
+	err := db.Sqlx.Get(&count, "select count(*) from gm_user where username = ? and role_id = ? limit 1;", this.Username, this.RoleId)
 	if err != nil || count == 0 {
 		logs.Logger.Error("err", zap.String("err.Error()", err.Error()))
 		return false

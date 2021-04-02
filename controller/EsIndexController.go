@@ -48,7 +48,7 @@ func (this EsIndexController) CreateAction(ctx *gin.Context) {
 	} else {
 		res, err := esClinet.(*es.EsClientV6).Client.CreateIndex(esIndexInfo.IndexName).BodyJson(map[string]interface{}{
 			"settings": esIndexInfo.Settings,
-		}).Do(context.Background())
+		}).Do(ctx)
 		if err != nil {
 			this.Error(ctx, err)
 			return
@@ -78,7 +78,7 @@ func (this EsIndexController) GetSettingsAction(ctx *gin.Context) {
 		return
 	}
 
-	res, err := esClinet.(*es.EsClientV6).Client.IndexGetSettings(esIndexInfo.IndexName).Do(context.Background())
+	res, err := esClinet.(*es.EsClientV6).Client.IndexGetSettings(esIndexInfo.IndexName).Do(ctx)
 	if err != nil {
 		this.Error(ctx, err)
 		return
@@ -107,7 +107,7 @@ func (this EsIndexController) GetAliasAction(ctx *gin.Context) {
 		return
 	}
 
-	aliasRes, err := esClinet.(*es.EsClientV6).Client.Aliases().Index(esAliasInfo.IndexName).Do(context.TODO())
+	aliasRes, err := esClinet.(*es.EsClientV6).Client.Aliases().Index(esAliasInfo.IndexName).Do(ctx)
 
 	this.Success(ctx, response.OperateSuccess, aliasRes.Indices[esAliasInfo.IndexName].Aliases)
 	return
@@ -137,15 +137,15 @@ func (this EsIndexController) OperateAliasAction(ctx *gin.Context) {
 			this.Error(ctx, my_error.NewBusiness(es.ParmasNullError, es.IndexNameNullError))
 			return
 		}
-		res, err = esClinet.(*es.EsClientV6).Client.Alias().Add(esAliasInfo.IndexName, esAliasInfo.AliasName).Do(context.TODO())
+		res, err = esClinet.(*es.EsClientV6).Client.Alias().Add(esAliasInfo.IndexName, esAliasInfo.AliasName).Do(ctx)
 	case Delete:
 		if esAliasInfo.IndexName == "" {
 			this.Error(ctx, my_error.NewBusiness(es.ParmasNullError, es.IndexNameNullError))
 			return
 		}
-		res, err = esClinet.(*es.EsClientV6).Client.Alias().Remove(esAliasInfo.IndexName, esAliasInfo.AliasName).Do(context.TODO())
+		res, err = esClinet.(*es.EsClientV6).Client.Alias().Remove(esAliasInfo.IndexName, esAliasInfo.AliasName).Do(ctx)
 	case MoveToAnotherIndex:
-		res, err = esClinet.(*es.EsClientV6).Client.Alias().Action(elastic.NewAliasAddAction(esAliasInfo.AliasName).Index(esAliasInfo.NewIndexList...)).Do(context.TODO())
+		res, err = esClinet.(*es.EsClientV6).Client.Alias().Action(elastic.NewAliasAddAction(esAliasInfo.AliasName).Index(esAliasInfo.NewIndexList...)).Do(ctx)
 	case PatchAdd:
 		if esAliasInfo.IndexName == "" {
 			this.Error(ctx, my_error.NewBusiness(es.ParmasNullError, es.IndexNameNullError))
@@ -214,7 +214,7 @@ func (this EsIndexController) ReindexAction(ctx *gin.Context) {
 		reindex = reindex.WaitForCompletion(*urlValues.WaitForCompletion)
 	}
 
-	res, err := reindex.Body(esReIndexInfo.Body).Do(context.Background())
+	res, err := reindex.Body(esReIndexInfo.Body).Do(ctx)
 	if err != nil {
 		this.Error(ctx, err)
 		return

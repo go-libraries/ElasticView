@@ -2,81 +2,81 @@
   <div class="app-container">
     <el-card class="box-card">
       <div class="filter-container">
-        <el-tag class="filter-item">请选择Http Method</el-tag>
-        <el-select v-model="input.method" class="filter-item select-method" placeholder="请选择Http Method" filterable>
-          <el-option label="PUT【修改】" value="PUT" />
-          <el-option label="GET【查询】" value="GET" />
-          <el-option label="DELETE【删除】" value="DELETE" />
-          <el-option label="POST【新增】" value="POST" />
-          <el-option label="HEAD【是否存在】" value="HEAD" />
-        </el-select>
-        <el-tag class="filter-item">请输入Path</el-tag>
         <el-autocomplete
           ref="autocomplete"
           v-model="input.path"
           clearable
           class="filter-item select-path autocomplete"
           placeholder="请输入内容"
-
           :fetch-suggestions="querySearch"
           @clear="clear"
           @keyup.enter.native="go"
           @select="mySelect"
-        />
-        <el-button
-          class="filter-item "
-
-          icon="el-icon-search"
-          type="text"
         >
-          <a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/index.html" target="_blank">官方文档</a>
-        </el-button>
-        <el-button
-          class="filter-item go"
-          style="display: inline;"
-          :loading="loading"
-          type="success"
-          icon="el-icon-right"
-          @click="go"
-        >GO
-        </el-button>
-        <el-button
-          v-if="cancelToken != ''"
-          class="filter-item cancel"
-          style="display: inline;"
-          type="danger"
-          icon="el-icon-close"
-          @click="cancelReq"
-        >cancel
-        </el-button>
-        <el-button
-          v-show="input.method == 'GET'"
-          class="filter-item sql-format"
-          style="display: inline;"
-          type="warning"
-          icon="el-icon-refresh"
-          @click="openDrag"
-        >SQL转换
-        </el-button>
-        <el-button
-          class="filter-item search-history"
-          style="display: inline;"
-          type="warning"
-          icon="el-icon-search"
-          @click.native="dialogVisible = true"
-        >
-          搜索历史
-        </el-button>
-        <el-button
-          v-if="canExport"
-          class="filter-item "
-          style="display: inline;"
-          type="success"
-          icon="el-icon-refresh"
-          @click.native="tableDialogVisible = true"
-        >
-          返回结果转表格
-        </el-button>
+          <el-select slot="prepend" v-model="input.method" class="filter-item select-method" placeholder="请选择Http Method" filterable>
+            <el-option label="PUT【修改】" value="PUT" />
+            <el-option label="GET【查询】" value="GET" />
+            <el-option label="DELETE【删除】" value="DELETE" />
+            <el-option label="POST【新增】" value="POST" />
+            <el-option label="HEAD【是否存在】" value="HEAD" />
+          </el-select>
+        </el-autocomplete>
+        <el-button-group>
+          <el-button
+            slot="append"
+            class="filter-item "
+            icon="el-icon-search"
+            type="text"
+          >
+            <a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/index.html" target="_blank">官方文档</a>
+          </el-button>
+          <el-button
+            class="filter-item go"
+            style="display: inline;"
+            :loading="loading"
+            type="success"
+            icon="el-icon-right"
+            @click="go"
+          >GO
+          </el-button>
+          <el-button
+            v-if="cancelToken != ''"
+            class="filter-item cancel"
+            style="display: inline;"
+            type="danger"
+            icon="el-icon-close"
+            @click="cancelReq"
+          >cancel
+          </el-button>
+          <el-button
+            v-show="input.method == 'GET'"
+            class="filter-item sql-format"
+            style="display: inline;"
+            type="warning"
+            icon="el-icon-refresh"
+            @click="openDrag"
+          >SQL转换
+          </el-button>
+          <el-button
+            class="filter-item search-history"
+            style="display: inline;"
+            type="warning"
+            icon="el-icon-search"
+            @click.native="dialogVisible = true"
+          >
+            搜索历史
+          </el-button>
+          <el-button
+            v-if="canExport"
+            class="filter-item "
+            style="display: inline;"
+            type="success"
+            icon="el-icon-refresh"
+            @click.native="tableDialogVisible = true"
+          >
+            返回结果转表格
+          </el-button>
+        </el-button-group>
         <download-excel
           v-if="canExport"
           ref="download"
@@ -449,7 +449,7 @@ export default {
         }
       }
 
-      if (input['path'].trim().length > 0) {
+      if (input['path'].trim().length > 0 || input['path'].trim() == '') {
         if (input['path'].trim().substr(0, 1) != '/') {
           input['path'] = '/' + input['path'].trim()
         }
@@ -510,13 +510,13 @@ export default {
     font-size: 8px;
   }
 
-  .autocomplete {
-    width: 600px;
+  .select-method {
+    width: 180px;
     font-size: 8px;
   }
 
-  .select-method {
-    width: 180px;
+  .select-path{
+    width: 800px;
     font-size: 8px;
   }
 

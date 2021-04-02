@@ -25,6 +25,11 @@ type EsConnectID struct {
 	EsConnectID int `json:"es_connect"`
 }
 
+type EsSnapshotInfo struct {
+	EsConnect        int      `json:"es_connect"`
+	SnapshotInfoList []string `json:"snapshot_info_list"`
+}
+
 type EsConnect struct {
 	Ip      string `json:"ip" db:"ip"`
 	User    string `json:"user" db:"user"`
@@ -56,6 +61,14 @@ type EsMappingInfo struct {
 	EsConnect     int      `json:"es_connect"`
 	Mappings      Json     `json:"mappings"`
 	IndexName     string   `json:"index_name"`
+}
+
+type EsTaskInfo struct {
+	EsConnect    int      `json:"es_connect"`
+	TaskId       []string `json:"task_id"`
+	Actions      []string `json:"actions"`
+	NodeId       []string `json:"node_id"`
+	ParentTaskId string   `json:"parent_task_id"`
 }
 
 type EsAliasInfo struct {

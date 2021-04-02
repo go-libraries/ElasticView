@@ -92,5 +92,15 @@ func Init() *gin.Engine {
 		dslHistory.POST("ListAction", DslHistoryController{}.ListAction)
 	}
 
+	task := app.Group("/api/Task")
+	{
+		task.POST("ListAction", TaskController{}.ListAction)
+	}
+
+	backUp := app.Group("/api/backUp")
+	{
+		backUp.POST("SnapshotListAction", EsBackUpController{}.SnapshotListAction)
+	}
+
 	return app
 }

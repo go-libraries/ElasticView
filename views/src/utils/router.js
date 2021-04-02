@@ -126,18 +126,52 @@ export const asyncRoutes = [
           title: '重建索引',
           icon: 'el-icon-document-copy'
         }
-      },
+      }
+    ]
+  },
+  {
+    path: '/task',
+    component: 'layout',
+    redirect: '/task/index',
+    alwaysShow: false,
+    meta: {
+      title: '任务',
+      icon: 'el-icon-edit'
+    },
+    children: [
       {
-        path: 'sql',
-        component: 'views/indices/sql',
-        name: 'sql',
+        path: 'index',
+        component: 'views/task/index',
+        name: 'index',
         meta: {
-          title: 'sql',
-          icon: 'el-icon-document-copy'
+          title: '任务',
+          icon: 'el-icon-search'
+        }
+      }
+    ]
+  },
+  {
+    path: '/back-up',
+    component: 'layout',
+    redirect: '/back-up/index',
+    alwaysShow: false,
+    meta: {
+      title: '备份仓库',
+      icon: 'el-icon-edit'
+    },
+    children: [
+      {
+        path: 'index',
+        component: 'views/back-up/index',
+        name: 'index',
+        meta: {
+          title: '备份仓库',
+          icon: 'el-icon-search'
         }
       }
     ]
   }
+
 ]
 // todo ...  备份仓库  映射增删改查  任务管理   查询可视化   监控数据可视化
 
@@ -152,6 +186,7 @@ export const RoutesComponentmaps = {
   'views/rest/index': () => import('@/views/rest/index'),
   'views/indices/index': () => import('@/views/indices/index'),
   'views/indices/reindex': () => import('@/views/indices/reindex'),
-  'views/indices/sql': () => import('@/views/indices/sql')
+  'views/task/index': () => import('@/views/task/index'),
+  'views/back-up/index': () => import('@/views/back-up/index')
 }
 
