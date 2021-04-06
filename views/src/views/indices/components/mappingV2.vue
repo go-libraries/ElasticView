@@ -17,7 +17,7 @@
       v-model="mapping"
       v-loading="tabLoading"
       styles="width: 100%"
-      :only-read="true"
+      :read="true"
       title="映射"
       @getValue="getMapping"
     />

@@ -28,11 +28,10 @@
         </el-button>
 
         <el-button
-          v-loading="loadingGroup['/_all/_flush']"
           type="info"
           class="filter-item"
           icon="el-icon-s-open"
-          @click="runCommand('/_all/_flush',7)"
+          @click="runCommandByIndex('_flush','')"
         >将所有索引刷新到磁盘
         </el-button>
 
@@ -68,7 +67,7 @@
               type="success"
               size="small"
               icon="el-icon-success"
-              @click="OpenOrCloseIndex(scope.row.index,'close',1)"
+              @click="runCommandByIndex('close',scope.row.index)"
             >开启
             </el-button>
             <el-button
@@ -76,7 +75,7 @@
               type="danger"
               size="small"
               icon="el-icon-circle-close"
-              @click="OpenOrCloseIndex(scope.row.index,'open',1)"
+              @click="runCommandByIndex('open',scope.row.index)"
             >关闭
             </el-button>
           </template>
@@ -188,7 +187,7 @@
               v-model="activeData"
               v-loading="tabLoading"
               styles="width: 100%"
-              :only-read="false"
+              :read="true"
               title="设置"
               @get
             />
@@ -212,7 +211,7 @@
               v-model="activeData"
               v-loading="tabLoading"
               styles="width: 100%"
-              :only-read="true"
+              :read="true"
               title="映射"
               @getValue="getMapping"
             />
@@ -223,7 +222,7 @@
               v-model="activeData"
               v-loading="tabLoading"
               styles="width: 100%;"
-              :only-read="true"
+              :read="true"
               title="Stats"
             />
           </el-tab-pane>
@@ -240,7 +239,7 @@
                   v-loading="tabLoading"
                   :point-out="pointOut"
                   styles="width: 100%;"
-                  :only-read="false"
+                  :read="false"
                   title="编辑配置"
                   @getValue="getSettings"
                 />
@@ -258,7 +257,7 @@
               size="small"
               icon="el-icon-circle-close"
               class="filter-item"
-              @click="OpenOrCloseIndex(indexName,'close',0)"
+              @click="runCommandByIndex('close',indexName)"
             >关闭
             </el-button>
 
@@ -268,7 +267,7 @@
               size="small"
               icon="el-icon-success"
               class="filter-item"
-              @click="OpenOrCloseIndex(indexName,'open',1)"
+              @click="runCommandByIndex('open',indexName)"
             >打开
             </el-button>
             <el-button
@@ -276,7 +275,7 @@
               size="small"
               icon="el-icon-connection"
               class="filter-item"
-              @click="runCommandByIndex('/_forcemerge?max_num_segments=1',2)"
+              @click="runCommandByIndex('_forcemerge',indexName)"
             >强制合并索引
             </el-button>
 
@@ -294,7 +293,7 @@
                 size="small"
                 type="primary"
                 icon="el-icon-refresh"
-                @click="runCommandByIndex('/_refresh','_refresh')"
+                @click="runCommandByIndex('_refresh',indexName)"
               >刷新索引
               </el-button>
             </el-popover>
@@ -313,7 +312,7 @@
                 type="info"
                 icon="el-icon-s-open"
                 class="filter-item"
-                @click="runCommandByIndex('/_flush',4)"
+                @click="runCommandByIndex('_flush',indexName)"
               >将索引刷新到磁盘
               </el-button>
             </el-popover>
@@ -324,7 +323,7 @@
               size="small"
               type="warning"
               icon="el-icon-toilet-paper"
-              @click="runCommandByIndex('/_cache/clear',5)"
+              @click="runCommandByIndex('_cache/clear',indexName)"
             >清理缓存
             </el-button>
 
@@ -334,7 +333,7 @@
               type="danger"
               size="small"
               icon="el-icon-delete"
-              @click="deleteIndex(indexName,6)"
+              @click="deleteIndex(indexName,'deleteIndex')"
             >删除索引
             </el-button>
 
@@ -365,9 +364,9 @@
 <script>
 import { clone } from '@/utils/index'
 import { filterData } from '@/utils/table'
-import { CatAction, RunDslAction } from '@/api/es'
+import { CatAction, OptimizeAction, RecoverCanWrite, RunDslAction } from '@/api/es'
 import { bigNumberTransform } from '@/utils/format'
-import { CreateAction, GetSettingsAction } from '@/api/es-index'
+import { CreateAction, DeleteAction, GetSettingsAction, GetSettingsInfoAction, StatsAction } from '@/api/es-index'
 import { esSettingsWords } from '@/utils/base-data'
 import { ListAction } from '@/api/es-map'
 
@@ -396,7 +395,7 @@ export default {
         '_flush': false,
         '_cache/clear': false,
         'deleteIndex': false,
-        '/_all/_flush': false,
+        '_all/_flush': false,
         'saveMappinng': false
       },
 
@@ -532,15 +531,14 @@ export default {
     resetSettings() {
       this.changeTab()
     },
-    runCommand(command, loadingType) {
+    runCommandByIndex(command, indexName) {
       const input = {}
       input['es_connect'] = this.$store.state.baseData.EsConnectID
-      input['method'] = 'POST'
-      input['path'] = command
+      input['index_name'] = indexName
+      input['command'] = command
 
-      this.loadingGroup[loadingType] = true
-
-      RunDslAction(input).then(res => {
+      this.loadingGroup[command] = true
+      OptimizeAction(input).then(res => {
         if (res.code == 0 || res.code == 200) {
           this.$message({
             type: 'success',
@@ -553,54 +551,43 @@ export default {
             message: res.msg
           })
         }
-        this.loadingGroup[loadingType] = false
+        this.loadingGroup[command] = false
       })
         .catch(err => {
-          this.loadingGroup[loadingType] = false
-        })
-    },
-    runCommandByIndex(command, loadingType) {
-      const input = {}
-      input['es_connect'] = this.$store.state.baseData.EsConnectID
-      input['method'] = 'POST'
-      input['path'] = '/' + this.indexName + command
-
-      this.loadingGroup[loadingType] = true
-      RunDslAction(input).then(res => {
-        if (res.code == 0 || res.code == 200) {
-          this.$message({
-            type: 'success',
-            message: res.msg
-          })
-          this.search()
-        } else {
-          this.$message({
-            type: 'error',
-            message: res.msg
-          })
-        }
-        this.loadingGroup[loadingType] = false
-      })
-        .catch(err => {
-          this.loadingGroup[loadingType] = false
+          this.loadingGroup[command] = false
         })
     },
     async changeTab() {
-      let path = ''
+      const input = {}
+      let res = {}
+      input['es_connect'] = this.$store.state.baseData.EsConnectID
+      input['index_name'] = this.indexName
       switch (this.activeName) {
         case 'Settings':
-          path = '/' + this.indexName + '/_settings'
-          break
+          res = await GetSettingsInfoAction(input)
+
+          if (res.code == 0) {
+            this.activeData = JSON.stringify(res.data, null, '\t')
+          }
+          return
+
         case 'Mapping':
-          path = '/' + this.indexName + '/_mapping'
-          break
+          res = await ListAction(input)
+
+          if (res.code == 0) {
+            this.activeData = JSON.stringify(res.data[this.indexName].mappings, null, '\t')
+          }
+          return
         case 'Stats':
-          path = '/' + this.indexName + '/_stats'
-          break
+
+          res = await StatsAction(input)
+          if (res.code == 0) {
+            this.activeData = JSON.stringify(res.data, null, '\t')
+          }
+          return
+
         case 'editSettings':
-          const input = {}
-          input['es_connect'] = this.$store.state.baseData.EsConnectID
-          input['index_name'] = this.indexName
+
           const { data } = await GetSettingsAction(input)
 
           const deleteKeyArr = [
@@ -615,32 +602,12 @@ export default {
 
           this.activeData = JSON.stringify(data, null, '\t')
           return
-          break
         case 'alias':
           return
-          break
         default:
           this.activeData = '{}'
           return
       }
-      const input = {}
-      input['es_connect'] = this.$store.state.baseData.EsConnectID
-      input['method'] = 'GET'
-      input['path'] = path
-      this.tabLoading = true
-      RunDslAction(input).then(res => {
-        if (res.code == 0 || res.code == 200) {
-          this.activeData = JSON.stringify(res.data, null, '\t')
-        } else {
-          this.$message({
-            type: 'error',
-            message: res.msg
-          })
-        }
-        this.tabLoading = false
-      }).catch(err => {
-        this.tabLoading = false
-      })
     },
     openDrawer(indexName) {
       this.indexName = indexName
@@ -654,48 +621,6 @@ export default {
     bigNumberTransform(value) {
       return bigNumberTransform(value)
     },
-    OpenOrCloseIndex(indexName, types, loadingType) {
-      if (types == '') {
-        return
-      }
-      const typesMap = {
-        'open': '开启',
-        'close': '关闭'
-      }
-
-      this.$confirm('确定' + typesMap[types] + '该索引吗?', '警告', {
-        confirmButtonText: '确认',
-        cancelButtonText: '取消',
-        type: 'warning'
-      })
-        .then(async() => {
-          const input = {}
-          input['es_connect'] = this.$store.state.baseData.EsConnectID
-          input['method'] = 'POST'
-          input['path'] = '/' + indexName + '/_' + types
-          this.loadingGroup[loadingType] = true
-          RunDslAction(input).then(res => {
-            if (res.code == 0 || res.code == 200) {
-              this.$message({
-                type: 'success',
-                message: res.msg
-              })
-              this.searchData()
-            } else {
-              this.$message({
-                type: 'error',
-                message: res.msg
-              })
-            }
-            this.loadingGroup[loadingType] = false
-          }).catch(err => {
-            this.loadingGroup[loadingType] = false
-          })
-        })
-        .catch(err => {
-          console.error(err)
-        })
-    },
     openSettingDialog(indexName, settingsType) {
       this.indexName = indexName
       this.settingsType = settingsType
@@ -704,17 +629,8 @@ export default {
     readOnlyAllowDelete() {
       const input = {}
       input['es_connect'] = this.$store.state.baseData.EsConnectID
-      input['method'] = 'PUT'
-      input['path'] = '/_settings'
-      input['body'] = `{
-                    "index": {
-                        "blocks": {
-                            "read_only_allow_delete": "false"
-                        }
-                    }
-                }`
       this.readOnlyAllowDeleteLoading = true
-      RunDslAction(input).then(res => {
+      RecoverCanWrite(input).then(res => {
         if (res.code == 0 || res.code == 200) {
           this.$message({
             type: 'success',
@@ -740,10 +656,9 @@ export default {
         .then(async() => {
           const input = {}
           input['es_connect'] = this.$store.state.baseData.EsConnectID
-          input['method'] = 'DELETE'
-          input['path'] = '/' + indexName
+          input['index_name'] = indexName
           this.loadingGroup[loadingType] = true
-          RunDslAction(input).then(res => {
+          DeleteAction(input).then(res => {
             if (res.code == 0 || res.code == 200) {
               this.$message({
                 type: 'success',

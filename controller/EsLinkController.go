@@ -5,6 +5,7 @@ import (
 	"log"
 
 	"ElasticView/engine/db"
+	"ElasticView/engine/es"
 	"ElasticView/model"
 	"ElasticView/platform-basic-libs/response"
 
@@ -108,6 +109,9 @@ func (this EsLinkController) UpdateAction(ctx *gin.Context) {
 		return
 	}
 
+	esCache := es.NewEsCache()
+	esCache.Rem(int(esLinkModel.ID))
+
 	this.Success(ctx, response.OperateSuccess, nil)
 }
 
@@ -131,6 +135,9 @@ func (this EsLinkController) DeleteAction(ctx *gin.Context) {
 		this.Error(ctx, err)
 		return
 	}
+
+	esCache := es.NewEsCache()
+	esCache.Rem(req.Id)
 
 	this.Success(ctx, response.DeleteSuccess, nil)
 }

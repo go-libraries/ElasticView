@@ -7,7 +7,6 @@
       placeholder="请选择ES连接"
       @change="change"
     >
-
       <el-option :value="Number(0)" label="请选择ES连接" />
       <el-option v-for="item in opt" :key="item.id" :value="Number(item.id)" :label="item.remark" />
     </el-select>
@@ -27,7 +26,7 @@ export default {
       opt: [],
       link: '',
       time: null,
-      timeSecend: 45
+      timeSecend: 15
     }
   },
   computed: {},

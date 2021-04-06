@@ -65,7 +65,44 @@ func (this EsBackUpController) SnapshotListAction(ctx *gin.Context) {
 }
 
 func (this EsBackUpController) SnapshotCreateRepositoryAction(ctx *gin.Context) {
+	snapshotCreateRepository := es.SnapshotCreateRepository{}
+	err = ctx.Bind(&snapshotCreateRepository)
+	if err != nil {
+		this.Error(ctx, err)
+		return
+	}
+	esClinet, err := es.GetEsClientV6ByID(snapshotCreateRepository.EsConnect)
+	if err != nil {
+		this.Error(ctx, err)
+		return
+	}
 
+	settings := map[string]interface{}{
+		"location": snapshotCreateRepository.Location,
+	}
+
+	if snapshotCreateRepository.Compress != nil {
+		compress := *snapshotCreateRepository.Compress
+		settings["compress"] = compress
+	}
+
+	if snapshotCreateRepository.MaxRestoreBytesPerSec != "" {
+		settings["max_restore_bytes_per_sec"] = snapshotCreateRepository.MaxRestoreBytesPerSec
+	}
+
+	if snapshotCreateRepository.MaxSnapshotBytesPerSec != "" {
+		settings["max_snapshot_bytes_per_sec"] = snapshotCreateRepository.MaxSnapshotBytesPerSec
+	}
+
+	_, err = esClinet.(*es.EsClientV6).Client.SnapshotCreateRepository(snapshotCreateRepository.Repository).Type("fs").Settings(
+		settings,
+	).Do(ctx)
+	if err != nil {
+		this.Error(ctx, err)
+		return
+	}
+
+	this.Success(ctx, response.OperateSuccess, nil)
 }
 
 func (this EsBackUpController) CreateSnapshotAction(ctx *gin.Context) {

@@ -66,10 +66,12 @@ func Init() *gin.Engine {
 
 	es := app.Group("/api/es")
 	{
+		es.POST("RecoverCanWrite", EsController{}.RecoverCanWrite)
 		es.POST("PingAction", EsController{}.PingAction)
 		es.POST("CatAction", EsController{}.CatAction)
 		es.POST("RunDslAction", EsController{}.RunDslAction)
 		es.Any("SqlToDslAction", EsController{}.SqlToDslAction)
+		es.POST("OptimizeAction", EsController{}.OptimizeAction)
 	}
 	esMap := app.Group("/api/es_map")
 	{
@@ -78,12 +80,16 @@ func Init() *gin.Engine {
 
 	esIndex := app.Group("/api/es_index")
 	{
+		esIndex.POST("DeleteAction", EsIndexController{}.DeleteAction)
 		esIndex.POST("CreateAction", EsIndexController{}.CreateAction)
 		esIndex.POST("GetSettingsAction", EsIndexController{}.GetSettingsAction)
 		esIndex.POST("IndexNamesAction", EsIndexController{}.IndexNamesAction)
 		esIndex.POST("ReindexAction", EsIndexController{}.ReindexAction)
 		esIndex.POST("GetAliasAction", EsIndexController{}.GetAliasAction)
 		esIndex.POST("OperateAliasAction", EsIndexController{}.OperateAliasAction)
+		esIndex.POST("GetSettingsInfoAction", EsIndexController{}.GetSettingsInfoAction)
+		esIndex.POST("StatsAction", EsIndexController{}.StatsAction)
+
 	}
 
 	dslHistory := app.Group("/api/dslHistory")

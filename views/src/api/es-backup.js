@@ -9,3 +9,11 @@ export function SnapshotListAction(data) {
     data
   })
 }
+
+export function SnapshotCreateRepositoryAction(data) {
+  return request({
+    url: api + 'SnapshotCreateRepositoryAction',
+    method: 'post',
+    data
+  })
+}

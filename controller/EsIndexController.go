@@ -6,7 +6,6 @@ import (
 	"sync"
 
 	"ElasticView/engine/es"
-	"ElasticView/engine/logs"
 	"ElasticView/platform-basic-libs/my_error"
 	"ElasticView/platform-basic-libs/response"
 
@@ -36,7 +35,7 @@ func (this EsIndexController) CreateAction(ctx *gin.Context) {
 		this.Error(ctx, my_error.NewBusiness(es.ParmasNullError, es.IndexNameNullError))
 		return
 	}
-	logs.Logger.Sugar().Infof("esIndexInfo.Types", esIndexInfo.Types)
+
 	if esIndexInfo.Types == "update" {
 		res, err := esClinet.IndexPutSettings(esIndexInfo.IndexName, esIndexInfo.Settings)
 		if err != nil {
@@ -59,7 +58,32 @@ func (this EsIndexController) CreateAction(ctx *gin.Context) {
 	return
 }
 
-//创建索引
+func (this EsIndexController) DeleteAction(ctx *gin.Context) {
+	esIndexInfo := es.EsIndexInfo{}
+	err = ctx.Bind(&esIndexInfo)
+	if err != nil {
+		this.Error(ctx, err)
+		return
+	}
+	esClinet, err := es.GetEsClientV6ByID(esIndexInfo.EsConnect)
+	if err != nil {
+		this.Error(ctx, err)
+		return
+	}
+
+	if esIndexInfo.IndexName == "" {
+		this.Error(ctx, my_error.NewBusiness(es.ParmasNullError, es.IndexNameNullError))
+		return
+	}
+	_, err = esClinet.DeleteIndex([]string{esIndexInfo.IndexName})
+	if err != nil {
+		this.Error(ctx, err)
+		return
+	}
+	this.Success(ctx, response.OperateSuccess, nil)
+	return
+}
+
 func (this EsIndexController) GetSettingsAction(ctx *gin.Context) {
 	esIndexInfo := es.EsIndexInfo{}
 	err = ctx.Bind(&esIndexInfo)
@@ -85,6 +109,34 @@ func (this EsIndexController) GetSettingsAction(ctx *gin.Context) {
 	}
 
 	this.Success(ctx, response.OperateSuccess, res[esIndexInfo.IndexName].Settings)
+	return
+}
+
+func (this EsIndexController) GetSettingsInfoAction(ctx *gin.Context) {
+	esIndexInfo := es.EsIndexInfo{}
+	err = ctx.Bind(&esIndexInfo)
+	if err != nil {
+		this.Error(ctx, err)
+		return
+	}
+	esClinet, err := es.GetEsClientV6ByID(esIndexInfo.EsConnect)
+	if err != nil {
+		this.Error(ctx, err)
+		return
+	}
+
+	if esIndexInfo.IndexName == "" {
+		this.Error(ctx, my_error.NewBusiness(es.ParmasNullError, es.IndexNameNullError))
+		return
+	}
+
+	res, err := esClinet.(*es.EsClientV6).Client.IndexGetSettings(esIndexInfo.IndexName).Do(ctx)
+	if err != nil {
+		this.Error(ctx, err)
+		return
+	}
+
+	this.Success(ctx, response.OperateSuccess, res)
 	return
 }
 
@@ -240,5 +292,33 @@ func (this EsIndexController) IndexNamesAction(ctx *gin.Context) {
 		return
 	}
 	this.Success(ctx, response.SearchSuccess, indexNames)
+	return
+}
+
+func (this EsIndexController) StatsAction(ctx *gin.Context) {
+	esIndexInfo := es.EsIndexInfo{}
+	err = ctx.Bind(&esIndexInfo)
+	if err != nil {
+		this.Error(ctx, err)
+		return
+	}
+	esClinet, err := es.GetEsClientV6ByID(esIndexInfo.EsConnect)
+	if err != nil {
+		this.Error(ctx, err)
+		return
+	}
+
+	if esIndexInfo.IndexName == "" {
+		this.Error(ctx, my_error.NewBusiness(es.ParmasNullError, es.IndexNameNullError))
+		return
+	}
+
+	res, err := esClinet.(*es.EsClientV6).Client.IndexStats(esIndexInfo.IndexName).Do(ctx)
+	if err != nil {
+		this.Error(ctx, err)
+		return
+	}
+
+	this.Success(ctx, response.OperateSuccess, res)
 	return
 }

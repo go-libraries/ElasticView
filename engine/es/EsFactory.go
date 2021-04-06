@@ -9,6 +9,12 @@ import (
 
 func GetEsClientV6ByID(id int) (esClient EsClient, err error) {
 
+	esCache := NewEsCache()
+	esClient = esCache.Get(id)
+	if esClient != nil {
+		return esClient, nil
+	}
+
 	esConnect := EsConnect{}
 	sql, args, err := db.SqlBuilder.
 		Select("ip", "user", "pwd", "version").
@@ -26,10 +32,17 @@ func GetEsClientV6ByID(id int) (esClient EsClient, err error) {
 	if esConnect.Ip == "" {
 		return nil, errors.New("请先选择ES连接")
 	}
-	return NewEsClientV6(esConnect)
+
+	esClient, err = NewEsClientV6(esConnect)
+	if err != nil {
+		return
+	}
+	esCache.Set(id, esClient)
+	return esClient, nil
 }
 
-func GetEsClient(esConnect EsConnect) (EsClient, error) {
+func GetEsClient(esConnect EsConnect) (esClient EsClient, err error) {
+
 	if esConnect.Ip == "" {
 		return nil, errors.New("请先选择ES连接")
 	}

@@ -185,7 +185,7 @@
                   v-model="form.source.query"
                   styles="width: 100%"
                   :point-out="pointOut"
-                  :only-read="false"
+                  :read="false"
                   title="QUERY"
                   @getValue="getBody"
                 />
@@ -262,7 +262,7 @@
                   v-model="form.script.params"
                   style="height: 300px"
                   styles="width: 100%"
-                  :only-read="false"
+                  :read="false"
                   title="定义脚本语言的参数"
                   @getValue="getParams"
                 />

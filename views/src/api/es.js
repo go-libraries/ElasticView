@@ -34,3 +34,19 @@ export function SqlToDslAction(data) {
   })
 }
 
+export function OptimizeAction(data) {
+  return request({
+    url: api + `OptimizeAction`,
+    method: 'post',
+    data
+  })
+}
+
+export function RecoverCanWrite(data) {
+  return request({
+    url: api + `RecoverCanWrite`,
+    method: 'post',
+    data
+  })
+}
+

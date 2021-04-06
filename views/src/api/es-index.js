@@ -42,9 +42,33 @@ export function GetAliasAction(data) {
   })
 }
 
+export function DeleteAction(data) {
+  return request({
+    url: api + 'DeleteAction',
+    method: 'post',
+    data
+  })
+}
+
 export function OperateAliasAction(data) {
   return request({
     url: api + 'OperateAliasAction',
+    method: 'post',
+    data
+  })
+}
+
+export function GetSettingsInfoAction(data) {
+  return request({
+    url: api + 'GetSettingsInfoAction',
+    method: 'post',
+    data
+  })
+}
+
+export function StatsAction(data) {
+  return request({
+    url: api + 'StatsAction',
     method: 'post',
     data
   })

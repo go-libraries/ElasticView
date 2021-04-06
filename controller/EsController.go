@@ -2,6 +2,7 @@ package controller
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"strconv"
 	"strings"
@@ -10,6 +11,7 @@ import (
 	"ElasticView/model"
 	"ElasticView/platform-basic-libs/jwt"
 	"ElasticView/platform-basic-libs/response"
+	"ElasticView/platform-basic-libs/service/es_optimize"
 
 	"github.com/cch123/elasticsql"
 	"github.com/gin-gonic/gin"
@@ -150,4 +152,71 @@ func (this EsController) SqlToDslAction(ctx *gin.Context) {
 		"dsl":       dsl,
 		"tableName": table,
 	})
+}
+
+func (this EsController) OptimizeAction(ctx *gin.Context) {
+	esOptimize := es.EsOptimize{}
+	err = ctx.Bind(&esOptimize)
+	if err != nil {
+		this.Error(ctx, err)
+		return
+	}
+	esClinet, err := es.GetEsClientV6ByID(esOptimize.EsConnect)
+	if err != nil {
+		this.Error(ctx, err)
+		return
+	}
+
+	optimize := es_optimize.OptimizeFactory(esOptimize.Command)
+
+	if optimize == nil {
+		this.Error(ctx, errors.New("不支持该指令"))
+		return
+	}
+	if esOptimize.IndexName != "" {
+		optimize.SetIndexName(esOptimize.IndexName)
+	}
+	err = optimize.Do(esClinet.(*es.EsClientV6).Client)
+	if err != nil {
+		this.Error(ctx, err)
+		return
+	}
+	this.Success(ctx, response.OperateSuccess, nil)
+}
+
+func (this EsController) RecoverCanWrite(ctx *gin.Context) {
+	esConnect := es.EsConnectID{}
+	err = ctx.Bind(&esConnect)
+	if err != nil {
+		this.Error(ctx, err)
+		return
+	}
+	esClinet, err := es.GetEsClientV6ByID(esConnect.EsConnectID)
+	if err != nil {
+		this.Error(ctx, err)
+		return
+	}
+
+	res, err := esClinet.(*es.EsClientV6).Client.PerformRequest(ctx, elastic.PerformRequestOptions{
+		Method: "PUT",
+		Path:   "/_settings",
+		Body: map[string]interface{}{
+			"index": map[string]interface{}{
+				"blocks": map[string]interface{}{
+					"read_only_allow_delete": "false",
+				},
+			},
+		},
+	})
+
+	if res.StatusCode != 200 && res.StatusCode != 201 {
+		this.Output(ctx, map[string]interface{}{
+			"code": res.StatusCode,
+			"msg":  fmt.Sprintf("请求异常! 错误码 :" + strconv.Itoa(res.StatusCode)),
+			"data": res.Body,
+		})
+		return
+	}
+
+	this.Success(ctx, response.OperateSuccess, res.Body)
 }

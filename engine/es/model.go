@@ -30,6 +30,16 @@ type EsSnapshotInfo struct {
 	SnapshotInfoList []string `json:"snapshot_info_list"`
 }
 
+type SnapshotCreateRepository struct {
+	EsConnect              int    `json:"es_connect"`
+	Repository             string `json:"repository"`
+	Type                   string `json:"type"`
+	Location               string `json:"location"`
+	Compress               *bool  `json:"compress"`
+	MaxRestoreBytesPerSec  string `json:"max_restore_bytes_per_sec"`
+	MaxSnapshotBytesPerSec string `json:"max_snapshot_bytes_per_sec"`
+}
+
 type EsConnect struct {
 	Ip      string `json:"ip" db:"ip"`
 	User    string `json:"user" db:"user"`
@@ -47,6 +57,12 @@ type EsRest struct {
 	Method    string `json:"method"`
 	Body      string `json:"body"`
 	Path      string `json:"path"`
+}
+
+type EsOptimize struct {
+	EsConnect int    `json:"es_connect"`
+	IndexName string `json:"index_name"`
+	Command   string `json:"command"`
 }
 
 type EsIndexInfo struct {

@@ -67,7 +67,7 @@
         v-model="JSON.stringify(json_data[index],null, '\t')"
         class="res-body"
         styles="width: 100%"
-        :only-read="true"
+        :read="true"
         title="详细数据"
       />
       <json-editor
@@ -75,7 +75,7 @@
         v-model="JSON.stringify(json_data['hits']['hits'][index],null, '\t')"
         class="res-body"
         styles="width: 100%"
-        :only-read="true"
+        :read="true"
         title="详细数据"
       />
     </el-drawer>

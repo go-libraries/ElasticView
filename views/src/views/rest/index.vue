@@ -98,11 +98,11 @@
         class="req-body"
         styles="width: 30%"
         :point-out="pointOut"
-        :only-read="false"
+        :read="false"
         title="请求Body"
         @getValue="getBody"
       />
-      <json-editor v-model="resData" class="res-body" styles="width: 70%" :only-read="true" title="返回信息" />
+      <json-editor v-model="resData" class="res-body" styles="width: 70%" :read="true" title="返回信息" />
     </el-card>
     <el-drawer
       ref="drawer"

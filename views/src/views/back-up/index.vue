@@ -10,6 +10,7 @@
             :value="k"
           />
         </el-select>
+        <el-button type="warning">新建仓库</el-button>
       </div>
       <el-table
         :data="tableData"
@@ -68,7 +69,7 @@
           v-model="JSON.stringify(resData[name],null, '\t')"
           class="res-body"
           styles="width: 100%"
-          :only-read="true"
+          :read="true"
           title="JSON数据"
         />
       </el-drawer>
