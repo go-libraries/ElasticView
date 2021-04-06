@@ -17,3 +17,10 @@ export function SnapshotCreateRepositoryAction(data) {
     data
   })
 }
+export function SnapshotDeleteRepositoryAction(data) {
+  return request({
+    url: api + 'SnapshotDeleteRepositoryAction',
+    method: 'post',
+    data
+  })
+}

@@ -113,7 +113,7 @@
           </el-form-item>
         </el-form>
         <div style="text-align:right;">
-          <el-button type="danger" icon="el-icon-close" @click="closeDialog">取消{{ isOpen }}</el-button>
+          <el-button type="danger" icon="el-icon-close" @click="closeDialog">取消</el-button>
           <el-button type="primary" icon="el-icon-check" @click="confirmSettings">确认</el-button>
         </div>
       </el-card>

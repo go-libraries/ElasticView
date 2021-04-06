@@ -81,8 +81,8 @@ func (this EsBackUpController) SnapshotCreateRepositoryAction(ctx *gin.Context) 
 		"location": snapshotCreateRepository.Location,
 	}
 
-	if snapshotCreateRepository.Compress != nil {
-		compress := *snapshotCreateRepository.Compress
+	if snapshotCreateRepository.Compress != "" {
+		compress := snapshotCreateRepository.Compress
 		settings["compress"] = compress
 	}
 
@@ -97,6 +97,28 @@ func (this EsBackUpController) SnapshotCreateRepositoryAction(ctx *gin.Context) 
 	_, err = esClinet.(*es.EsClientV6).Client.SnapshotCreateRepository(snapshotCreateRepository.Repository).Type("fs").Settings(
 		settings,
 	).Do(ctx)
+	if err != nil {
+		this.Error(ctx, err)
+		return
+	}
+
+	this.Success(ctx, response.OperateSuccess, nil)
+}
+
+func (this EsBackUpController) SnapshotDeleteRepositoryAction(ctx *gin.Context) {
+	snapshotDeleteRepository := es.SnapshotDeleteRepository{}
+	err = ctx.Bind(&snapshotDeleteRepository)
+	if err != nil {
+		this.Error(ctx, err)
+		return
+	}
+	esClinet, err := es.GetEsClientV6ByID(snapshotDeleteRepository.EsConnect)
+	if err != nil {
+		this.Error(ctx, err)
+		return
+	}
+
+	_, err = esClinet.(*es.EsClientV6).Client.SnapshotDeleteRepository(snapshotDeleteRepository.Repository).Do(ctx)
 	if err != nil {
 		this.Error(ctx, err)
 		return

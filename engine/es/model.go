@@ -32,12 +32,17 @@ type EsSnapshotInfo struct {
 
 type SnapshotCreateRepository struct {
 	EsConnect              int    `json:"es_connect"`
-	Repository             string `json:"repository"`
+	Repository             string `json:"name"`
 	Type                   string `json:"type"`
 	Location               string `json:"location"`
-	Compress               *bool  `json:"compress"`
+	Compress               string `json:"compress"`
 	MaxRestoreBytesPerSec  string `json:"max_restore_bytes_per_sec"`
 	MaxSnapshotBytesPerSec string `json:"max_snapshot_bytes_per_sec"`
+}
+
+type SnapshotDeleteRepository struct {
+	EsConnect  int    `json:"es_connect"`
+	Repository string `json:"name"`
 }
 
 type EsConnect struct {
