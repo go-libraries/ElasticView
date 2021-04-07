@@ -24,3 +24,12 @@ export function SnapshotDeleteRepositoryAction(data) {
     data
   })
 }
+
+export function CleanupeRepositoryAction(data) {
+  return request({
+    url: api + 'CleanupeRepositoryAction',
+    method: 'post',
+    data
+  })
+}
+

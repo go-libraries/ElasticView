@@ -38,11 +38,32 @@ type SnapshotCreateRepository struct {
 	Compress               string `json:"compress"`
 	MaxRestoreBytesPerSec  string `json:"max_restore_bytes_per_sec"`
 	MaxSnapshotBytesPerSec string `json:"max_snapshot_bytes_per_sec"`
+	ChunkSize              string `json:"chunk_size"`
+	Readonly               string `json:"readonly"`
+}
+
+type CleanupeRepository struct {
+	EsConnect  int    `json:"es_connect"`
+	Repository string `json:"name"`
 }
 
 type SnapshotDeleteRepository struct {
 	EsConnect  int    `json:"es_connect"`
 	Repository string `json:"name"`
+}
+
+type CreateSnapshot struct {
+	EsConnect         int    `json:"es_connect"`
+	Repository        string `json:"repository"`
+	Snapshot          string `json:"snapshot"`
+	WaitForCompletion bool   `json:"wait_for_completion"`
+}
+
+type SnapshotDelete struct {
+	EsConnect         int    `json:"es_connect"`
+	Repository        string `json:"repository"`
+	Snapshot          string `json:"snapshot"`
+	WaitForCompletion bool   `json:"wait_for_completion"`
 }
 
 type EsConnect struct {

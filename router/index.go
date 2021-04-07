@@ -108,6 +108,8 @@ func Init() *gin.Engine {
 		backUp.POST("SnapshotListAction", EsBackUpController{}.SnapshotListAction)
 		backUp.POST("SnapshotCreateRepositoryAction", EsBackUpController{}.SnapshotCreateRepositoryAction)
 		backUp.POST("SnapshotDeleteRepositoryAction", EsBackUpController{}.SnapshotDeleteRepositoryAction)
+		backUp.POST("CleanupeRepositoryAction", EsBackUpController{}.CleanupeRepositoryAction)
+
 	}
 
 	return app

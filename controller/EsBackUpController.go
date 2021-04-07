@@ -1,12 +1,18 @@
 package controller
 
 import (
+	"errors"
+	"fmt"
+
 	"ElasticView/engine/es"
 	"ElasticView/engine/logs"
+	"ElasticView/platform-basic-libs/my_error"
 	"ElasticView/platform-basic-libs/response"
+	"ElasticView/platform-basic-libs/service/es_settings"
 
 	"github.com/gin-gonic/gin"
 	jsoniter "github.com/json-iterator/go"
+	"github.com/olivere/elastic"
 )
 
 type EsBackUpController struct {
@@ -25,6 +31,19 @@ func (this EsBackUpController) SnapshotListAction(ctx *gin.Context) {
 		this.Error(ctx, err)
 		return
 	}
+
+	clusterSettings, err := es_settings.NewSettings(esClinet.(*es.EsClientV6).Client)
+	if err != nil {
+		this.Error(ctx, err)
+		return
+	}
+	pathRepo := clusterSettings.GetPathRepo()
+
+	if len(pathRepo) == 0 {
+		this.Error(ctx, my_error.NewError(`path.repo没有设置`, 199999))
+		return
+	}
+
 	res, err := esClinet.(*es.EsClientV6).Client.SnapshotGetRepository(esSnapshotInfo.SnapshotInfoList...).Do(ctx)
 	if err != nil {
 		this.Error(ctx, err)
@@ -38,6 +57,8 @@ func (this EsBackUpController) SnapshotListAction(ctx *gin.Context) {
 		Compress               string `json:"compress"`
 		MaxRestoreBytesPerSec  string `json:"max_restore_bytes_per_sec"`
 		MaxSnapshotBytesPerSec string `json:"max_snapshot_bytes_per_sec"`
+		ChunkSize              string `json:"chunk_size"`
+		Readonly               string `json:"readonly"`
 	}
 	list := []tmp{}
 	var json = jsoniter.ConfigCompatibleWithStandardLibrary
@@ -59,8 +80,9 @@ func (this EsBackUpController) SnapshotListAction(ctx *gin.Context) {
 	}
 
 	this.Success(ctx, response.SearchSuccess, map[string]interface{}{
-		"list": list,
-		"res":  res,
+		"list":     list,
+		"res":      res,
+		"pathRepo": pathRepo,
 	})
 }
 
@@ -77,9 +99,15 @@ func (this EsBackUpController) SnapshotCreateRepositoryAction(ctx *gin.Context) 
 		return
 	}
 
-	settings := map[string]interface{}{
-		"location": snapshotCreateRepository.Location,
+	clusterSettings, err := es_settings.NewSettings(esClinet.(*es.EsClientV6).Client)
+	if err != nil {
+		this.Error(ctx, err)
+		return
 	}
+	pathRepo := clusterSettings.GetPathRepo()
+	getAllowedUrls := clusterSettings.GetAllowedUrls()
+
+	settings := map[string]interface{}{}
 
 	if snapshotCreateRepository.Compress != "" {
 		compress := snapshotCreateRepository.Compress
@@ -94,7 +122,33 @@ func (this EsBackUpController) SnapshotCreateRepositoryAction(ctx *gin.Context) 
 		settings["max_snapshot_bytes_per_sec"] = snapshotCreateRepository.MaxSnapshotBytesPerSec
 	}
 
-	_, err = esClinet.(*es.EsClientV6).Client.SnapshotCreateRepository(snapshotCreateRepository.Repository).Type("fs").Settings(
+	if snapshotCreateRepository.Readonly != "" {
+		settings["readonly"] = snapshotCreateRepository.Readonly
+	}
+
+	if snapshotCreateRepository.ChunkSize != "" {
+		settings["chunk_size"] = snapshotCreateRepository.ChunkSize
+	}
+
+	switch snapshotCreateRepository.Type {
+	case "fs":
+		if len(pathRepo) == 0 {
+			this.Error(ctx, errors.New("请先设置 path.repo"))
+			return
+		}
+		settings["location"] = snapshotCreateRepository.Location
+	case "url":
+		if len(getAllowedUrls) == 0 {
+			this.Error(ctx, errors.New("请先设置 allowed_urls"))
+			return
+		}
+		settings["url"] = snapshotCreateRepository.Location
+	default:
+		this.Error(ctx, errors.New("无效的type"))
+		return
+	}
+
+	_, err = esClinet.(*es.EsClientV6).Client.SnapshotCreateRepository(snapshotCreateRepository.Repository).Type(snapshotCreateRepository.Type).Settings(
 		settings,
 	).Do(ctx)
 	if err != nil {
@@ -103,6 +157,30 @@ func (this EsBackUpController) SnapshotCreateRepositoryAction(ctx *gin.Context) 
 	}
 
 	this.Success(ctx, response.OperateSuccess, nil)
+}
+
+func (this EsBackUpController) CleanupeRepositoryAction(ctx *gin.Context) {
+	cleanupeRepository := es.CleanupeRepository{}
+	err = ctx.Bind(&cleanupeRepository)
+	if err != nil {
+		this.Error(ctx, err)
+		return
+	}
+	esClinet, err := es.GetEsClientV6ByID(cleanupeRepository.EsConnect)
+	if err != nil {
+		this.Error(ctx, err)
+		return
+	}
+	res, err := esClinet.(*es.EsClientV6).Client.PerformRequest(ctx, elastic.PerformRequestOptions{
+		Method: "POST",
+		Path:   fmt.Sprintf("/_snapshot/%s/_cleanup", cleanupeRepository.Repository),
+	})
+	if err != nil {
+		this.Error(ctx, err)
+		return
+	}
+
+	this.Success(ctx, response.OperateSuccess, res.Body)
 }
 
 func (this EsBackUpController) SnapshotDeleteRepositoryAction(ctx *gin.Context) {
@@ -128,9 +206,48 @@ func (this EsBackUpController) SnapshotDeleteRepositoryAction(ctx *gin.Context) 
 }
 
 func (this EsBackUpController) CreateSnapshotAction(ctx *gin.Context) {
+	createSnapshot := es.CreateSnapshot{}
+	err = ctx.Bind(&createSnapshot)
+	if err != nil {
+		this.Error(ctx, err)
+		return
+	}
+	esClinet, err := es.GetEsClientV6ByID(createSnapshot.EsConnect)
+	if err != nil {
+		this.Error(ctx, err)
+		return
+	}
 
+	_, err = esClinet.(*es.EsClientV6).Client.
+		SnapshotCreate(createSnapshot.Repository, createSnapshot.Snapshot).
+		WaitForCompletion(createSnapshot.WaitForCompletion).BodyJson(es.Json{}).Do(ctx)
+	if err != nil {
+		this.Error(ctx, err)
+		return
+	}
+
+	this.Success(ctx, response.OperateSuccess, nil)
 }
 
 func (this EsBackUpController) SnapshotDeleteAction(ctx *gin.Context) {
+	snapshotDelete := es.SnapshotDelete{}
+	err = ctx.Bind(&snapshotDelete)
+	if err != nil {
+		this.Error(ctx, err)
+		return
+	}
+	esClinet, err := es.GetEsClientV6ByID(snapshotDelete.EsConnect)
+	if err != nil {
+		this.Error(ctx, err)
+		return
+	}
 
+	_, err = esClinet.(*es.EsClientV6).Client.
+		SnapshotDelete(snapshotDelete.Repository, snapshotDelete.Snapshot).Do(ctx)
+	if err != nil {
+		this.Error(ctx, err)
+		return
+	}
+
+	this.Success(ctx, response.OperateSuccess, nil)
 }

@@ -154,10 +154,10 @@ export const asyncRoutes = [
     path: '/back-up',
     component: 'layout',
     redirect: '/back-up/index',
-    alwaysShow: false,
+    alwaysShow: true,
     meta: {
-      title: '备份仓库',
-      icon: 'el-icon-edit'
+      title: '备份',
+      icon: 'el-icon-copy-document'
     },
     children: [
       {
@@ -165,8 +165,17 @@ export const asyncRoutes = [
         component: 'views/back-up/index',
         name: 'index',
         meta: {
-          title: '备份仓库',
-          icon: 'el-icon-search'
+          title: '快照存储库',
+          icon: 'el-icon-first-aid-kit'
+        }
+      },
+      {
+        path: 'snapshot',
+        component: 'views/back-up/snapshot',
+        name: 'index',
+        meta: {
+          title: '快照管理',
+          icon: 'el-icon-shopping-bag-2'
         }
       }
     ]
@@ -187,6 +196,7 @@ export const RoutesComponentmaps = {
   'views/indices/index': () => import('@/views/indices/index'),
   'views/indices/reindex': () => import('@/views/indices/reindex'),
   'views/task/index': () => import('@/views/task/index'),
-  'views/back-up/index': () => import('@/views/back-up/index')
+  'views/back-up/index': () => import('@/views/back-up/index'),
+  'views/back-up/snapshot': () => import('@/views/back-up/snapshot')
 }
 
