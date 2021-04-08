@@ -91,11 +91,11 @@
         direction="rtl"
         close-on-press-escape
         destroy-on-close
-        size="70%"
+        size="50%"
       >
 
         <json-editor
-          v-if="!isArray"
+          v-if="drawerShow"
           v-model="JSON.stringify(resData[name],null, '\t')"
           class="res-body"
           styles="width: 100%"
@@ -114,8 +114,7 @@
 </template>
 
 <script>
-import { SnapshotDeleteRepositoryAction, SnapshotListAction } from '@/api/es-backup'
-import { CleanupeRepositoryAction } from '../../api/es-backup'
+import { CleanupeRepositoryAction,SnapshotDeleteRepositoryAction, SnapshotRepositoryListAction,SnapshotListAction } from '@/api/es-backup'
 
 export default {
   name: 'ResTable',
@@ -134,7 +133,6 @@ export default {
       drawerShow: false,
       tableData: [],
       index: 0,
-      isArray: false,
       tableHeader: []
     }
   },
@@ -202,7 +200,7 @@ export default {
       this.loading = true
       const input = {}
       input['es_connect'] = this.$store.state.baseData.EsConnectID
-      const { data, code, msg } = await SnapshotListAction(input)
+      const { data, code, msg } = await SnapshotRepositoryListAction(input)
       if (code == 0) {
         this.resData = data.res
         this.$notify({
@@ -240,7 +238,9 @@ export default {
       const input = {}
       input['es_connect'] = this.$store.state.baseData.EsConnectID
       input['snapshot_info_list'] = this.snapshotNameList
-      const { data, code, msg } = await SnapshotListAction(input)
+        input['repository'] = "test3"
+      const { data, code, msg } = await SnapshotRepositoryListAction(input)
+
       if (code != 0) {
         this.$message({
           type: 'error',

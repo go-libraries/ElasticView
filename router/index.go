@@ -34,81 +34,28 @@ func Init() *gin.Engine {
 	app.Use(Cors)
 	app.Any("/api/gm_user/login", UserController{}.Login)
 	app.Use(JwtMiddleware)
-	gmUser := app.Group("/api/gm_user")
-	{
-		gmUser.Any("info", UserController{}.UserInfo)
-		gmUser.Any("roles", RoleController{}.RolesAction)
-		gmUser.Any("role/update", RoleController{}.RolesUpdateAction)
-		gmUser.Any("role/add", RoleController{}.RolesAddAction)
-		gmUser.Any("role/delete", RoleController{}.RolesDelAction)
-		gmUser.Any("logout", UserController{}.LogoutAction)
-		gmUser.Any("userlist", UserController{}.UserListAction)
-		gmUser.Any("roleOption", RoleController{}.RoleOptionAction)
-		gmUser.Any("getUserById", UserController{}.GetUserByIdAction)
-		gmUser.Any("UpdateUser", UserController{}.UserUpdateAction)
-		gmUser.Any("InsertUser", UserController{}.UserAddAction)
-		gmUser.Any("DelUser", UserController{}.DeleteUserAction)
-	}
-
-	guid := app.Group("/api/gm_guid")
-	{
-		guid.POST("Finish", GuidController{}.Finish)
-		guid.POST("IsFinish", GuidController{}.IsFinish)
-	}
-
-	esLink := app.Group("/api/es_link")
-	{
-		esLink.POST("InsertAction", EsLinkController{}.InsertAction)
-		esLink.POST("DeleteAction", EsLinkController{}.DeleteAction)
-		esLink.POST("UpdateAction", EsLinkController{}.UpdateAction)
-		esLink.GET("ListAction", EsLinkController{}.ListAction)
-	}
-
-	es := app.Group("/api/es")
-	{
-		es.POST("RecoverCanWrite", EsController{}.RecoverCanWrite)
-		es.POST("PingAction", EsController{}.PingAction)
-		es.POST("CatAction", EsController{}.CatAction)
-		es.POST("RunDslAction", EsController{}.RunDslAction)
-		es.Any("SqlToDslAction", EsController{}.SqlToDslAction)
-		es.POST("OptimizeAction", EsController{}.OptimizeAction)
-	}
-	esMap := app.Group("/api/es_map")
-	{
-		esMap.POST("ListAction", EsMappingController{}.ListAction)
-	}
-
-	esIndex := app.Group("/api/es_index")
-	{
-		esIndex.POST("DeleteAction", EsIndexController{}.DeleteAction)
-		esIndex.POST("CreateAction", EsIndexController{}.CreateAction)
-		esIndex.POST("GetSettingsAction", EsIndexController{}.GetSettingsAction)
-		esIndex.POST("IndexNamesAction", EsIndexController{}.IndexNamesAction)
-		esIndex.POST("ReindexAction", EsIndexController{}.ReindexAction)
-		esIndex.POST("GetAliasAction", EsIndexController{}.GetAliasAction)
-		esIndex.POST("OperateAliasAction", EsIndexController{}.OperateAliasAction)
-		esIndex.POST("GetSettingsInfoAction", EsIndexController{}.GetSettingsInfoAction)
-		esIndex.POST("StatsAction", EsIndexController{}.StatsAction)
-
-	}
-
-	dslHistory := app.Group("/api/dslHistory")
-	{
-		dslHistory.POST("CleanAction", DslHistoryController{}.CleanAction)
-		dslHistory.POST("ListAction", DslHistoryController{}.ListAction)
-	}
-
-	task := app.Group("/api/Task")
-	{
-		task.POST("ListAction", TaskController{}.ListAction)
-	}
+	runGmUser(app)
+	runGmGuid(app)
+	runEsLink(app)
+	runEs(app)
+	runEsMap(app)
+	runEsIndex(app)
+	runDslHistory(app)
+	runEsTask(app)
 
 	backUp := app.Group("/api/backUp")
 	{
+
+		backUp.POST("SnapshotRepositoryListAction", EsBackUpController{}.SnapshotRepositoryListAction)
 		backUp.POST("SnapshotListAction", EsBackUpController{}.SnapshotListAction)
 		backUp.POST("SnapshotCreateRepositoryAction", EsBackUpController{}.SnapshotCreateRepositoryAction)
 		backUp.POST("SnapshotDeleteRepositoryAction", EsBackUpController{}.SnapshotDeleteRepositoryAction)
 		backUp.POST("CleanupeRepositoryAction", EsBackUpController{}.CleanupeRepositoryAction)
+		backUp.POST("CreateSnapshotAction", EsBackUpController{}.CreateSnapshotAction)
+		backUp.POST("SnapshotDeleteAction", EsBackUpController{}.SnapshotDeleteAction)
+		backUp.POST("SnapshotDetailAction", EsBackUpController{}.SnapshotDetailAction)
+		backUp.POST("SnapshotRestoreAction", EsBackUpController{}.SnapshotRestoreAction)
+		backUp.POST("SnapshotStatusAction", EsBackUpController{}.SnapshotStatusAction)
 
 	}
 

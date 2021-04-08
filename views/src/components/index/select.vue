@@ -1,5 +1,7 @@
 <template>
   <el-select v-model="indexName" :reserve-keyword="multiple" :collapse-tags="multiple" :disabled="disabled" :placeholder="placeholder" clearable :multiple="multiple" :clearable="clearable" filterable @change="change()">
+
+    <el-option v-if="haveAll == true"  label="全部" value="*" />
     <el-option v-for="(indexName, index) in indexList" :key="index" :label="indexName" :value="indexName" />
   </el-select>
 </template>
@@ -28,7 +30,11 @@ export default {
     placeholder: {
       type: String,
       default: ''
-    }
+    },
+      haveAll:{
+          type: Boolean,
+          default: false
+      }
   },
   data() {
     return {

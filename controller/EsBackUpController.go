@@ -3,6 +3,7 @@ package controller
 import (
 	"errors"
 	"fmt"
+	"strings"
 
 	"ElasticView/engine/es"
 	"ElasticView/engine/logs"
@@ -19,7 +20,7 @@ type EsBackUpController struct {
 	BaseController
 }
 
-func (this EsBackUpController) SnapshotListAction(ctx *gin.Context) {
+func (this EsBackUpController) SnapshotRepositoryListAction(ctx *gin.Context) {
 	esSnapshotInfo := es.EsSnapshotInfo{}
 	err = ctx.Bind(&esSnapshotInfo)
 	if err != nil {
@@ -218,15 +219,69 @@ func (this EsBackUpController) CreateSnapshotAction(ctx *gin.Context) {
 		return
 	}
 
-	_, err = esClinet.(*es.EsClientV6).Client.
-		SnapshotCreate(createSnapshot.Repository, createSnapshot.Snapshot).
-		WaitForCompletion(createSnapshot.WaitForCompletion).BodyJson(es.Json{}).Do(ctx)
+	snapshotCreateService := esClinet.(*es.EsClientV6).Client.
+		SnapshotCreate(createSnapshot.RepositoryName, createSnapshot.SnapshotName)
+
+	if createSnapshot.Wait != nil {
+		snapshotCreateService.WaitForCompletion(*createSnapshot.Wait)
+	}
+
+	settings := es.Json{}
+
+	if len(createSnapshot.IndexList) > 0 {
+		settings["indices"] = strings.Join(createSnapshot.IndexList, ",")
+	}
+
+	if createSnapshot.IgnoreUnavailable != nil {
+		settings["indices"] = *createSnapshot.IgnoreUnavailable
+	}
+
+	if createSnapshot.Partial != nil {
+		settings["partial"] = *createSnapshot.Partial
+	}
+	if createSnapshot.IncludeGlobalState != nil {
+		settings["include_global_state"] = *createSnapshot.IncludeGlobalState
+	}
+
+	res, err := snapshotCreateService.BodyJson(settings).Do(ctx)
+
 	if err != nil {
 		this.Error(ctx, err)
 		return
 	}
 
-	this.Success(ctx, response.OperateSuccess, nil)
+	this.Success(ctx, response.OperateSuccess, res)
+}
+
+func (this EsBackUpController) SnapshotListAction(ctx *gin.Context) {
+	snapshotList := es.SnapshotList{}
+	err = ctx.Bind(&snapshotList)
+	if err != nil {
+		this.Error(ctx, err)
+		return
+	}
+	esClinet, err := es.GetEsClientV6ByID(snapshotList.EsConnect)
+	if err != nil {
+		this.Error(ctx, err)
+		return
+	}
+
+	if snapshotList.Repository == "" {
+		this.Error(ctx, errors.New("请先选择快照存储库"))
+		return
+	}
+
+	res, err := esClinet.(*es.EsClientV6).Client.PerformRequest(ctx, elastic.PerformRequestOptions{
+		Method: "GET",
+		Path:   fmt.Sprintf("/_cat/snapshots/%s", snapshotList.Repository),
+	})
+
+	if err != nil {
+		this.Error(ctx, err)
+		return
+	}
+
+	this.Success(ctx, response.SearchSuccess, res.Body)
 }
 
 func (this EsBackUpController) SnapshotDeleteAction(ctx *gin.Context) {
@@ -250,4 +305,100 @@ func (this EsBackUpController) SnapshotDeleteAction(ctx *gin.Context) {
 	}
 
 	this.Success(ctx, response.OperateSuccess, nil)
+}
+
+func (this EsBackUpController) SnapshotDetailAction(ctx *gin.Context) {
+	snapshotDetail := es.SnapshotDetail{}
+	err = ctx.Bind(&snapshotDetail)
+	if err != nil {
+		this.Error(ctx, err)
+		return
+	}
+
+	esClinet, err := es.GetEsClientV6ByID(snapshotDetail.EsConnect)
+	if err != nil {
+		this.Error(ctx, err)
+		return
+	}
+
+	res, err := esClinet.(*es.EsClientV6).Client.PerformRequest(ctx, elastic.PerformRequestOptions{
+		Method: "GET",
+		Path:   fmt.Sprintf("/_snapshot/%s/%s", snapshotDetail.Repository, snapshotDetail.Snapshot),
+	})
+	if err != nil {
+		this.Error(ctx, err)
+		return
+	}
+	this.Success(ctx, response.SearchSuccess, res.Body)
+}
+
+func (this EsBackUpController) SnapshotRestoreAction(ctx *gin.Context) {
+	snapshotRestore := es.SnapshotRestore{}
+	err = ctx.Bind(&snapshotRestore)
+	if err != nil {
+		this.Error(ctx, err)
+		return
+	}
+	esClinet, err := es.GetEsClientV6ByID(snapshotRestore.EsConnect)
+	if err != nil {
+		this.Error(ctx, err)
+		return
+	}
+
+	snapshotRestoreService := esClinet.(*es.EsClientV6).Client.SnapshotRestore(snapshotRestore.RepositoryName, snapshotRestore.SnapshotName)
+
+	if snapshotRestore.Wait != nil {
+		snapshotRestoreService.WaitForCompletion(*snapshotRestore.Wait)
+	}
+
+	if snapshotRestore.IgnoreUnavailable != nil {
+		snapshotRestoreService.IgnoreUnavailable(*snapshotRestore.IgnoreUnavailable)
+	}
+	if len(snapshotRestore.IndexList) > 0 {
+		snapshotRestoreService.Indices(snapshotRestore.IndexList...)
+	}
+	if snapshotRestore.Partial != nil {
+		snapshotRestoreService.Partial(*snapshotRestore.Partial)
+	}
+	if snapshotRestore.IncludeGlobalState != nil {
+		snapshotRestoreService.IncludeGlobalState(*snapshotRestore.IncludeGlobalState)
+	}
+	if snapshotRestore.RenamePattern != "" {
+		snapshotRestoreService.RenamePattern(snapshotRestore.RenamePattern)
+	}
+	if snapshotRestore.RenameReplacement != "" {
+		snapshotRestoreService.RenameReplacement(snapshotRestore.RenameReplacement)
+	}
+
+	res, err := snapshotRestoreService.Do(ctx)
+
+	if err != nil {
+		this.Error(ctx, err)
+		return
+	}
+	this.Success(ctx, response.OperateSuccess, res)
+}
+
+func (this EsBackUpController) SnapshotStatusAction(ctx *gin.Context) {
+	snapshotStatus := es.SnapshotStatus{}
+	err = ctx.Bind(&snapshotStatus)
+	if err != nil {
+		this.Error(ctx, err)
+		return
+	}
+	esClinet, err := es.GetEsClientV6ByID(snapshotStatus.EsConnect)
+	if err != nil {
+		this.Error(ctx, err)
+		return
+	}
+
+	snapshotRestoreStatus := esClinet.(*es.EsClientV6).Client.SnapshotStatus().Repository(snapshotStatus.RepositoryName).Snapshot(snapshotStatus.SnapshotName)
+
+	res, err := snapshotRestoreStatus.Do(ctx)
+
+	if err != nil {
+		this.Error(ctx, err)
+		return
+	}
+	this.Success(ctx, response.SearchSuccess, res)
 }

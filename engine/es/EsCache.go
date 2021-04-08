@@ -21,7 +21,6 @@ func NewEsCache() *EsCache {
 }
 
 func (this *EsCache) Set(id int, esClient EsClient) {
-
 	this.esConnectMap[id] = esClient
 }
 
