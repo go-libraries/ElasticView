@@ -136,7 +136,7 @@ export const asyncRoutes = [
     alwaysShow: false,
     meta: {
       title: '任务',
-      icon: 'el-icon-edit'
+      icon: 'el-icon-notebook-2'
     },
     children: [
       {
@@ -145,7 +145,7 @@ export const asyncRoutes = [
         name: 'index',
         meta: {
           title: '任务',
-          icon: 'el-icon-search'
+          icon: 'el-icon-notebook-2'
         }
       }
     ]
@@ -180,9 +180,8 @@ export const asyncRoutes = [
       }
     ]
   }
-
 ]
-// todo ...  备份仓库  映射增删改查  任务管理   查询可视化   监控数据可视化
+// todo ...    映射增删改查  任务管理   查询可视化   监控数据可视化
 
 // 路由组件 映射 map
 export const RoutesComponentmaps = {

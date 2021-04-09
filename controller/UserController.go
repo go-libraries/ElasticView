@@ -15,7 +15,6 @@ type UserController struct {
 	BaseController
 }
 
-
 func (this UserController) Login(ctx *gin.Context) {
 	username := ctx.Request.FormValue("username")
 	password := ctx.Request.FormValue("password")

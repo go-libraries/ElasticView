@@ -516,7 +516,7 @@ export default {
   }
 
   .select-path{
-    width: 800px;
+    width: 1200px;
     font-size: 8px;
   }
 

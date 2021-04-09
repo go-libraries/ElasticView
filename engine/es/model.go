@@ -1,7 +1,5 @@
 package es
 
-import "ElasticView/engine/db"
-
 type Json map[string]interface{}
 
 type Sort struct {
@@ -14,15 +12,28 @@ type Page struct {
 	PageSize int
 }
 
-func NewPage(page int, pageSize int) *Page {
-	return &Page{
-		PageNum:  int(db.CreatePage(page, pageSize)),
-		PageSize: pageSize,
-	}
-}
-
 type EsConnectID struct {
 	EsConnectID int `json:"es_connect"`
+}
+
+type UpdateMapping struct {
+	EsConnect  int    `json:"es_connect"`
+	IndexName  string `json:"index_name"`
+	TypeName   string `json:"type_name"`
+	Properties Json   `json:"properties"`
+}
+
+type TaskList struct {
+	EsConnect    int      `json:"es_connect"`
+	TaskId       []string `json:"task_id"`
+	Actions      []string `json:"actions"`
+	NodeId       []string `json:"node_id"`
+	ParentTaskId string   `json:"parent_task_id"`
+}
+
+type CancelTask struct {
+	EsConnect int    `json:"es_connect"`
+	TaskID    string `json:"task_id"`
 }
 
 type EsSnapshotInfo struct {

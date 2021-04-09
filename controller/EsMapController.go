@@ -1,6 +1,8 @@
 package controller
 
 import (
+	"context"
+
 	"ElasticView/engine/es"
 	"ElasticView/platform-basic-libs/response"
 
@@ -31,21 +33,27 @@ func (this EsMappingController) ListAction(ctx *gin.Context) {
 	this.Success(ctx, response.SearchSuccess, res)
 }
 
-func (this EsMappingController) PatchGetMappingAction(ctx *gin.Context) {
-
-}
-
 func (this EsMappingController) UpdateMappingAction(ctx *gin.Context) {
-	esMappingInfo := es.EsMappingInfo{}
-	err = ctx.Bind(&esMappingInfo)
+	updateMapping := es.UpdateMapping{}
+	err = ctx.Bind(&updateMapping)
 	if err != nil {
 		this.Error(ctx, err)
 		return
 	}
-	_, err := es.GetEsClientV6ByID(esMappingInfo.EsConnect)
+	esClinet, err := es.GetEsClientV6ByID(updateMapping.EsConnect)
 	if err != nil {
 		this.Error(ctx, err)
 		return
 	}
-
+	res, err := esClinet.(*es.EsClientV6).Client.PutMapping().
+		Index(updateMapping.IndexName).
+		Type(updateMapping.TypeName).
+		UpdateAllTypes(true).
+		BodyJson(updateMapping.Properties).
+		Do(context.Background())
+	if err != nil {
+		this.Error(ctx, err)
+		return
+	}
+	this.Success(ctx, response.OperateSuccess, res)
 }

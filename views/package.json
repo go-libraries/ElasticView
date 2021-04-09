@@ -62,6 +62,7 @@
     "jwchat": "^0.2.41",
     "less-loader": "^6.2.0",
     "lib-flexible": "^0.3.2",
+    "moment": "^2.29.1",
     "normalize.css": "7.0.0",
     "nprogress": "0.2.0",
     "path-to-regexp": "2.4.0",

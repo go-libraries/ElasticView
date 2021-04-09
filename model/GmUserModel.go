@@ -3,6 +3,7 @@ package model
 import (
 	"ElasticView/engine/db"
 	"ElasticView/engine/logs"
+	"ElasticView/platform-basic-libs/util"
 
 	"go.uber.org/zap"
 )
@@ -15,6 +16,12 @@ type GmUserModel struct {
 	Realname string `json:"realname" db:"realname"`
 }
 
+//密码进行md5混淆
+func (this GmUserModel) GetPassword() string {
+	return util.MD5HexHash([]byte(this.Password))
+}
+
+//是否存在该用户
 func (this GmUserModel) Exsit() (b bool) {
 	var count int
 	err := db.Sqlx.Get(&count, "select count(*) from gm_user where username = ? and role_id = ? limit 1;", this.Username, this.RoleId)
@@ -25,18 +32,21 @@ func (this GmUserModel) Exsit() (b bool) {
 	return true
 }
 
-func (this GmUserModel) GetUserByUP(username, password string) (gmUser GmUserModel, err error) {
-	err = db.Sqlx.Get(&gmUser, "select id,username,password,role_id,realname from gm_user where username = ? and password = ? limit 1;", username, password)
+//登录
+func (this GmUserModel) GetUserByUP() (gmUser GmUserModel, err error) {
+	err = db.Sqlx.Get(&gmUser, "select id,username,password,role_id,realname from gm_user where username = ? and password = ? limit 1;", this.Username, this.GetPassword())
 	return
 }
 
+//通过id查询用户信息
 func (this GmUserModel) GetUserById() (gmUser GmUserModel, err error) {
 	err = db.Sqlx.Get(&gmUser, "select id,username,password,role_id,realname from gm_user where id = ?;", this.ID)
 	return
 }
 
+//新增用户
 func (this GmUserModel) Insert() (id int64, err error) {
-	rlt, err := db.Sqlx.Exec("insert into gm_user(username,password,role_id,realname)values(?,?,?,?)", this.Username, this.Password, this.RoleId, this.Realname)
+	rlt, err := db.Sqlx.Exec("insert into gm_user(username,password,role_id,realname)values(?,?,?,?)", this.Username, this.GetPassword(), this.RoleId, this.Realname)
 	if err != nil {
 		return
 	}
@@ -45,7 +55,7 @@ func (this GmUserModel) Insert() (id int64, err error) {
 }
 
 func (this GmUserModel) Update() (err error) {
-	_, err = db.Sqlx.Exec("update gm_user set username = ?,password=?,role_id=?,realname=? where id = ? ;", this.Username, this.Password, this.RoleId, this.Realname, this.ID)
+	_, err = db.Sqlx.Exec("update gm_user set username = ?,password=?,role_id=?,realname=? where id = ? ;", this.Username, this.GetPassword(), this.RoleId, this.Realname, this.ID)
 	return
 }
 

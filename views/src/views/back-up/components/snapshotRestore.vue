@@ -4,19 +4,19 @@
       <el-card class="box-card">
         <el-form label-width="500px" label-position="left">
           <el-form-item label="仓库名">
-            <el-input readonly v-model="repository"></el-input>
+            <el-input v-model="repository" readonly />
           </el-form-item>
           <el-form-item label="快照名">
-            <el-input readonly v-model="snapshot"></el-input>
+            <el-input v-model="snapshot" readonly />
           </el-form-item>
           <el-form-item label="需要备份的索引">
-            <index-select :multiple="true" :haveAll="true"  :clearable="true" placeholder="迁移别名到多个索引上" @change="changeIndex" />
+            <index-select :multiple="true" :have-all="true" :clearable="true" placeholder="迁移别名到多个索引上" @change="changeIndex" />
           </el-form-item>
           <el-form-item label="rename_pattern 【正则表达式】">
-            <el-input readonly v-model="form.rename_pattern"></el-input>
+            <el-input v-model="form.rename_pattern" readonly />
           </el-form-item>
           <el-form-item label="rename_replacement 【正则表达式】">
-            <el-input readonly v-model="form.rename_replacement"></el-input>
+            <el-input v-model="form.rename_replacement" readonly />
           </el-form-item>
 
           <el-form-item label="ignore_unavailable   【把这个选项设置为 true 的时候在创建快照的过程中会忽略不存在的索引,如果没有设置ignore_unavailable，在索引不存在的情况下快照请求将会失败。】">
@@ -58,81 +58,81 @@
 </template>
 
 <script>
-    import { CreateSnapshotAction,SnapshotRestoreAction } from '@/api/es-backup'
+import { CreateSnapshotAction, SnapshotRestoreAction } from '@/api/es-backup'
 
-    export default {
-        name: 'Add',
-        components: {},
-        props: {
-            open: {
-                type: Boolean,
-                default: false
-            },
-            snapshot: {
-                type: String,
-                default: ""
-            },
-            repository: {
-                type: String,
-                default: ""
-            }
-        },
-        components: {
-            'IndexSelect': () => import('@/components/index/select')
-        },
-        data() {
-            return {
-                isOpen: false,
-                form: {
-                    snapshotName:this.snapshot,
-                    repositoryName: this.repository,
-                    ignore_unavailable: null,
-                    include_global_state: null,
-                    partial: null,
-                    wait: null,
-                    indexList: [],
-                    rename_pattern: "",
-                    rename_replacement: "",
-                },
-            }
-        },
-        computed: {},
-        created(){
-            console.log(this.snapshot)
-        },
-
-        methods: {
-            changeIndex(index){
-                console.log(index)
-                this.form.indexList = []
-                this.form.indexList = index
-            },
-
-            closeDialog() {
-                this.$emit('close', false)
-            },
-            async confirm() {
-                const input = this.form
-                input['es_connect'] = this.$store.state.baseData.EsConnectID
-
-                const { code, data, msg } = await SnapshotRestoreAction(input)
-                if (code == 0) {
-                    this.$emit('close', true)
-                    this.$message({
-                        type: 'success',
-                        message: msg
-                    })
-                    return
-                } else {
-                    this.$message({
-                        type: 'error',
-                        message: msg
-                    })
-                    return
-                }
-            }
-        }
+export default {
+  name: 'Add',
+  components: {},
+  components: {
+    'IndexSelect': () => import('@/components/index/select')
+  },
+  props: {
+    open: {
+      type: Boolean,
+      default: false
+    },
+    snapshot: {
+      type: String,
+      default: ''
+    },
+    repository: {
+      type: String,
+      default: ''
     }
+  },
+  data() {
+    return {
+      isOpen: false,
+      form: {
+        snapshotName: this.snapshot,
+        repositoryName: this.repository,
+        ignore_unavailable: null,
+        include_global_state: null,
+        partial: null,
+        wait: null,
+        indexList: [],
+        rename_pattern: '',
+        rename_replacement: ''
+      }
+    }
+  },
+  computed: {},
+  created() {
+    console.log(this.snapshot)
+  },
+
+  methods: {
+    changeIndex(index) {
+      console.log(index)
+      this.form.indexList = []
+      this.form.indexList = index
+    },
+
+    closeDialog() {
+      this.$emit('close', false)
+    },
+    async confirm() {
+      const input = this.form
+      input['es_connect'] = this.$store.state.baseData.EsConnectID
+
+      const { code, data, msg } = await SnapshotRestoreAction(input)
+      if (code == 0) {
+        this.$emit('close', true)
+        this.$message({
+          type: 'success',
+          message: msg
+        })
+        return
+      } else {
+        this.$message({
+          type: 'error',
+          message: msg
+        })
+        return
+      }
+    }
+  }
+}
 </script>
 
 <style scoped>

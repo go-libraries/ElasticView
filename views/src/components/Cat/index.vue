@@ -33,7 +33,7 @@
         v-if="pageshow"
         class="pagination-container"
         :current-page="page"
-        :page-sizes="[10, 20, 30, 50]"
+        :page-sizes="[10, 20, 30, 50,100,150,200]"
         :page-size="limit"
         layout="total, sizes, prev, pager, next, jumper"
         :total="total"

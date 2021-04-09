@@ -114,7 +114,7 @@
 </template>
 
 <script>
-import { CleanupeRepositoryAction,SnapshotDeleteRepositoryAction, SnapshotRepositoryListAction,SnapshotListAction } from '@/api/es-backup'
+import { CleanupeRepositoryAction, SnapshotDeleteRepositoryAction, SnapshotRepositoryListAction, SnapshotListAction } from '@/api/es-backup'
 
 export default {
   name: 'ResTable',
@@ -238,7 +238,7 @@ export default {
       const input = {}
       input['es_connect'] = this.$store.state.baseData.EsConnectID
       input['snapshot_info_list'] = this.snapshotNameList
-        input['repository'] = "test3"
+      input['repository'] = 'test3'
       const { data, code, msg } = await SnapshotRepositoryListAction(input)
 
       if (code != 0) {

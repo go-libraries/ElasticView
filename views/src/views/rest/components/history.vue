@@ -67,7 +67,7 @@
       <div class="pagination-container">
         <el-pagination
           :current-page="input.page"
-          :page-sizes="[10, 20, 30, 50]"
+          :page-sizes="[10, 20, 30, 50,100,150,200]"
           :page-size="input.limit"
           layout="total, sizes, prev, pager, next, jumper"
           :total="total"

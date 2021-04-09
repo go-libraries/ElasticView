@@ -24,7 +24,7 @@
           :loading="readOnlyAllowDeleteLoading"
           @click="readOnlyAllowDelete()"
         >
-          切换为可读写状态
+          将节点切换为可读写状态
         </el-button>
 
         <el-button
@@ -35,13 +35,102 @@
         >将所有索引刷新到磁盘
         </el-button>
 
+        <el-button
+          v-loading="loadingGroup['close']"
+          type="danger"
+
+          icon="el-icon-circle-close"
+          class="filter-item"
+          @click="runCommandByIndex('close',selectIndexList.join(','))"
+        >关闭
+        </el-button>
+
+        <el-button
+          v-loading="loadingGroup['open']"
+          type="success"
+
+          icon="el-icon-success"
+          class="filter-item"
+          @click="runCommandByIndex('open',selectIndexList.join(','))"
+        >打开
+        </el-button>
+        <el-button
+          v-loading="loadingGroup['_forcemerge']"
+
+          icon="el-icon-connection"
+          class="filter-item"
+          @click="runCommandByIndex('_forcemerge',selectIndexList.join(','))"
+        >强制合并索引【forcemerge操作,手动释放磁盘空间】
+        </el-button>
+
+        <el-popover
+          placement="top-start"
+          title="提示"
+          width="200"
+          trigger="hover"
+          content="为了让最新的数据可以立即被搜索到"
+        >
+          <el-button
+            slot="reference"
+            v-loading="loadingGroup['_refresh']"
+            class="filter-item"
+
+            type="primary"
+            icon="el-icon-refresh"
+            @click="runCommandByIndex('_refresh',selectIndexList.join(','))"
+          >刷新索引
+          </el-button>
+        </el-popover>
+
+        <el-popover
+          placement="top-start"
+          title="提示"
+          width="200"
+          trigger="hover"
+          content="让数据持久化到磁盘中"
+        >
+          <el-button
+            slot="reference"
+            v-loading="loadingGroup['_flush']"
+
+            type="info"
+            icon="el-icon-s-open"
+            class="filter-item"
+            @click="runCommandByIndex('_flush',selectIndexList.join(','))"
+          >将索引刷新到磁盘
+          </el-button>
+        </el-popover>
+
+        <el-button
+          v-loading="loadingGroup['_cache/clear']"
+          class="filter-item"
+
+          type="warning"
+          icon="el-icon-toilet-paper"
+          @click="runCommandByIndex('_cache/clear',selectIndexList.join(','))"
+        >清理缓存
+        </el-button>
+
+        <el-button
+          v-loading="loadingGroup['deleteIndex']"
+          class="filter-item"
+          type="danger"
+          icon="el-icon-delete"
+          @click="deleteIndex(selectIndexList.join(','),'deleteIndex')"
+        >删除索引
+        </el-button>
       </div>
       <back-to-top />
 
       <el-table
         v-loading="connectLoading"
         :data="list"
+        @selection-change="selectChange"
       >
+        <el-table-column
+          type="selection"
+          width="55"
+        />
         <el-table-column
           label="序号"
           align="center"
@@ -67,7 +156,7 @@
               type="success"
               size="small"
               icon="el-icon-success"
-              @click="runCommandByIndex('close',scope.row.index)"
+              @click="runCommandByIndex('open',scope.row.index)"
             >开启
             </el-button>
             <el-button
@@ -75,7 +164,7 @@
               type="danger"
               size="small"
               icon="el-icon-circle-close"
-              @click="runCommandByIndex('open',scope.row.index)"
+              @click="runCommandByIndex('close',scope.row.index)"
             >关闭
             </el-button>
           </template>
@@ -132,22 +221,6 @@
               </el-button>
 
               <el-button
-                v-if="Object.keys(mappings[scope.row.index].mappings).length > 0"
-                type="primary"
-                size="small"
-                icon="el-icon-plus"
-                @click="openMappingEditDialog(scope.row.index,true)"
-              >新增映射字段
-              </el-button>
-              <el-button
-                v-if="Object.keys(mappings[scope.row.index].mappings).length == 0"
-                type="warning"
-                size="small"
-                icon="el-icon-circle-plus-outline"
-                @click="openMappingEditDialog(scope.row.index,false)"
-              >新增映射结构
-              </el-button>
-              <el-button
                 icon="el-icon-more"
                 type="primary"
                 size="small"
@@ -162,7 +235,7 @@
         v-if="pageshow"
         class="pagination-container"
         :current-page="page"
-        :page-sizes="[10, 20, 30, 50]"
+        :page-sizes="[10, 20, 30, 50,100,150,200]"
         :page-size="limit"
         layout="total, sizes, prev, pager, next, jumper"
         :total="total"
@@ -185,7 +258,6 @@
             <json-editor
               v-if="activeName == 'Settings'"
               v-model="activeData"
-              v-loading="tabLoading"
               styles="width: 100%"
               :read="true"
               title="设置"
@@ -195,23 +267,31 @@
           </el-tab-pane>
           <el-tab-pane label="映射" name="Mapping">
             <div class="filter-container operate">
-              <el-tag class="filter-item">操作</el-tag>
+
+              <el-tag type="warning" class="filter-item">切换为其它索引的映射</el-tag>
+
+              <index-select
+                class="filter-item"
+                :clearable="true"
+                placeholder="请选择索引名"
+                @change="changeMapToAnotherIndex"
+              />
+              <el-tag type="primary" class="filter-item">操作</el-tag>
               <el-button
                 v-loading="loadingGroup['saveMappinng']"
                 class="filter-item"
                 size="small"
-                type="warning"
-                icon="el-icon-toilet-paper"
+                type="primary"
+                icon="el-icon-check"
                 @click="saveMappinng"
-              >Todo...
+              >修改【注意：只能新增映射字段不可修改映射字段类型】
               </el-button>
             </div>
             <json-editor
               v-if="activeName == 'Mapping'"
               v-model="activeData"
-              v-loading="tabLoading"
               styles="width: 100%"
-              :read="true"
+              :read="false"
               title="映射"
               @getValue="getMapping"
             />
@@ -220,7 +300,7 @@
             <json-editor
               v-if="activeName == 'Stats'"
               v-model="activeData"
-              v-loading="tabLoading"
+
               styles="width: 100%;"
               :read="true"
               title="Stats"
@@ -236,7 +316,7 @@
                 <json-editor
                   v-if="activeName == 'editSettings'"
                   v-model="activeData"
-                  v-loading="tabLoading"
+
                   :point-out="pointOut"
                   styles="width: 100%;"
                   :read="false"
@@ -276,7 +356,7 @@
               icon="el-icon-connection"
               class="filter-item"
               @click="runCommandByIndex('_forcemerge',indexName)"
-            >强制合并索引
+            >强制合并索引【forcemerge操作,手动释放磁盘空间】
             </el-button>
 
             <el-popover
@@ -364,11 +444,11 @@
 <script>
 import { clone } from '@/utils/index'
 import { filterData } from '@/utils/table'
-import { CatAction, OptimizeAction, RecoverCanWrite, RunDslAction } from '@/api/es'
+import { CatAction, OptimizeAction, RecoverCanWrite } from '@/api/es'
 import { bigNumberTransform } from '@/utils/format'
 import { CreateAction, DeleteAction, GetSettingsAction, GetSettingsInfoAction, StatsAction } from '@/api/es-index'
 import { esSettingsWords } from '@/utils/base-data'
-import { ListAction } from '@/api/es-map'
+import { ListAction, UpdateMappingAction } from '@/api/es-map'
 
 export default {
   name: 'CatIndices',
@@ -378,7 +458,8 @@ export default {
     'Mappings': () => import('@/views/indices/components/mapping'),
     'BackToTop': () => import('@/components/BackToTop/index'),
     'JsonEditor': () => import('@/components/JsonEditor/index'),
-    'Alias': () => import('@/views/indices/components/alias')
+    'Alias': () => import('@/views/indices/components/alias'),
+    'IndexSelect': () => import('@/components/index/select')
   },
 
   data() {
@@ -418,7 +499,8 @@ export default {
       input: '',
       status: '',
       mappingInfo: {},
-      mappings: {}
+      mappings: {},
+      selectIndexList: []
     }
   },
   destroyed() {
@@ -433,10 +515,30 @@ export default {
     this.searchData()
   },
   methods: {
+    selectChange(row) {
+      this.selectIndexList = []
+      for (const v of row) {
+        this.selectIndexList.push(v.index)
+      }
+    },
+    async changeMapToAnotherIndex(indexName) {
+      if (indexName == '') {
+        indexName = this.indexName
+      }
+      const input = {}
+      input['es_connect'] = this.$store.state.baseData.EsConnectID
+      input['index_name'] = indexName
+
+      const res = await ListAction(input)
+
+      if (res.code == 0) {
+        this.activeData = JSON.stringify(res.data[indexName].mappings, null, '\t')
+      }
+    },
     getMapping(v) {
       this.activeData = v
     },
-    saveMappinng() {
+    async saveMappinng() {
       let activeData = clone(this.activeData)
       try {
         activeData = JSON.parse(activeData)
@@ -447,19 +549,34 @@ export default {
         })
         return
       }
-      console.log(activeData, 'activeData')
-      if (!activeData[this.indexName]) {
+      const activeDataKeys = Object.keys(activeData)
+      if (activeDataKeys.length == 0) {
         this.$message({
           type: 'error',
-          message: '映射格式不正确'
+          message: '请按格式写type名字'
         })
         return
       }
 
+      const input = {}
+      input['es_connect'] = this.$store.state.baseData.EsConnectID
+      input['index_name'] = this.indexName
+      input['type_name'] = activeDataKeys[0]
+      input['properties'] = activeData[activeDataKeys[0]]
       this.loadingGroup['saveMappinng'] = true
-      setTimeout(() => {
-        this.loadingGroup['saveMappinng'] = false
-      }, 3000)
+      const { data, code, msg } = await UpdateMappingAction(input)
+      this.loadingGroup['saveMappinng'] = false
+      if (code == 0) {
+        this.$message({
+          type: 'success',
+          message: msg
+        })
+      } else {
+        this.$message({
+          type: 'error',
+          message: msg
+        })
+      }
       console.log('saveMappinng')
     },
     openMappingEditDialog(indexName, haveMapping) {
@@ -576,6 +693,12 @@ export default {
 
           if (res.code == 0) {
             this.activeData = JSON.stringify(res.data[this.indexName].mappings, null, '\t')
+            if (Object.keys(res.data[this.indexName].mappings).length == 0) {
+              this.$message({
+                type: 'error',
+                message: '您还没有设置映射结构'
+              })
+            }
           }
           return
         case 'Stats':

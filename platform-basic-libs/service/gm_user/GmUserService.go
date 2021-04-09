@@ -10,8 +10,9 @@ type GmUserService struct {
 
 func (this GmUserService) CheckLogin(username, password string) (token string, err error) {
 	var model2 model.GmUserModel
-
-	gmUser, err := model2.GetUserByUP(username, password)
+	model2.Password = password
+	model2.Username = username
+	gmUser, err := model2.GetUserByUP()
 	if err != nil {
 		return
 	}

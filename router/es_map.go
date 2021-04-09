@@ -10,5 +10,7 @@ func runEsMap(app *gin.Engine) {
 	esMap := app.Group("/api/es_map")
 	{
 		esMap.POST("ListAction", EsMappingController{}.ListAction)
+		esMap.POST("UpdateMappingAction", EsMappingController{}.UpdateMappingAction)
+
 	}
 }

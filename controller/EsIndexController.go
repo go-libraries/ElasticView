@@ -3,6 +3,7 @@ package controller
 import (
 	"context"
 	"errors"
+	"strings"
 	"sync"
 
 	"ElasticView/engine/es"
@@ -75,7 +76,7 @@ func (this EsIndexController) DeleteAction(ctx *gin.Context) {
 		this.Error(ctx, my_error.NewBusiness(es.ParmasNullError, es.IndexNameNullError))
 		return
 	}
-	_, err = esClinet.DeleteIndex([]string{esIndexInfo.IndexName})
+	_, err = esClinet.DeleteIndex(strings.Split(esIndexInfo.IndexName, ","))
 	if err != nil {
 		this.Error(ctx, err)
 		return
@@ -321,4 +322,8 @@ func (this EsIndexController) StatsAction(ctx *gin.Context) {
 
 	this.Success(ctx, response.OperateSuccess, res)
 	return
+}
+
+func (this EsIndexController) OpenAction(ctx *gin.Context) {
+
 }
