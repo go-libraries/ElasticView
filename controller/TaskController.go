@@ -3,7 +3,6 @@ package controller
 import (
 	"ElasticView/engine/es"
 	"ElasticView/platform-basic-libs/response"
-
 	"github.com/gin-gonic/gin"
 	"github.com/olivere/elastic"
 )
@@ -24,19 +23,9 @@ func (this TaskController) ListAction(ctx *gin.Context) {
 		this.Error(ctx, err)
 		return
 	}
+
 	tasksListService := esClinet.(*es.EsClientV6).Client.TasksList().Detailed(true)
-	if len(taskListReq.TaskId) > 0 {
-		tasksListService = tasksListService.TaskId(taskListReq.TaskId...)
-	}
-	if len(taskListReq.Actions) > 0 {
-		tasksListService = tasksListService.Actions(taskListReq.Actions...)
-	}
-	if len(taskListReq.NodeId) > 0 {
-		tasksListService = tasksListService.NodeId(taskListReq.NodeId...)
-	}
-	if taskListReq.ParentTaskId != "" {
-		tasksListService = tasksListService.ParentTaskId(taskListReq.ParentTaskId)
-	}
+
 
 	tasksListResponse, err := tasksListService.Do(ctx)
 	if err != nil {

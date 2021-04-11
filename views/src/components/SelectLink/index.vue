@@ -14,8 +14,6 @@
 </template>
 
 <script>
-// fuse is a lightweight fuzzy-search module
-// make search results more in line with expectations
 import { ListAction } from '@/api/es-link'
 
 export default {
@@ -58,7 +56,6 @@ export default {
     change(link) {
       this.$store.dispatch('baseData/SetEsConnect', link)
       this.reload()
-      // console.log(this.$store.state.baseData.EsConnectID)
     }
   }
 
