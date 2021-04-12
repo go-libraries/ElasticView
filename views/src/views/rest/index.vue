@@ -102,6 +102,7 @@
         title="请求Body"
         @getValue="getBody"
       />
+
       <json-editor v-model="resData" class="res-body" styles="width: 70%" :read="true" title="返回信息" />
     </el-card>
     <el-drawer
@@ -129,6 +130,7 @@
       @getHistoryData="getHistoryData"
       @close="closeHistory"
     />
+
     <res-table
       v-if="tableDialogVisible"
       :dialog-visible="tableDialogVisible"

@@ -71,7 +71,15 @@ func (this EsController) CatAction(ctx *gin.Context) {
 	case "CatAliases":
 		data, err = esClinet.(*es.EsClientV6).Client.CatAliases().Human(true).Do(ctx)
 	case "CatIndices":
-		data, err = esClinet.(*es.EsClientV6).Client.CatIndices().Human(true).Do(ctx)
+		if esCat.IndexBytesFormat != "" {
+			data, err = esClinet.(*es.EsClientV6).Client.CatIndices().Human(true).Bytes(esCat.IndexBytesFormat).Do(ctx)
+		} else {
+			data, err = esClinet.(*es.EsClientV6).Client.CatIndices().Human(true).Do(ctx)
+		}
+	case "CatSegments":
+		data, err = esClinet.(*es.EsClientV6).Client.IndexSegments().Human(true).Do(ctx)
+	case "CatStats":
+		data, err = esClinet.(*es.EsClientV6).Client.ClusterStats().Human(true).Do(ctx)
 	}
 
 	if err != nil {

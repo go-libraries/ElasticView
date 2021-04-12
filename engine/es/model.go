@@ -24,7 +24,7 @@ type UpdateMapping struct {
 }
 
 type TaskList struct {
-	EsConnect    int      `json:"es_connect"`
+	EsConnect int `json:"es_connect"`
 }
 
 type CancelTask struct {
@@ -120,8 +120,9 @@ type EsConnect struct {
 }
 
 type EsCat struct {
-	EsConnect int    `json:"es_connect"`
-	Cat       string `json:"cat"`
+	EsConnect        int    `json:"es_connect"`
+	Cat              string `json:"cat"`
+	IndexBytesFormat string `json:"index_bytes_format"`
 }
 
 type EsRest struct {
