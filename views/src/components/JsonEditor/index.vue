@@ -18,7 +18,7 @@
       lang="json"
       :options="editorOptions"
       theme="chrome"
-      height="700"
+      height="600"
       @init="editorInit"
     />
   </div>
@@ -57,7 +57,7 @@ export default {
         enableSnippets: true,
         enableLiveAutocompletion: true,
         tabSize: 2,
-        fontSize: 14,
+        fontSize: 18,
         showPrintMargin: false // 去除编辑器里的竖线
       }
     }

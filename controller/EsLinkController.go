@@ -2,7 +2,6 @@ package controller
 
 import (
 	"encoding/json"
-	"log"
 
 	"ElasticView/engine/db"
 	"ElasticView/engine/es"
@@ -18,21 +17,22 @@ type EsLinkController struct {
 }
 
 func (this EsLinkController) ListAction(ctx *gin.Context) {
-	sql, args, err := db.SqlBuilder.
-		Select("*").
-		From("es_link").ToSql()
+
+	getByLocal := ctx.Request.FormValue("getByLocal")
+
+	if getByLocal == "1" {
+		this.Success(ctx, response.SearchSuccess, model.EsLinkList)
+		return
+	}
+
+	esLinkModel := model.EsLinkModel{}
+
+	list, err := esLinkModel.GetListAction()
 	if err != nil {
 		this.Error(ctx, err)
 		return
 	}
-	var esLinkList []model.EsLinkModel
-	log.Println(sql, args)
-	err = db.Sqlx.Select(&esLinkList, sql, args...)
-	if err != nil {
-		this.Error(ctx, err)
-		return
-	}
-	this.Success(ctx, response.SearchSuccess, esLinkList)
+	this.Success(ctx, response.SearchSuccess, list)
 }
 
 func (this EsLinkController) InsertAction(ctx *gin.Context) {
@@ -69,7 +69,11 @@ func (this EsLinkController) InsertAction(ctx *gin.Context) {
 		this.Error(ctx, err)
 		return
 	}
-
+	err = esLinkModel.FlushEsLinkList()
+	if err != nil {
+		this.Error(ctx, err)
+		return
+	}
 	this.Success(ctx, response.OperateSuccess, nil)
 }
 
@@ -112,6 +116,12 @@ func (this EsLinkController) UpdateAction(ctx *gin.Context) {
 	esCache := es.NewEsCache()
 	esCache.Rem(int(esLinkModel.ID))
 
+	err = esLinkModel.FlushEsLinkList()
+	if err != nil {
+		this.Error(ctx, err)
+		return
+	}
+
 	this.Success(ctx, response.OperateSuccess, nil)
 }
 
@@ -138,6 +148,11 @@ func (this EsLinkController) DeleteAction(ctx *gin.Context) {
 
 	esCache := es.NewEsCache()
 	esCache.Rem(req.Id)
-
+	esLinkModel := model.EsLinkModel{}
+	err = esLinkModel.FlushEsLinkList()
+	if err != nil {
+		this.Error(ctx, err)
+		return
+	}
 	this.Success(ctx, response.DeleteSuccess, nil)
 }

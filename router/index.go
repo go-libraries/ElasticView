@@ -43,11 +43,6 @@ func Init() *gin.Engine {
 	runDslHistory(app)
 	runEsTask(app)
 	runEsBackUp(app)
-	task := app.Group("/api/es_task")
-	{
-		task.POST("ListAction", TaskController{}.ListAction)
-		task.POST("CancelAction", TaskController{}.CancelAction)
 
-	}
 	return app
 }

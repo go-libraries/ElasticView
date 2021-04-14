@@ -74,7 +74,7 @@
         </div>
         <div class="card-panel-description">
           <div class="card-panel-text">
-            已使用磁盘空间大小
+            索引所占空间大小
           </div>
           <count-to :start-val="0" :end-val="count.size" :duration="2600" class="card-panel-num" />GB
         </div>
@@ -123,9 +123,6 @@ export default {
       const { data, code, msg } = await CatAction(form)
       if (code == 0) {
         this.count.index = data.length
-        for (const indexInfo of data) {
-          this.count.document = this.count.document + Number(indexInfo['docs.count'])
-        }
       }
     },
     async catAllocation() {
@@ -135,7 +132,7 @@ export default {
       }
       const { data, code, msg } = await CatAction(form)
       if (code == 0) {
-        this.count.size = parseFloat(data[0]['disk.used'])
+        this.count.size = parseFloat(data[0]['disk.indices'])
       }
     },
     async catStats() {
@@ -145,7 +142,6 @@ export default {
       }
       const { data, code, msg } = await CatAction(form)
       if (code == 0) {
-        this.count.index = data.indices.docs.count
         this.count.document = data.indices.docs.count
       }
     },

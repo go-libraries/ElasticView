@@ -84,7 +84,7 @@ export const asyncRoutes = [
     redirect: '/rest/index',
     alwaysShow: false,
     meta: {
-      title: 'Dev Tools',
+      title: '开发工具',
       icon: 'el-icon-edit'
     },
     children: [
@@ -93,7 +93,7 @@ export const asyncRoutes = [
         component: 'views/rest/index',
         name: 'index',
         meta: {
-          title: 'Dev Tools',
+          title: '开发工具',
           icon: 'el-icon-search'
         }
       }

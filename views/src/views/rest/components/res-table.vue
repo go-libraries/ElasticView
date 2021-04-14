@@ -150,7 +150,7 @@ export default {
           if (resData['hits']['hits'].length > 500) {
             this.$message({
               type: 'error',
-              message: '请减少数据条数'
+              message: '请减少查詢的数据条数'
             })
             this.$emit('close', false)
             return

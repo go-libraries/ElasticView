@@ -20,7 +20,7 @@ func main() {
 	app.InitConfig()
 	app.InitLogs()
 	app.InitMysql()
-
+	app.InitTask()
 	port := ":" + strconv.Itoa(application.GlobConfig.Port)
 	engine := router.Init()
 	engine.Run(port)

@@ -2,10 +2,6 @@
   <div class="app-container">
     <el-card class="box-card">
       <div class="filter-container">
-        <el-tag class="filter-item">请输入关键词</el-tag>
-
-        <el-input v-model="input" class="filter-item width300" clearable @input="search" />
-
         <el-select v-model="status" class="filter-item width150" clearable filterable @change="search">
           <el-option label="索引健康状态" value="" />
           <el-option label="green" value="green" />
@@ -13,112 +9,123 @@
           <el-option label="red" value="red" />
         </el-select>
 
-        <el-button type="primary" class="filter-item" icon="el-icon-refresh" @click="search">刷新</el-button>
+        <el-tag class="filter-item">请输入关键词</el-tag>
 
-        <el-button type="success" class="filter-item" icon="el-icon-plus" @click="openSettingDialog('','add')">新建索引
-        </el-button>
-        <el-button
-          type="success"
-          class="filter-item"
-          icon="el-icon-sort"
-          :loading="readOnlyAllowDeleteLoading"
-          @click="readOnlyAllowDelete()"
-        >
-          将节点切换为可读写状态
-        </el-button>
+        <el-input v-model="input" class="filter-item width300" clearable @input="search" />
+        <el-button type="primary" class="filter-item" icon="el-icon-search" @click="search">搜索</el-button>
+        <el-button-group>
 
-        <el-button
-          type="info"
-          class="filter-item"
-          icon="el-icon-s-open"
-          @click="runCommandByIndex('_flush','')"
-        >将所有索引刷新到磁盘
-        </el-button>
-
-        <el-button
-          v-loading="loadingGroup['close']"
-          type="danger"
-
-          icon="el-icon-circle-close"
-          class="filter-item"
-          @click="runCommandByIndex('close',selectIndexList.join(','))"
-        >关闭
-        </el-button>
-
-        <el-button
-          v-loading="loadingGroup['open']"
-          type="success"
-
-          icon="el-icon-success"
-          class="filter-item"
-          @click="runCommandByIndex('open',selectIndexList.join(','))"
-        >打开
-        </el-button>
-        <el-button
-          v-loading="loadingGroup['_forcemerge']"
-
-          icon="el-icon-connection"
-          class="filter-item"
-          @click="runCommandByIndex('_forcemerge',selectIndexList.join(','))"
-        >强制合并索引【forcemerge操作,手动释放磁盘空间】
-        </el-button>
-
-        <el-popover
-          placement="top-start"
-          title="提示"
-          width="200"
-          trigger="hover"
-          content="为了让最新的数据可以立即被搜索到"
-        >
-          <el-button
-            slot="reference"
-            v-loading="loadingGroup['_refresh']"
-            class="filter-item"
-
-            type="primary"
-            icon="el-icon-refresh"
-            @click="runCommandByIndex('_refresh',selectIndexList.join(','))"
-          >刷新索引
+          <el-button type="success" class="filter-item" icon="el-icon-plus" @click="openSettingDialog('','add')">新建索引
           </el-button>
-        </el-popover>
 
-        <el-popover
-          placement="top-start"
-          title="提示"
-          width="200"
-          trigger="hover"
-          content="让数据持久化到磁盘中"
-        >
           <el-button
-            slot="reference"
+            v-loading="readOnlyAllowDeleteLoading"
+            type="warning"
+            class="filter-item"
+            icon="el-icon-sort"
+            @click="readOnlyAllowDelete()"
+          >
+            将节点切换为可读写状态
+          </el-button>
+
+          <el-button
             v-loading="loadingGroup['_flush']"
-
             type="info"
-            icon="el-icon-s-open"
             class="filter-item"
-            @click="runCommandByIndex('_flush',selectIndexList.join(','))"
-          >将索引刷新到磁盘
+            icon="el-icon-s-open"
+            @click="runCommandByIndex('_flush','')"
+          >将所有索引刷新到磁盘
           </el-button>
-        </el-popover>
+        </el-button-group>
 
-        <el-button
-          v-loading="loadingGroup['_cache/clear']"
-          class="filter-item"
+      </div>
+      <div class="filter-container">
+        <el-button-group>
+          <el-button
+            v-loading="loadingGroup['close']"
+            type="danger"
 
-          type="warning"
-          icon="el-icon-toilet-paper"
-          @click="runCommandByIndex('_cache/clear',selectIndexList.join(','))"
-        >清理缓存
-        </el-button>
+            icon="el-icon-circle-close"
+            class="filter-item"
+            @click="runCommandByIndex('close',selectIndexList.join(','))"
+          >关闭
+          </el-button>
 
-        <el-button
-          v-loading="loadingGroup['deleteIndex']"
-          class="filter-item"
-          type="danger"
-          icon="el-icon-delete"
-          @click="deleteIndex(selectIndexList.join(','),'deleteIndex')"
-        >删除索引
-        </el-button>
+          <el-button
+            v-loading="loadingGroup['open']"
+            type="success"
+
+            icon="el-icon-success"
+            class="filter-item"
+            @click="runCommandByIndex('open',selectIndexList.join(','))"
+          >打开
+          </el-button>
+          <el-button
+            v-loading="loadingGroup['_forcemerge']"
+
+            icon="el-icon-connection"
+            class="filter-item"
+            @click="runCommandByIndex('_forcemerge',selectIndexList.join(','))"
+          >强制合并索引【forcemerge操作,手动释放磁盘空间】
+          </el-button>
+
+          <el-popover
+            placement="top-start"
+            title="提示"
+            width="200"
+            trigger="hover"
+            content="为了让最新的数据可以立即被搜索到"
+          >
+            <el-button
+              slot="reference"
+              v-loading="loadingGroup['_refresh']"
+              class="filter-item"
+
+              type="primary"
+              icon="el-icon-refresh"
+              @click="runCommandByIndex('_refresh',selectIndexList.join(','))"
+            >刷新索引
+            </el-button>
+          </el-popover>
+
+          <el-popover
+            placement="top-start"
+            title="提示"
+            width="200"
+            trigger="hover"
+            content="让数据持久化到磁盘中"
+          >
+            <el-button
+              slot="reference"
+              v-loading="loadingGroup['_flush']"
+
+              type="info"
+              icon="el-icon-s-open"
+              class="filter-item"
+              @click="runCommandByIndex('_flush',selectIndexList.join(','))"
+            >将索引刷新到磁盘
+            </el-button>
+          </el-popover>
+
+          <el-button
+            v-loading="loadingGroup['_cache/clear']"
+            class="filter-item"
+
+            type="warning"
+            icon="el-icon-toilet-paper"
+            @click="runCommandByIndex('_cache/clear',selectIndexList.join(','))"
+          >清理缓存
+          </el-button>
+
+          <el-button
+            v-loading="loadingGroup['deleteIndex']"
+            class="filter-item"
+            type="danger"
+            icon="el-icon-delete"
+            @click="deleteIndex(selectIndexList.join(','),'deleteIndex')"
+          >删除索引
+          </el-button>
+        </el-button-group>
       </div>
       <back-to-top />
 
@@ -209,6 +216,7 @@
             {{ scope.row["pri.store.size"] }}
           </template>
         </el-table-column>
+
         <el-table-column align="center" label="操作" fixed="right" width="400">
           <template slot-scope="scope">
             <el-button-group>
@@ -284,8 +292,9 @@
                 type="primary"
                 icon="el-icon-check"
                 @click="saveMappinng"
-              >修改【注意：只能新增映射字段不可修改映射字段类型】
+              >修改
               </el-button>
+              <el-link type="danger">【注意：只能新增映射字段不可修改映射字段类型】</el-link>
             </div>
             <json-editor
               v-if="activeName == 'Mapping'"
@@ -356,9 +365,9 @@
               icon="el-icon-connection"
               class="filter-item"
               @click="runCommandByIndex('_forcemerge',indexName)"
-            >强制合并索引【forcemerge操作,手动释放磁盘空间】
+            >强制合并索引
             </el-button>
-
+            <el-link type="danger">【forcemerge操作,手动释放磁盘空间】</el-link>
             <el-popover
               placement="top-start"
               title="提示"
