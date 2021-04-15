@@ -287,11 +287,17 @@ func (this EsIndexController) IndexNamesAction(ctx *gin.Context) {
 		this.Error(ctx, err)
 		return
 	}
-	indexNames, err := esClinet.(*es.EsClientV6).Client.IndexNames()
+	catIndicesResponse, err := esClinet.(*es.EsClientV6).Client.CatIndices().Human(true).Do(ctx)
 	if err != nil {
 		this.Error(ctx, err)
 		return
 	}
+	indexNames := []string{}
+
+	for _, catIndices := range catIndicesResponse {
+		indexNames = append(indexNames, catIndices.Index)
+	}
+
 	this.Success(ctx, response.SearchSuccess, indexNames)
 	return
 }
