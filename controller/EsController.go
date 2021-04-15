@@ -25,7 +25,7 @@ type EsController struct {
 //Ping
 func (this EsController) PingAction(ctx *gin.Context) {
 	esConnect := es.EsConnect{}
-	err = ctx.Bind(&esConnect)
+	err := ctx.Bind(&esConnect)
 	if err != nil {
 		this.Error(ctx, err)
 		return
@@ -47,7 +47,7 @@ func (this EsController) PingAction(ctx *gin.Context) {
 func (this EsController) CatAction(ctx *gin.Context) {
 
 	esCat := es.EsCat{}
-	err = ctx.Bind(&esCat)
+	err := ctx.Bind(&esCat)
 	if err != nil {
 		this.Error(ctx, err)
 		return
@@ -93,7 +93,7 @@ func (this EsController) CatAction(ctx *gin.Context) {
 func (this EsController) RunDslAction(ctx *gin.Context) {
 
 	esRest := es.EsRest{}
-	err = ctx.Bind(&esRest)
+	err := ctx.Bind(&esRest)
 	if err != nil {
 		this.Error(ctx, err)
 		return
@@ -164,7 +164,7 @@ func (this EsController) SqlToDslAction(ctx *gin.Context) {
 
 func (this EsController) OptimizeAction(ctx *gin.Context) {
 	esOptimize := es.EsOptimize{}
-	err = ctx.Bind(&esOptimize)
+	err := ctx.Bind(&esOptimize)
 	if err != nil {
 		this.Error(ctx, err)
 		return
@@ -194,7 +194,7 @@ func (this EsController) OptimizeAction(ctx *gin.Context) {
 
 func (this EsController) RecoverCanWrite(ctx *gin.Context) {
 	esConnect := es.EsConnectID{}
-	err = ctx.Bind(&esConnect)
+	err := ctx.Bind(&esConnect)
 	if err != nil {
 		this.Error(ctx, err)
 		return

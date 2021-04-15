@@ -145,6 +145,12 @@ type EsIndexInfo struct {
 	Types     string `json:"types"`
 }
 
+type EsDocDeleteRowByID struct {
+	EsConnect int    `json:"es_connect"`
+	ID        string `json:"id"`
+	IndexName string `json:"index_name"`
+}
+
 type EsMappingInfo struct {
 	IndexNameList []string `json:"index_name_list"`
 	EsConnect     int      `json:"es_connect"`

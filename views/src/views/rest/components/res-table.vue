@@ -2,11 +2,11 @@
   <div>
     <el-dialog width="80%" :visible.sync="dialogVisible" title="查询结果" @close="close">
       <pl-table
+
         :data="tableData"
         highlight-current-row
         use-virtual
         :row-height="30"
-        @row-click="openDetail"
       >
         <pl-table-column
           label="序号"
@@ -43,7 +43,17 @@
         </pl-table-column>
         <pl-table-column align="center" label="操作" fixed="right" width="300">
           <template slot-scope="scope">
-            <el-button type="success" size="small" icon="el-icon-search" @click="look(scope.$index)">查看</el-button>
+            <el-button-group>
+              <el-button type="success" size="small" icon="el-icon-search" @click="look(scope.$index)">查看</el-button>
+              <el-button
+                v-if="indexName != ''"
+                type="danger"
+                size="small"
+                icon="el-icon-delete"
+                @click="deleteByID(scope.row,scope.$index)"
+              >删除
+              </el-button>
+            </el-button-group>
           </template>
         </pl-table-column>
 
@@ -64,15 +74,16 @@
 
       <json-editor
         v-if="isArray"
-        v-model="JSON.stringify(json_data[index],null, '\t')"
+        v-model="JSON.stringify(jsonData[index],null, '\t')"
         class="res-body"
         styles="width: 100%"
         :read="true"
         title="详细数据"
       />
+
       <json-editor
         v-if="!isArray"
-        v-model="JSON.stringify(json_data['hits']['hits'][index],null, '\t')"
+        v-model="JSON.stringify(jsonData['hits']['hits'][index],null, '\t')"
         class="res-body"
         styles="width: 100%"
         :read="true"
@@ -84,6 +95,7 @@
 
 <script>
 import { clone } from '@/utils/index'
+import { DeleteRowByIDAction } from '@/api/es-doc'
 
 export default {
   name: 'ResTable',
@@ -98,6 +110,10 @@ export default {
     jsonData: {
       type: Array,
       default: []
+    },
+    searchPath: {
+      type: String,
+      default: ''
     }
   },
   data() {
@@ -106,12 +122,13 @@ export default {
       tableData: [],
       index: 0,
       isArray: false,
-      tableHeader: []
+      tableHeader: [],
+      indexName: ''
     }
   },
   created() {
-    const resData = clone(this.json_data)
-    console.log(resData, 'resData', this.json_data)
+    const resData = clone(this.jsonData)
+
     if (Array.isArray(resData)) {
       if (resData.length > 500) {
         this.$message({
@@ -141,12 +158,25 @@ export default {
           this.tableData[index]['xwl_index'] = index
         }
       }
-      console.log(this.tableData)
 
       this.isArray = true
     } else {
       if (resData.hasOwnProperty('hits')) {
         if (resData['hits']['hits'].length > 0) {
+          const searchKw = '_search'
+          const SplitKw = '/'
+          if (this.searchPath.indexOf(searchKw) != -1) {
+            let searchPath = this.searchPath
+            if (searchPath.substr(0, 1) == SplitKw) {
+              searchPath = searchPath.substr(1, searchPath.length)
+            }
+            if (searchPath.split(SplitKw).length == 3) {
+              const searchPathArr = searchPath.split(SplitKw)
+              delete searchPathArr[searchPathArr.length - 1]
+              this.indexName = searchPathArr.join(SplitKw)
+            }
+          }
+
           if (resData['hits']['hits'].length > 500) {
             this.$message({
               type: 'error',
@@ -178,12 +208,41 @@ export default {
           }
         }
       }
-
-      console.log('END')
     }
-    this.tableHeader = Object.keys(this.tableData[0])
+
+    const tableHeader = Object.keys(this.tableData[0])
+
+    const tmpTableHeader = []
+    tmpTableHeader.push('_id')
+    for (const i in tableHeader) {
+      if (tableHeader[i] != '_id') {
+        tmpTableHeader.push(tableHeader[i])
+      }
+    }
+
+    console.log('tableHeader', tmpTableHeader, Object.keys(this.tableData[0]))
+    this.tableHeader = tmpTableHeader
   },
   methods: {
+    async deleteByID(row, index) {
+      const input = {}
+      input['es_connect'] = this.$store.state.baseData.EsConnectID
+      input['index_name'] = this.indexName
+      input['id'] = row['_id']
+      const res = await DeleteRowByIDAction(input)
+      if (res.code == 0) {
+        this.tableData.splice(index, 1)
+        this.$message({
+          type: 'success',
+          message: res.msg
+        })
+      } else {
+        this.$message({
+          type: 'error',
+          message: res.msg
+        })
+      }
+    },
     strToNum(str) {
       var convertNum = Number(str) // 将字符串强制转换为数字
       if (str === '') { // 排除空字符串
@@ -199,10 +258,6 @@ export default {
           }
         }
       }
-    },
-    openDetail(row, index, tmp) {
-      this.index = row.xwl_index
-      this.drawerShow = true
     },
     look(index) {
       this.index = index

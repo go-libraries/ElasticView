@@ -70,7 +70,7 @@
           搜索历史
         </el-button>
         <el-button
-          v-if="canExport"
+          v-if="canExport && input.path.trim() != '_search'"
           class="filter-item "
           style="display: inline;"
           type="success"
@@ -97,6 +97,8 @@
     </div>
     <json-editor
       v-model="input.body"
+      font-size="14"
+      height="800"
       class="req-body"
       styles="width: 30%"
       :point-out="pointOut"
@@ -104,7 +106,7 @@
       title="请求Body"
       @getValue="getBody"
     />
-    <json-editor v-model="resData" class="res-body" styles="width: 70%" :read="true" title="返回信息" />
+    <json-editor v-model="resData" font-size="14" height="800" class="res-body" styles="width: 70%" :read="true" title="返回信息" />
 
     <el-drawer
       ref="drawer"
@@ -133,8 +135,9 @@
     />
     <res-table
       v-if="tableDialogVisible"
+      :search-path="input.path"
       :dialog-visible="tableDialogVisible"
-      :json_data="JSON.parse(resData)"
+      :json-data="JSON.parse(resData)"
       @close="closeResTable"
     />
   </div>
@@ -269,18 +272,6 @@ export default {
     }
   },
   created() {
-    /* const resReqInfo = sessionStorage.getItem('resReqInfo')
-
-            if (resReqInfo != null && resReqInfo != '' && resReqInfo != 'null') {
-                this.input = JSON.parse(resReqInfo)
-            }
-
-            const sqlStr = sessionStorage.getItem('sqlStr')
-
-            if (sqlStr != null && sqlStr != '' && sqlStr != 'null') {
-                this.sqlStr = sqlStr
-            }
-*/
     this.startGuid()
   },
   destroyed() {

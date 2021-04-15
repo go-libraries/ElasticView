@@ -10,12 +10,13 @@
       </el-button>
     </div>
     <el-card class="box-card">
+
       <el-tabs v-model="editableTabsValue" type="card" closable @tab-remove="removeTab">
         <el-tab-pane
           v-for="(item, index) in editableTabs"
           :key="item.uniqueId"
           :label="item.title"
-          :name="item.uniqueId"
+          :name="Number(item.uniqueId)"
         >
           <tools
             :title="item.title"
@@ -41,7 +42,26 @@ export default {
   data() {
     return {
       editableTabsValue: 1,
-      editableTabs: [{
+      editableTabs: [],
+      queryData: [],
+      test: 1
+    }
+  },
+  mounted() {
+    this.mergeEsPathKeyWords()
+    const editableTabs = sessionStorage.getItem('editableTabs')
+    const editableTabsValue = sessionStorage.getItem('editableTabsValue')
+
+    if (editableTabsValue != null && editableTabs != '' && editableTabs != 'null') {
+      this.editableTabsValue = Number(editableTabsValue)
+    } else {
+      this.editableTabsValue = 1
+    }
+
+    if (editableTabs != null && editableTabs != '' && editableTabs != 'null') {
+      this.editableTabs = JSON.parse(editableTabs)
+    } else {
+      this.editableTabs.push({
         title: '新窗口1',
         uniqueId: 1,
         input: {
@@ -50,28 +70,13 @@ export default {
           path: ''
         },
         sqlStr: 'select * from '
-      }],
-      tabIndex: 1,
-      queryData: []
-
-    }
-  },
-  created() {
-    this.mergeEsPathKeyWords()
-    const editableTabs = sessionStorage.getItem('editableTabs')
-    const tabIndex = sessionStorage.getItem('tabIndex')
-    if (editableTabs != null && editableTabs != '' && editableTabs != 'null') {
-      this.editableTabs = JSON.parse(editableTabs)
-      if (this.editableTabs.length > 0) {
-        this.editableTabsValue = this.editableTabs[0].uniqueId
-      }
-      this.tabIndex = tabIndex
+      })
     }
   },
   destroyed() {
     const editableTabs = JSON.stringify(this.editableTabs)
     sessionStorage.setItem('editableTabs', editableTabs)
-    sessionStorage.setItem('tabIndex', this.tabIndex)
+    sessionStorage.setItem('editableTabsValue', this.editableTabsValue)
   },
   methods: {
     saveData(uniqueId, input, sqlStr, title) {
@@ -93,7 +98,7 @@ export default {
         const indices = Object.keys(list)
         this.queryData = []
         const queryData = esPathKeyWords
-        console.log(list)
+
         for (const esPathKeyWord of queryData) {
           if (esPathKeyWord.value.indexOf('{indices}') !== -1) {
             for (const indice of indices) {

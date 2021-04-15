@@ -1,8 +1,6 @@
 package model
 
 import (
-	"log"
-
 	"ElasticView/engine/db"
 )
 
@@ -63,7 +61,7 @@ func (this *GmDslHistoryModel) List() (gmDslHistoryModelList []GmDslHistoryModel
 	}
 
 	sql, args, err := builder.ToSql()
-	log.Println(sql, args, this)
+
 	if err != nil {
 		return
 	}

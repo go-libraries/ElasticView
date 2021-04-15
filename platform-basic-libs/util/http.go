@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
-	"log"
 	"net"
 	"net/http"
 	"net/url"
@@ -196,7 +195,7 @@ func PostURLReceiveJSON(URL string, params url.Values, receive interface{}) erro
 	if err != nil {
 		return err
 	}
-	log.Println(string(body))
+
 	var json = jsoniter.ConfigCompatibleWithStandardLibrary
 	err = json.Unmarshal(body, receive)
 	if err != nil {
@@ -266,7 +265,7 @@ func PostJSONReceiveJSON(URL string, send, receive interface{}) error {
 	if err != nil {
 		return err
 	}
-	log.Println(string(body))
+
 	var json = jsoniter.ConfigCompatibleWithStandardLibrary
 	err = json.Unmarshal(body, receive)
 	if err != nil {

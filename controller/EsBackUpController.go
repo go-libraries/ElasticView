@@ -22,7 +22,7 @@ type EsBackUpController struct {
 
 func (this EsBackUpController) SnapshotRepositoryListAction(ctx *gin.Context) {
 	esSnapshotInfo := es.EsSnapshotInfo{}
-	err = ctx.Bind(&esSnapshotInfo)
+	err := ctx.Bind(&esSnapshotInfo)
 	if err != nil {
 		this.Error(ctx, err)
 		return
@@ -89,7 +89,7 @@ func (this EsBackUpController) SnapshotRepositoryListAction(ctx *gin.Context) {
 
 func (this EsBackUpController) SnapshotCreateRepositoryAction(ctx *gin.Context) {
 	snapshotCreateRepository := es.SnapshotCreateRepository{}
-	err = ctx.Bind(&snapshotCreateRepository)
+	err := ctx.Bind(&snapshotCreateRepository)
 	if err != nil {
 		this.Error(ctx, err)
 		return
@@ -162,7 +162,7 @@ func (this EsBackUpController) SnapshotCreateRepositoryAction(ctx *gin.Context) 
 
 func (this EsBackUpController) CleanupeRepositoryAction(ctx *gin.Context) {
 	cleanupeRepository := es.CleanupeRepository{}
-	err = ctx.Bind(&cleanupeRepository)
+	err := ctx.Bind(&cleanupeRepository)
 	if err != nil {
 		this.Error(ctx, err)
 		return
@@ -186,7 +186,7 @@ func (this EsBackUpController) CleanupeRepositoryAction(ctx *gin.Context) {
 
 func (this EsBackUpController) SnapshotDeleteRepositoryAction(ctx *gin.Context) {
 	snapshotDeleteRepository := es.SnapshotDeleteRepository{}
-	err = ctx.Bind(&snapshotDeleteRepository)
+	err := ctx.Bind(&snapshotDeleteRepository)
 	if err != nil {
 		this.Error(ctx, err)
 		return
@@ -208,7 +208,7 @@ func (this EsBackUpController) SnapshotDeleteRepositoryAction(ctx *gin.Context) 
 
 func (this EsBackUpController) CreateSnapshotAction(ctx *gin.Context) {
 	createSnapshot := es.CreateSnapshot{}
-	err = ctx.Bind(&createSnapshot)
+	err := ctx.Bind(&createSnapshot)
 	if err != nil {
 		this.Error(ctx, err)
 		return
@@ -255,7 +255,7 @@ func (this EsBackUpController) CreateSnapshotAction(ctx *gin.Context) {
 
 func (this EsBackUpController) SnapshotListAction(ctx *gin.Context) {
 	snapshotList := es.SnapshotList{}
-	err = ctx.Bind(&snapshotList)
+	err := ctx.Bind(&snapshotList)
 	if err != nil {
 		this.Error(ctx, err)
 		return
@@ -286,7 +286,7 @@ func (this EsBackUpController) SnapshotListAction(ctx *gin.Context) {
 
 func (this EsBackUpController) SnapshotDeleteAction(ctx *gin.Context) {
 	snapshotDelete := es.SnapshotDelete{}
-	err = ctx.Bind(&snapshotDelete)
+	err := ctx.Bind(&snapshotDelete)
 	if err != nil {
 		this.Error(ctx, err)
 		return
@@ -309,7 +309,7 @@ func (this EsBackUpController) SnapshotDeleteAction(ctx *gin.Context) {
 
 func (this EsBackUpController) SnapshotDetailAction(ctx *gin.Context) {
 	snapshotDetail := es.SnapshotDetail{}
-	err = ctx.Bind(&snapshotDetail)
+	err := ctx.Bind(&snapshotDetail)
 	if err != nil {
 		this.Error(ctx, err)
 		return
@@ -334,7 +334,7 @@ func (this EsBackUpController) SnapshotDetailAction(ctx *gin.Context) {
 
 func (this EsBackUpController) SnapshotRestoreAction(ctx *gin.Context) {
 	snapshotRestore := es.SnapshotRestore{}
-	err = ctx.Bind(&snapshotRestore)
+	err := ctx.Bind(&snapshotRestore)
 	if err != nil {
 		this.Error(ctx, err)
 		return
@@ -381,7 +381,7 @@ func (this EsBackUpController) SnapshotRestoreAction(ctx *gin.Context) {
 
 func (this EsBackUpController) SnapshotStatusAction(ctx *gin.Context) {
 	snapshotStatus := es.SnapshotStatus{}
-	err = ctx.Bind(&snapshotStatus)
+	err := ctx.Bind(&snapshotStatus)
 	if err != nil {
 		this.Error(ctx, err)
 		return

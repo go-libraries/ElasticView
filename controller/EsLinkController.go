@@ -38,7 +38,7 @@ func (this EsLinkController) ListAction(ctx *gin.Context) {
 func (this EsLinkController) InsertAction(ctx *gin.Context) {
 
 	var esLinkModel model.EsLinkModel
-	err = ctx.Bind(&esLinkModel)
+	err := ctx.Bind(&esLinkModel)
 	if err != nil {
 		this.Error(ctx, err)
 		return
@@ -79,7 +79,7 @@ func (this EsLinkController) InsertAction(ctx *gin.Context) {
 
 func (this EsLinkController) UpdateAction(ctx *gin.Context) {
 	var esLinkModel model.EsLinkModel
-	err = ctx.Bind(&esLinkModel)
+	err := ctx.Bind(&esLinkModel)
 	if err != nil {
 		this.Error(ctx, err)
 		return
@@ -131,7 +131,7 @@ func (this EsLinkController) DeleteAction(ctx *gin.Context) {
 		Id int `json:"id"`
 	}
 
-	err = ctx.Bind(&req)
+	err := ctx.Bind(&req)
 	if err != nil {
 		this.Error(ctx, err)
 		return

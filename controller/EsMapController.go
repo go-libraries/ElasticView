@@ -15,7 +15,7 @@ type EsMappingController struct {
 
 func (this EsMappingController) ListAction(ctx *gin.Context) {
 	esConnect := es.EsConnectID{}
-	err = ctx.Bind(&esConnect)
+	err := ctx.Bind(&esConnect)
 	if err != nil {
 		this.Error(ctx, err)
 		return
@@ -35,7 +35,7 @@ func (this EsMappingController) ListAction(ctx *gin.Context) {
 
 func (this EsMappingController) UpdateMappingAction(ctx *gin.Context) {
 	updateMapping := es.UpdateMapping{}
-	err = ctx.Bind(&updateMapping)
+	err := ctx.Bind(&updateMapping)
 	if err != nil {
 		this.Error(ctx, err)
 		return

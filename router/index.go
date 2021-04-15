@@ -43,6 +43,6 @@ func Init() *gin.Engine {
 	runDslHistory(app)
 	runEsTask(app)
 	runEsBackUp(app)
-
+	runEsDoc(app)
 	return app
 }

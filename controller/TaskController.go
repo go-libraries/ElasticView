@@ -3,6 +3,7 @@ package controller
 import (
 	"ElasticView/engine/es"
 	"ElasticView/platform-basic-libs/response"
+
 	"github.com/gin-gonic/gin"
 	"github.com/olivere/elastic"
 )
@@ -13,7 +14,7 @@ type TaskController struct {
 
 func (this TaskController) ListAction(ctx *gin.Context) {
 	taskListReq := es.TaskList{}
-	err = ctx.Bind(&taskListReq)
+	err := ctx.Bind(&taskListReq)
 	if err != nil {
 		this.Error(ctx, err)
 		return
@@ -25,7 +26,6 @@ func (this TaskController) ListAction(ctx *gin.Context) {
 	}
 
 	tasksListService := esClinet.(*es.EsClientV6).Client.TasksList().Detailed(true)
-
 
 	tasksListResponse, err := tasksListService.Do(ctx)
 	if err != nil {
@@ -47,7 +47,7 @@ func (this TaskController) ListAction(ctx *gin.Context) {
 
 func (this TaskController) CancelAction(ctx *gin.Context) {
 	cancelTask := es.CancelTask{}
-	err = ctx.Bind(&cancelTask)
+	err := ctx.Bind(&cancelTask)
 	if err != nil {
 		this.Error(ctx, err)
 		return

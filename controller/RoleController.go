@@ -26,7 +26,7 @@ func (this RoleController) RolesAddAction(ctx *gin.Context) {
 
 	var model2 model.GmRoleModel
 
-	err = ctx.Bind(&model2)
+	err := ctx.Bind(&model2)
 	if err != nil {
 		this.Error(ctx, err)
 		return
@@ -42,7 +42,7 @@ func (this RoleController) RolesAddAction(ctx *gin.Context) {
 
 func (this RoleController) RolesUpdateAction(ctx *gin.Context) {
 	var model2 model.GmRoleModel
-	err = ctx.Bind(&model2)
+	err := ctx.Bind(&model2)
 	if err != nil {
 		this.Error(ctx, err)
 		return
@@ -60,7 +60,7 @@ func (this RoleController) RolesDelAction(ctx *gin.Context) {
 	id := this.FormIntDefault(ctx, "id", 0)
 
 	var service gm_role.GmRoleService
-	err = service.Delete(id)
+	err := service.Delete(id)
 	if err != nil {
 		this.Error(ctx, err)
 		return

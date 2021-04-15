@@ -21,7 +21,7 @@ type EsIndexController struct {
 //创建索引
 func (this EsIndexController) CreateAction(ctx *gin.Context) {
 	esIndexInfo := es.EsIndexInfo{}
-	err = ctx.Bind(&esIndexInfo)
+	err := ctx.Bind(&esIndexInfo)
 	if err != nil {
 		this.Error(ctx, err)
 		return
@@ -61,7 +61,7 @@ func (this EsIndexController) CreateAction(ctx *gin.Context) {
 
 func (this EsIndexController) DeleteAction(ctx *gin.Context) {
 	esIndexInfo := es.EsIndexInfo{}
-	err = ctx.Bind(&esIndexInfo)
+	err := ctx.Bind(&esIndexInfo)
 	if err != nil {
 		this.Error(ctx, err)
 		return
@@ -87,7 +87,7 @@ func (this EsIndexController) DeleteAction(ctx *gin.Context) {
 
 func (this EsIndexController) GetSettingsAction(ctx *gin.Context) {
 	esIndexInfo := es.EsIndexInfo{}
-	err = ctx.Bind(&esIndexInfo)
+	err := ctx.Bind(&esIndexInfo)
 	if err != nil {
 		this.Error(ctx, err)
 		return
@@ -115,7 +115,7 @@ func (this EsIndexController) GetSettingsAction(ctx *gin.Context) {
 
 func (this EsIndexController) GetSettingsInfoAction(ctx *gin.Context) {
 	esIndexInfo := es.EsIndexInfo{}
-	err = ctx.Bind(&esIndexInfo)
+	err := ctx.Bind(&esIndexInfo)
 	if err != nil {
 		this.Error(ctx, err)
 		return
@@ -144,7 +144,7 @@ func (this EsIndexController) GetSettingsInfoAction(ctx *gin.Context) {
 //获取别名
 func (this EsIndexController) GetAliasAction(ctx *gin.Context) {
 	esAliasInfo := es.EsAliasInfo{}
-	err = ctx.Bind(&esAliasInfo)
+	err := ctx.Bind(&esAliasInfo)
 	if err != nil {
 		this.Error(ctx, err)
 		return
@@ -168,7 +168,7 @@ func (this EsIndexController) GetAliasAction(ctx *gin.Context) {
 
 func (this EsIndexController) OperateAliasAction(ctx *gin.Context) {
 	esAliasInfo := es.EsAliasInfo{}
-	err = ctx.Bind(&esAliasInfo)
+	err := ctx.Bind(&esAliasInfo)
 	if err != nil {
 		this.Error(ctx, err)
 		return
@@ -236,7 +236,7 @@ func (this EsIndexController) OperateAliasAction(ctx *gin.Context) {
 
 func (this EsIndexController) ReindexAction(ctx *gin.Context) {
 	esReIndexInfo := es.EsReIndexInfo{}
-	err = ctx.Bind(&esReIndexInfo)
+	err := ctx.Bind(&esReIndexInfo)
 	if err != nil {
 		this.Error(ctx, err)
 		return
@@ -277,7 +277,7 @@ func (this EsIndexController) ReindexAction(ctx *gin.Context) {
 
 func (this EsIndexController) IndexNamesAction(ctx *gin.Context) {
 	esConnect := es.EsConnectID{}
-	err = ctx.Bind(&esConnect)
+	err := ctx.Bind(&esConnect)
 	if err != nil {
 		this.Error(ctx, err)
 		return
@@ -298,7 +298,7 @@ func (this EsIndexController) IndexNamesAction(ctx *gin.Context) {
 
 func (this EsIndexController) StatsAction(ctx *gin.Context) {
 	esIndexInfo := es.EsIndexInfo{}
-	err = ctx.Bind(&esIndexInfo)
+	err := ctx.Bind(&esIndexInfo)
 	if err != nil {
 		this.Error(ctx, err)
 		return
@@ -322,8 +322,4 @@ func (this EsIndexController) StatsAction(ctx *gin.Context) {
 
 	this.Success(ctx, response.OperateSuccess, res)
 	return
-}
-
-func (this EsIndexController) OpenAction(ctx *gin.Context) {
-
 }

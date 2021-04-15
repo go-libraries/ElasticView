@@ -18,7 +18,7 @@
       lang="json"
       :options="editorOptions"
       theme="chrome"
-      height="600"
+      :height="height"
       @init="editorInit"
     />
   </div>
@@ -46,6 +46,14 @@ export default {
     pointOut: {
       type: Array,
       default: []
+    },
+    height: {
+      type: String,
+      default: '600'
+    },
+    fontSize: {
+      type: String,
+      default: '18'
     }
   },
   data() {
@@ -57,7 +65,7 @@ export default {
         enableSnippets: true,
         enableLiveAutocompletion: true,
         tabSize: 2,
-        fontSize: 18,
+        fontSize: Number(this.fontSize),
         showPrintMargin: false // 去除编辑器里的竖线
       }
     }

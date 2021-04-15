@@ -35,10 +35,13 @@ func NewSQLX(dbSource string, maxOpenConns, maxIdleConns int) {
 	if maxIdleConns > 0 {
 		db.SetMaxIdleConns(maxIdleConns)
 	}
-
+	err = db.Ping()
+	if err != nil {
+		panic(err)
+	}
 	go func() {
 		for {
-			err := db.Ping()
+			err = db.Ping()
 			if err != nil {
 				log.Println("mysql db can't connect!")
 			}
