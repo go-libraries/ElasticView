@@ -16,6 +16,11 @@ type EsConnectID struct {
 	EsConnectID int `json:"es_connect"`
 }
 
+type EsMapGetProperties struct {
+	EsConnectID int    `json:"es_connect"`
+	IndexName   string `json:"index_name"`
+}
+
 type UpdateMapping struct {
 	EsConnect  int    `json:"es_connect"`
 	IndexName  string `json:"index_name"`
@@ -149,6 +154,15 @@ type EsDocDeleteRowByID struct {
 	EsConnect int    `json:"es_connect"`
 	ID        string `json:"id"`
 	IndexName string `json:"index_name"`
+	Type      string `json:"type"`
+}
+
+type EsDocUpdateByID struct {
+	EsConnect int    `json:"es_connect"`
+	ID        string `json:"id"`
+	JSON      Json   `json:"json"`
+	Type      string `json:"type_name"`
+	Index     string `json:"index"`
 }
 
 type EsMappingInfo struct {

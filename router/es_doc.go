@@ -10,5 +10,8 @@ func runEsDoc(app *gin.Engine) {
 	esIndex := app.Group("/api/es_doc")
 	{
 		esIndex.POST("DeleteRowByIDAction", EsDocController{}.DeleteRowByIDAction)
+		esIndex.POST("UpdateByIDAction", EsDocController{}.UpdateByIDAction)
+		esIndex.POST("InsertAction", EsDocController{}.InsertAction)
+
 	}
 }

@@ -9,3 +9,20 @@ export function DeleteRowByIDAction(data) {
     data
   })
 }
+
+export function UpdateByIDAction(data) {
+  return request({
+    url: api + 'UpdateByIDAction',
+    method: 'post',
+    data
+  })
+}
+
+export function InsertAction(data) {
+  return request({
+    url: api + 'InsertAction',
+    method: 'post',
+    data
+  })
+}
+

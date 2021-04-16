@@ -14,7 +14,7 @@ type EsMappingController struct {
 }
 
 func (this EsMappingController) ListAction(ctx *gin.Context) {
-	esConnect := es.EsConnectID{}
+	esConnect := es.EsMapGetProperties{}
 	err := ctx.Bind(&esConnect)
 	if err != nil {
 		this.Error(ctx, err)
@@ -25,13 +25,43 @@ func (this EsMappingController) ListAction(ctx *gin.Context) {
 		this.Error(ctx, err)
 		return
 	}
-	res, err := esClinet.GetMappings()
+	if esConnect.IndexName == "" {
+		res, err := esClinet.GetMappings()
+		if err != nil {
+			this.Error(ctx, err)
+			return
+		}
+		this.Success(ctx, response.SearchSuccess, res)
+	} else {
+		res, err := esClinet.(*es.EsClientV6).Client.GetMapping().Index(esConnect.IndexName).Do(ctx)
+		if err != nil {
+			this.Error(ctx, err)
+			return
+		}
+		this.Success(ctx, response.SearchSuccess, res)
+	}
+
+}
+
+/*func (this EsMappingController) GetPropertiesAction(ctx *gin.Context) {
+	esConnect := es.EsMapGetProperties{}
+	err := ctx.Bind(&esConnect)
+	if err != nil {
+		this.Error(ctx, err)
+		return
+	}
+	esClinet, err := es.GetEsClientV6ByID(esConnect.EsConnectID)
+	if err != nil {
+		this.Error(ctx, err)
+		return
+	}
+	res, err := esClinet.(*es.EsClientV6).Client.GetMapping().Index("")
 	if err != nil {
 		this.Error(ctx, err)
 		return
 	}
 	this.Success(ctx, response.SearchSuccess, res)
-}
+}*/
 
 func (this EsMappingController) UpdateMappingAction(ctx *gin.Context) {
 	updateMapping := es.UpdateMapping{}

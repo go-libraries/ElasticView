@@ -269,7 +269,6 @@
               styles="width: 100%"
               :read="true"
               title="设置"
-              @get
             />
 
           </el-tab-pane>

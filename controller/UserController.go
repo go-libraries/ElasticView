@@ -15,6 +15,14 @@ type UserController struct {
 	BaseController
 }
 
+// @登录
+// @Description login
+// @Accept  json
+// @Produce json
+// @Param   username     path    string     true        "username"
+// @Param   passwd     path    string     true        "passwd"
+// @Success 200 {string} string	"ok"
+// @Router /login [post]
 func (this UserController) Login(ctx *gin.Context) {
 	username := ctx.Request.FormValue("username")
 	password := ctx.Request.FormValue("password")

@@ -2,10 +2,9 @@ package router
 
 import (
 	. "ElasticView/controller"
+	. "ElasticView/middleware"
 	"ElasticView/platform-basic-libs/util"
 	_ "ElasticView/statik"
-
-	. "ElasticView/middleware"
 
 	"github.com/gin-gonic/gin"
 	"github.com/rakyll/statik/fs"
@@ -33,6 +32,7 @@ func Init() *gin.Engine {
 
 	app.Use(Cors)
 	app.Any("/api/gm_user/login", UserController{}.Login)
+
 	app.Use(JwtMiddleware)
 	runGmUser(app)
 	runGmGuid(app)
@@ -44,5 +44,7 @@ func Init() *gin.Engine {
 	runEsTask(app)
 	runEsBackUp(app)
 	runEsDoc(app)
+
 	return app
+
 }
