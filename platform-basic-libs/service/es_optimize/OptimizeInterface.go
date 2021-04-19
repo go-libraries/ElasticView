@@ -7,6 +7,7 @@ type OptimizeInterface interface {
 	Do(client *elastic.Client) (err error)
 }
 
+// 索引操作工厂
 var optimizeMap = map[string]OptimizeInterface{
 	"_refresh":     newRefresh(),
 	"_cache/clear": newCacheClear(),

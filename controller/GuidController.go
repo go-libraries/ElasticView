@@ -10,12 +10,13 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// 引导控制器
 type GuidController struct {
 	BaseController
 }
 
+// 完成新手引导
 func (this GuidController) Finish(ctx *gin.Context) {
-
 	c, err := jwt.ParseToken(ctx.GetHeader("X-Token"))
 	if err != nil {
 		this.Error(ctx, err)
@@ -42,6 +43,7 @@ func (this GuidController) Finish(ctx *gin.Context) {
 	this.Success(ctx, response.OperateSuccess, nil)
 }
 
+//是否完成新手引导
 func (this GuidController) IsFinish(ctx *gin.Context) {
 	c, err := jwt.ParseToken(ctx.GetHeader("X-Token"))
 	if err != nil {

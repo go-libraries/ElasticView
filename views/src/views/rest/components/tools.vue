@@ -13,7 +13,13 @@
         @keyup.enter.native="go"
         @select="mySelect"
       >
-        <el-select slot="prepend" v-model="input.method" class="filter-item select-method" placeholder="请选择Http Method" filterable>
+        <el-select
+          slot="prepend"
+          v-model="input.method"
+          class="filter-item select-method"
+          placeholder="请选择Http Method"
+          filterable
+        >
           <el-option label="PUT【更新或创建】" value="PUT" />
           <el-option label="GET【查询】" value="GET" />
           <el-option label="DELETE【删除】" value="DELETE" />
@@ -106,7 +112,15 @@
       title="请求Body"
       @getValue="getBody"
     />
-    <json-editor v-model="resData" font-size="14" height="800" class="res-body" styles="width: 70%" :read="true" title="返回信息" />
+    <json-editor
+      v-model="resData"
+      font-size="14"
+      height="800"
+      class="res-body"
+      styles="width: 70%"
+      :read="true"
+      title="返回信息"
+    />
 
     <el-drawer
       ref="drawer"
@@ -153,7 +167,7 @@ import { RunDslAction, SqlToDslAction } from '@/api/es'
 import { Finish, IsFinish } from '@/api/guid'
 import { filterData } from '@/utils/table'
 
-import { esBodyKeyWords, esPathKeyWords } from '@/utils/base-data'
+import { esBodyKeyWords } from '@/utils/base-data'
 
 export default {
   name: 'Index',
@@ -277,10 +291,10 @@ export default {
   destroyed() {
     this.$emit('saveData', this.uniqueId, this.input, this.sqlStr, this.title)
     /* const input = this.input
-            const sqlStr = this.sqlStr
-            const resReqInfo = JSON.stringify(input)
-            sessionStorage.setItem('resReqInfo', resReqInfo)
-            sessionStorage.setItem('sqlStr', sqlStr)*/
+                    const sqlStr = this.sqlStr
+                    const resReqInfo = JSON.stringify(input)
+                    sessionStorage.setItem('resReqInfo', resReqInfo)
+                    sessionStorage.setItem('sqlStr', sqlStr)*/
   },
   methods: {
     getHistoryData(v) {
@@ -388,12 +402,13 @@ export default {
       this.input.path = obj.data
     },
     querySearch(queryString, cb) {
+      let queryData = clone(this.queryData)
       if (queryString == '') {
         cb(this.queryData)
         return
       }
-
-      const queryData = filterData(this.queryData, queryString)
+      queryData = filterData(queryData, queryString.trim())
+      console.log('queryData', queryData, this.queryData)
       cb(queryData)
     },
     MeetingConfirmBox(title) {
@@ -495,7 +510,7 @@ export default {
     font-size: 8px;
   }
 
-  .select-path{
+  .select-path {
     width: 1200px;
     font-size: 8px;
   }

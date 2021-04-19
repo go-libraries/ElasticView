@@ -9,10 +9,12 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// Es 映射控制器
 type EsMappingController struct {
 	BaseController
 }
 
+// Es 映射列表
 func (this EsMappingController) ListAction(ctx *gin.Context) {
 	esConnect := es.EsMapGetProperties{}
 	err := ctx.Bind(&esConnect)
@@ -63,6 +65,7 @@ func (this EsMappingController) ListAction(ctx *gin.Context) {
 	this.Success(ctx, response.SearchSuccess, res)
 }*/
 
+// 修改映射
 func (this EsMappingController) UpdateMappingAction(ctx *gin.Context) {
 	updateMapping := es.UpdateMapping{}
 	err := ctx.Bind(&updateMapping)

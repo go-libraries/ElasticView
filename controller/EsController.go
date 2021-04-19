@@ -18,11 +18,12 @@ import (
 	"github.com/olivere/elastic"
 )
 
+//Es 基本操作
 type EsController struct {
 	BaseController
 }
 
-//Ping
+// Ping
 func (this EsController) PingAction(ctx *gin.Context) {
 	esConnect := es.EsConnect{}
 	err := ctx.Bind(&esConnect)
@@ -43,7 +44,7 @@ func (this EsController) PingAction(ctx *gin.Context) {
 	this.Success(ctx, response.OperateSuccess, data)
 }
 
-//Elasticsearch状态
+// Es 的CAT API
 func (this EsController) CatAction(ctx *gin.Context) {
 
 	esCat := es.EsCat{}
@@ -149,6 +150,7 @@ func (this EsController) RunDslAction(ctx *gin.Context) {
 	this.Success(ctx, response.OperateSuccess, res.Body)
 }
 
+// SQL 转换为 DSL
 func (this EsController) SqlToDslAction(ctx *gin.Context) {
 	sql := ctx.Request.FormValue("sql")
 	dsl, table, err := elasticsql.ConvertPretty(sql)
@@ -162,6 +164,7 @@ func (this EsController) SqlToDslAction(ctx *gin.Context) {
 	})
 }
 
+// 一些索引的操作
 func (this EsController) OptimizeAction(ctx *gin.Context) {
 	esOptimize := es.EsOptimize{}
 	err := ctx.Bind(&esOptimize)
@@ -192,6 +195,7 @@ func (this EsController) OptimizeAction(ctx *gin.Context) {
 	this.Success(ctx, response.OperateSuccess, nil)
 }
 
+// 将索引恢复为可写状态   由于不可抗力，ES禁止写后，默认不会自动恢复
 func (this EsController) RecoverCanWrite(ctx *gin.Context) {
 	esConnect := es.EsConnectID{}
 	err := ctx.Bind(&esConnect)

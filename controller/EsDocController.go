@@ -10,11 +10,12 @@ import (
 	"github.com/olivere/elastic"
 )
 
+// ES 文档控制器
 type EsDocController struct {
 	BaseController
 }
 
-//删除文档数据
+// 删除文档数据
 func (this EsDocController) DeleteRowByIDAction(ctx *gin.Context) {
 	esDocDeleteRowByID := es.EsDocDeleteRowByID{}
 	err := ctx.Bind(&esDocDeleteRowByID)
@@ -40,7 +41,7 @@ func (this EsDocController) DeleteRowByIDAction(ctx *gin.Context) {
 	this.Success(ctx, response.OperateSuccess, res)
 }
 
-//删除文档数据
+// 修改文档
 func (this EsDocController) UpdateByIDAction(ctx *gin.Context) {
 	esDocUpdateByID := es.EsDocUpdateByID{}
 	err := ctx.Bind(&esDocUpdateByID)
@@ -63,6 +64,7 @@ func (this EsDocController) UpdateByIDAction(ctx *gin.Context) {
 	this.Success(ctx, response.OperateSuccess, res)
 }
 
+// 新增文档
 func (this EsDocController) InsertAction(ctx *gin.Context) {
 	esDocUpdateByID := es.EsDocUpdateByID{}
 	err := ctx.Bind(&esDocUpdateByID)

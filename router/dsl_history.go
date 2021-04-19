@@ -6,6 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// DslHistory 路由
 func runDslHistory(app *gin.Engine) {
 	dslHistory := app.Group("/api/dslHistory")
 	{

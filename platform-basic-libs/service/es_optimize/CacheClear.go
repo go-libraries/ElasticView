@@ -1,3 +1,4 @@
+//索引基本操作层
 package es_optimize
 
 import (
@@ -6,6 +7,7 @@ import (
 	"github.com/olivere/elastic"
 )
 
+// 清除缓存
 type CacheClear struct {
 	indexName []string
 }

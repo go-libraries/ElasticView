@@ -6,6 +6,7 @@ import (
 	"github.com/olivere/elastic"
 )
 
+// Flush
 type Flush struct {
 	indexName []string
 }

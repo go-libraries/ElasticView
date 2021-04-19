@@ -6,6 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// ES备份 路由
 func runEsBackUp(app *gin.Engine) {
 	backUp := app.Group("/api/backUp")
 	{

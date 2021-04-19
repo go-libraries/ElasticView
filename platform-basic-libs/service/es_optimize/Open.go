@@ -7,6 +7,7 @@ import (
 	"github.com/olivere/elastic"
 )
 
+// 开启索引
 type Open struct {
 	indexName []string
 }

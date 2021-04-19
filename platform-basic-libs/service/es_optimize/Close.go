@@ -7,6 +7,7 @@ import (
 	"github.com/olivere/elastic"
 )
 
+// 关闭索引
 type Close struct {
 	indexName []string
 }

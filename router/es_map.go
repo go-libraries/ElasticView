@@ -6,6 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// ES mapping 路由
 func runEsMap(app *gin.Engine) {
 	esMap := app.Group("/api/es_map")
 	{

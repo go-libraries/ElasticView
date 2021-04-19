@@ -1,11 +1,13 @@
+//应用启动引擎层
 package application
 
 var GlobConfig Config
 
+//全局配置结构体
 type Config struct {
 	Log struct {
-		StorageDays int    `json:"storage_days"`
-		LogDir      string `json:"log_dir"`
+		StorageDays int    `json:"storageDays"`
+		LogDir      string `json:"logDir"`
 	} `json:"log"`
 	Port  int `json:"port"`
 	Mysql struct {
@@ -13,9 +15,9 @@ type Config struct {
 		Pwd          string `json:"pwd"`
 		IP           string `json:"ip"`
 		Port         string `json:"port"`
-		DbName       string `json:"db_name"`
-		MaxOpenConns int    `json:"max_open_conns"`
-		MaxIdleConns int    `json:"max_idle_conns"`
+		DbName       string `json:"dbName"`
+		MaxOpenConns int    `json:"maxOpenConns"`
+		MaxIdleConns int    `json:"maxIdleConns"`
 	} `json:"mysql"`
-	AppSecret string `json:"app_secret"`
+	AppSecret string `json:"appSecret"`
 }

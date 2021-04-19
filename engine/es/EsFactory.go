@@ -7,6 +7,7 @@ import (
 	"ElasticView/platform-basic-libs/util"
 )
 
+//获取es6.x的链接
 func GetEsClientV6ByID(id int) (esClient EsClient, err error) {
 
 	esCache := NewEsCache()
@@ -41,6 +42,7 @@ func GetEsClientV6ByID(id int) (esClient EsClient, err error) {
 	return esClient, nil
 }
 
+//根据版本号获取示例
 func GetEsClient(esConnect EsConnect) (esClient EsClient, err error) {
 
 	if esConnect.Ip == "" {

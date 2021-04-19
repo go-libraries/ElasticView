@@ -1,3 +1,4 @@
+//路由层
 package router
 
 import (
@@ -10,7 +11,7 @@ import (
 	"github.com/rakyll/statik/fs"
 )
 
-// statik -src=views/dist -f
+//  打包静态资源进二进制  statik -src=views/dist -f
 func Init() *gin.Engine {
 	app := gin.Default()
 	statikFS, err := fs.New()

@@ -5,6 +5,7 @@ import (
 
 	"ElasticView/engine/db"
 	"ElasticView/engine/es"
+	"ElasticView/engine/logs"
 	"ElasticView/model"
 	"ElasticView/platform-basic-libs/response"
 
@@ -12,12 +13,14 @@ import (
 	jsoniter "github.com/json-iterator/go"
 )
 
+// Es 连接管理控制器
 type EsLinkController struct {
 	BaseController
 }
 
+// 获取Es连接列表
 func (this EsLinkController) ListAction(ctx *gin.Context) {
-
+	logs.Logger.Sugar().Infof("logs.Logger.Sugar: %v\n", "111")
 	getByLocal := ctx.Request.FormValue("getByLocal")
 
 	if getByLocal == "1" {
@@ -35,6 +38,7 @@ func (this EsLinkController) ListAction(ctx *gin.Context) {
 	this.Success(ctx, response.SearchSuccess, list)
 }
 
+// 新增Es连接
 func (this EsLinkController) InsertAction(ctx *gin.Context) {
 
 	var esLinkModel model.EsLinkModel
@@ -77,6 +81,7 @@ func (this EsLinkController) InsertAction(ctx *gin.Context) {
 	this.Success(ctx, response.OperateSuccess, nil)
 }
 
+// 修改Es连接信息
 func (this EsLinkController) UpdateAction(ctx *gin.Context) {
 	var esLinkModel model.EsLinkModel
 	err := ctx.Bind(&esLinkModel)
@@ -125,6 +130,7 @@ func (this EsLinkController) UpdateAction(ctx *gin.Context) {
 	this.Success(ctx, response.OperateSuccess, nil)
 }
 
+// 删除es连接
 func (this EsLinkController) DeleteAction(ctx *gin.Context) {
 
 	var req struct {

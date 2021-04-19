@@ -6,6 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// ES 任务 路由
 func runEsTask(app *gin.Engine) {
 	task := app.Group("/api/es_task")
 	{

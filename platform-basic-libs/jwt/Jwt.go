@@ -1,3 +1,4 @@
+// JSON WEB TOKEN 层
 package jwt
 
 import (

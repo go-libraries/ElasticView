@@ -1,3 +1,4 @@
+//自定义响应 辅助方法层
 package response
 
 import (
@@ -17,6 +18,7 @@ import (
 	"go.uber.org/zap"
 )
 
+//自定义响应方法
 type Response struct {
 	Code int         `json:"code"`
 	Msg  string      `json:"msg"`

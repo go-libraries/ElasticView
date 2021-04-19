@@ -11,18 +11,12 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+//GM用户控制器
 type UserController struct {
 	BaseController
 }
 
-// @登录
-// @Description login
-// @Accept  json
-// @Produce json
-// @Param   username     path    string     true        "username"
-// @Param   passwd     path    string     true        "passwd"
-// @Success 200 {string} string	"ok"
-// @Router /login [post]
+// 登录
 func (this UserController) Login(ctx *gin.Context) {
 	username := ctx.Request.FormValue("username")
 	password := ctx.Request.FormValue("password")
@@ -37,6 +31,7 @@ func (this UserController) Login(ctx *gin.Context) {
 	this.Success(ctx, "登陆成功", map[string]interface{}{"token": token})
 }
 
+// 用户详细信息
 func (this UserController) UserInfo(ctx *gin.Context) {
 	var gmUserService gm_user.GmUserService
 
@@ -51,13 +46,15 @@ func (this UserController) UserInfo(ctx *gin.Context) {
 		this.Error(ctx, err)
 		return
 	}
-	this.Success(ctx, "登陆成功", map[string]interface{}{"roles": []string{"admin"}, "introduction": info.Description, "name": info.RoleName, "list": info.RoleList, "avatar": "http://uc-dzjs.lynlzqy.com/dzjs/view/touxiang.jpeg"})
+	this.Success(ctx, "登陆成功", map[string]interface{}{"roles": []string{"admin"}, "introduction": info.Description, "name": info.RoleName, "list": info.RoleList, "avatar": ""})
 }
 
+//退出登录
 func (this UserController) LogoutAction(ctx *gin.Context) {
 	this.Success(ctx, response.LogoutSuccess, nil)
 }
 
+//GM 用户列表
 func (this UserController) UserListAction(ctx *gin.Context) {
 	var userModel model.GmUserModel
 	list, err := userModel.Select()
@@ -68,6 +65,7 @@ func (this UserController) UserListAction(ctx *gin.Context) {
 	this.Success(ctx, response.SearchSuccess, list)
 }
 
+// 删除GM用户
 func (this UserController) DeleteUserAction(ctx *gin.Context) {
 	var userModel model.GmUserModel
 	userModel.ID = int32(this.FormIntDefault(ctx, "id", 0))
@@ -79,6 +77,7 @@ func (this UserController) DeleteUserAction(ctx *gin.Context) {
 	this.Success(ctx, response.DeleteSuccess, nil)
 }
 
+// 用ID获取用户信息
 func (this UserController) GetUserByIdAction(ctx *gin.Context) {
 	var userModel model.GmUserModel
 	var id = int32(this.FormIntDefault(ctx, "id", 0))
@@ -91,6 +90,7 @@ func (this UserController) GetUserByIdAction(ctx *gin.Context) {
 	this.Success(ctx, response.SearchSuccess, gmUser)
 }
 
+// 修改GM用户信息
 func (this UserController) UserUpdateAction(ctx *gin.Context) {
 	var userModel model.GmUserModel
 	var id = int32(this.FormIntDefault(ctx, "id", 0))
@@ -108,6 +108,7 @@ func (this UserController) UserUpdateAction(ctx *gin.Context) {
 	this.Success(ctx, response.OperateSuccess, nil)
 }
 
+//新增GM用户
 func (this UserController) UserAddAction(ctx *gin.Context) {
 	var userModel model.GmUserModel
 

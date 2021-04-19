@@ -14,6 +14,7 @@ import (
 	"github.com/olivere/elastic"
 )
 
+// Es 索引控制器
 type EsIndexController struct {
 	BaseController
 }
@@ -59,6 +60,7 @@ func (this EsIndexController) CreateAction(ctx *gin.Context) {
 	return
 }
 
+// 删除索引
 func (this EsIndexController) DeleteAction(ctx *gin.Context) {
 	esIndexInfo := es.EsIndexInfo{}
 	err := ctx.Bind(&esIndexInfo)
@@ -85,6 +87,7 @@ func (this EsIndexController) DeleteAction(ctx *gin.Context) {
 	return
 }
 
+//获取索引配置信息
 func (this EsIndexController) GetSettingsAction(ctx *gin.Context) {
 	esIndexInfo := es.EsIndexInfo{}
 	err := ctx.Bind(&esIndexInfo)
@@ -113,6 +116,7 @@ func (this EsIndexController) GetSettingsAction(ctx *gin.Context) {
 	return
 }
 
+//获取所有的索引配置信息
 func (this EsIndexController) GetSettingsInfoAction(ctx *gin.Context) {
 	esIndexInfo := es.EsIndexInfo{}
 	err := ctx.Bind(&esIndexInfo)
@@ -141,7 +145,7 @@ func (this EsIndexController) GetSettingsInfoAction(ctx *gin.Context) {
 	return
 }
 
-//获取别名
+// 获取别名
 func (this EsIndexController) GetAliasAction(ctx *gin.Context) {
 	esAliasInfo := es.EsAliasInfo{}
 	err := ctx.Bind(&esAliasInfo)
@@ -166,6 +170,7 @@ func (this EsIndexController) GetAliasAction(ctx *gin.Context) {
 	return
 }
 
+// 操作别名
 func (this EsIndexController) OperateAliasAction(ctx *gin.Context) {
 	esAliasInfo := es.EsAliasInfo{}
 	err := ctx.Bind(&esAliasInfo)
@@ -234,6 +239,7 @@ func (this EsIndexController) OperateAliasAction(ctx *gin.Context) {
 	return
 }
 
+// 重建索引
 func (this EsIndexController) ReindexAction(ctx *gin.Context) {
 	esReIndexInfo := es.EsReIndexInfo{}
 	err := ctx.Bind(&esReIndexInfo)
@@ -275,6 +281,7 @@ func (this EsIndexController) ReindexAction(ctx *gin.Context) {
 	this.Success(ctx, response.OperateSuccess, res)
 }
 
+// 得到所有的索引名
 func (this EsIndexController) IndexNamesAction(ctx *gin.Context) {
 	esConnect := es.EsConnectID{}
 	err := ctx.Bind(&esConnect)
@@ -302,6 +309,7 @@ func (this EsIndexController) IndexNamesAction(ctx *gin.Context) {
 	return
 }
 
+// 获取索引的Stats
 func (this EsIndexController) StatsAction(ctx *gin.Context) {
 	esIndexInfo := es.EsIndexInfo{}
 	err := ctx.Bind(&esIndexInfo)

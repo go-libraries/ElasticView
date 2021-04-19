@@ -8,10 +8,12 @@ import (
 	"github.com/olivere/elastic"
 )
 
+// Es 任务控制器
 type TaskController struct {
 	BaseController
 }
 
+// 任务列表
 func (this TaskController) ListAction(ctx *gin.Context) {
 	taskListReq := es.TaskList{}
 	err := ctx.Bind(&taskListReq)
@@ -45,6 +47,7 @@ func (this TaskController) ListAction(ctx *gin.Context) {
 	return
 }
 
+// 取消任务
 func (this TaskController) CancelAction(ctx *gin.Context) {
 	cancelTask := es.CancelTask{}
 	err := ctx.Bind(&cancelTask)

@@ -6,6 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// ES GM用户 路由
 func runGmUser(app *gin.Engine) {
 	gmUser := app.Group("/api/gm_user")
 	{

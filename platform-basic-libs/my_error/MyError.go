@@ -1,3 +1,4 @@
+//自定义异常层
 package my_error
 
 //自定义异常结构体 实现Error方法
@@ -6,6 +7,7 @@ type MyError struct {
 	msg  string
 }
 
+// 自定义业务异常
 func NewBusiness(ErrEnum map[int]string, code int) error {
 	text := ErrEnum[code]
 	return &MyError{code, text}

@@ -1,3 +1,4 @@
+//节点配置层
 package es_settings
 
 import (
@@ -1013,6 +1014,7 @@ type Settings struct {
 	setting Setting
 }
 
+//节点设置
 func NewSettings(client *elastic.Client) (*Settings, error) {
 	settings := &Settings{}
 
@@ -1033,10 +1035,12 @@ func NewSettings(client *elastic.Client) (*Settings, error) {
 	return settings, nil
 }
 
+// 获取配置文件设置的 PathRepo
 func (this *Settings) GetPathRepo() []string {
 	return this.setting.Defaults.Path.Repo
 }
 
+// 获取配置文件中的 AllowedUrls
 func (this *Settings) GetAllowedUrls() []interface{} {
 	return this.setting.Defaults.Repositories.URL.AllowedUrls
 }

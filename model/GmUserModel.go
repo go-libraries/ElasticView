@@ -8,6 +8,7 @@ import (
 	"go.uber.org/zap"
 )
 
+// GmUserModel GM用户
 type GmUserModel struct {
 	ID       int32  `json:"id" db:"id"`
 	Username string `json:"username" db:"username"`
@@ -54,16 +55,19 @@ func (this GmUserModel) Insert() (id int64, err error) {
 	return
 }
 
+// Update
 func (this GmUserModel) Update() (err error) {
 	_, err = db.Sqlx.Exec("update gm_user set username = ?,password=?,role_id=?,realname=? where id = ? ;", this.Username, this.GetPassword(), this.RoleId, this.Realname, this.ID)
 	return
 }
 
+// Select
 func (this GmUserModel) Select() (gmUser []GmUserModel, err error) {
 	err = db.Sqlx.Select(&gmUser, "select id,username,password,role_id,realname from gm_user ;")
 	return
 }
 
+// Delete
 func (this GmUserModel) Delete() (err error) {
 	_, err = db.Sqlx.Exec("delete from gm_user where id = ? ;", this.ID)
 	return

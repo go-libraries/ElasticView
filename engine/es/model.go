@@ -1,5 +1,7 @@
 package es
 
+//一些需要用到的结构
+
 type Json map[string]interface{}
 
 type Sort struct {

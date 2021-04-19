@@ -9,6 +9,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+//自定义请求 辅助方法
 type Request struct {
 }
 

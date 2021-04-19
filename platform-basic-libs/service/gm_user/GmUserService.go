@@ -1,3 +1,4 @@
+//GM用户层
 package gm_user
 
 import (
@@ -5,6 +6,7 @@ import (
 	"ElasticView/platform-basic-libs/jwt"
 )
 
+// GmUserService
 type GmUserService struct {
 }
 

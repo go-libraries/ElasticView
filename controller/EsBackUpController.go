@@ -16,10 +16,12 @@ import (
 	"github.com/olivere/elastic"
 )
 
+// 备份控制器
 type EsBackUpController struct {
 	BaseController
 }
 
+//快照仓库列表
 func (this EsBackUpController) SnapshotRepositoryListAction(ctx *gin.Context) {
 	esSnapshotInfo := es.EsSnapshotInfo{}
 	err := ctx.Bind(&esSnapshotInfo)
@@ -87,6 +89,7 @@ func (this EsBackUpController) SnapshotRepositoryListAction(ctx *gin.Context) {
 	})
 }
 
+//新建快照仓库
 func (this EsBackUpController) SnapshotCreateRepositoryAction(ctx *gin.Context) {
 	snapshotCreateRepository := es.SnapshotCreateRepository{}
 	err := ctx.Bind(&snapshotCreateRepository)
@@ -160,6 +163,7 @@ func (this EsBackUpController) SnapshotCreateRepositoryAction(ctx *gin.Context) 
 	this.Success(ctx, response.OperateSuccess, nil)
 }
 
+//清理快照仓库
 func (this EsBackUpController) CleanupeRepositoryAction(ctx *gin.Context) {
 	cleanupeRepository := es.CleanupeRepository{}
 	err := ctx.Bind(&cleanupeRepository)
@@ -184,6 +188,7 @@ func (this EsBackUpController) CleanupeRepositoryAction(ctx *gin.Context) {
 	this.Success(ctx, response.OperateSuccess, res.Body)
 }
 
+//删除快照仓库
 func (this EsBackUpController) SnapshotDeleteRepositoryAction(ctx *gin.Context) {
 	snapshotDeleteRepository := es.SnapshotDeleteRepository{}
 	err := ctx.Bind(&snapshotDeleteRepository)
@@ -206,6 +211,7 @@ func (this EsBackUpController) SnapshotDeleteRepositoryAction(ctx *gin.Context) 
 	this.Success(ctx, response.OperateSuccess, nil)
 }
 
+//创建快照
 func (this EsBackUpController) CreateSnapshotAction(ctx *gin.Context) {
 	createSnapshot := es.CreateSnapshot{}
 	err := ctx.Bind(&createSnapshot)
@@ -253,6 +259,7 @@ func (this EsBackUpController) CreateSnapshotAction(ctx *gin.Context) {
 	this.Success(ctx, response.OperateSuccess, res)
 }
 
+//快照列表
 func (this EsBackUpController) SnapshotListAction(ctx *gin.Context) {
 	snapshotList := es.SnapshotList{}
 	err := ctx.Bind(&snapshotList)
@@ -284,6 +291,7 @@ func (this EsBackUpController) SnapshotListAction(ctx *gin.Context) {
 	this.Success(ctx, response.SearchSuccess, res.Body)
 }
 
+//删除快照
 func (this EsBackUpController) SnapshotDeleteAction(ctx *gin.Context) {
 	snapshotDelete := es.SnapshotDelete{}
 	err := ctx.Bind(&snapshotDelete)
@@ -307,6 +315,7 @@ func (this EsBackUpController) SnapshotDeleteAction(ctx *gin.Context) {
 	this.Success(ctx, response.OperateSuccess, nil)
 }
 
+//快照详情
 func (this EsBackUpController) SnapshotDetailAction(ctx *gin.Context) {
 	snapshotDetail := es.SnapshotDetail{}
 	err := ctx.Bind(&snapshotDetail)
@@ -332,6 +341,7 @@ func (this EsBackUpController) SnapshotDetailAction(ctx *gin.Context) {
 	this.Success(ctx, response.SearchSuccess, res.Body)
 }
 
+// 将索引恢复至快照时状态
 func (this EsBackUpController) SnapshotRestoreAction(ctx *gin.Context) {
 	snapshotRestore := es.SnapshotRestore{}
 	err := ctx.Bind(&snapshotRestore)
@@ -379,6 +389,7 @@ func (this EsBackUpController) SnapshotRestoreAction(ctx *gin.Context) {
 	this.Success(ctx, response.OperateSuccess, res)
 }
 
+//得到快照状态
 func (this EsBackUpController) SnapshotStatusAction(ctx *gin.Context) {
 	snapshotStatus := es.SnapshotStatus{}
 	err := ctx.Bind(&snapshotStatus)

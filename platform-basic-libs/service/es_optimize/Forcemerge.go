@@ -9,6 +9,7 @@ import (
 	"go.uber.org/zap"
 )
 
+// 合并索引
 type Forcemerge struct {
 	indexName []string
 }

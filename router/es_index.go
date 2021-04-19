@@ -6,6 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// ES索引 路由
 func runEsIndex(app *gin.Engine) {
 	esIndex := app.Group("/api/es_index")
 	{
