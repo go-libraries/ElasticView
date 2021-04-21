@@ -5,8 +5,8 @@ import (
 
 	_ "github.com/go-sql-driver/mysql"
 
-	"ElasticView/application"
-	"ElasticView/router"
+	"github.com/1340691923/ElasticView/application"
+	"github.com/1340691923/ElasticView/router"
 )
 
 // By 肖文龙

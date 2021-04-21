@@ -5,10 +5,10 @@ import (
 	"log"
 	"path/filepath"
 
-	"ElasticView/engine/db"
-	"ElasticView/engine/logs"
-	"ElasticView/model"
-	"ElasticView/platform-basic-libs/util"
+	"github.com/1340691923/ElasticView/engine/db"
+	"github.com/1340691923/ElasticView/engine/logs"
+	"github.com/1340691923/ElasticView/model"
+	"github.com/1340691923/ElasticView/platform-basic-libs/util"
 
 	"github.com/fsnotify/fsnotify"
 	"github.com/spf13/viper"
@@ -59,7 +59,7 @@ func NewApp(opts ...NewAppOptions) *App {
 	app := &App{
 		configFileDir:  "config",
 		configFileName: "config.json",
-		appName:        "ElasticView",
+		appName:        "github.com/1340691923/ElasticView",
 	}
 	for _, opt := range opts {
 		opt(app)

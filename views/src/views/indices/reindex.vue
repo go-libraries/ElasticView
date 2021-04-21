@@ -519,6 +519,7 @@ export default {
       }
     },
     refresh() {
+      // 将data恢复到初始状态
       this.form = this.$options.data().form
     },
     changeSourceIndex() {

@@ -1,9 +1,9 @@
 package model
 
 import (
-	"ElasticView/engine/db"
-	"ElasticView/engine/logs"
-	"ElasticView/platform-basic-libs/util"
+	"github.com/1340691923/ElasticView/engine/db"
+	"github.com/1340691923/ElasticView/engine/logs"
+	"github.com/1340691923/ElasticView/platform-basic-libs/util"
 
 	"go.uber.org/zap"
 )

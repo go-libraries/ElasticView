@@ -9,9 +9,10 @@ import (
 	"strconv"
 	"strings"
 
-	"ElasticView/engine/logs"
-	. "ElasticView/platform-basic-libs/my_error"
-	"ElasticView/platform-basic-libs/util"
+	"github.com/1340691923/ElasticView/engine/logs"
+	"github.com/1340691923/ElasticView/platform-basic-libs/util"
+
+	. "github.com/1340691923/ElasticView/platform-basic-libs/my_error"
 
 	"github.com/gin-gonic/gin"
 	jsoniter "github.com/json-iterator/go"

@@ -2,10 +2,11 @@
 package router
 
 import (
-	. "ElasticView/controller"
-	. "ElasticView/middleware"
-	"ElasticView/platform-basic-libs/util"
-	_ "ElasticView/statik"
+	"github.com/1340691923/ElasticView/platform-basic-libs/util"
+
+	. "github.com/1340691923/ElasticView/controller"
+	. "github.com/1340691923/ElasticView/middleware"
+	_ "github.com/1340691923/ElasticView/statik"
 
 	"github.com/gin-gonic/gin"
 	"github.com/rakyll/statik/fs"

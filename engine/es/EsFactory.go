@@ -3,8 +3,8 @@ package es
 import (
 	"errors"
 
-	"ElasticView/engine/db"
-	"ElasticView/platform-basic-libs/util"
+	"github.com/1340691923/ElasticView/engine/db"
+	"github.com/1340691923/ElasticView/platform-basic-libs/util"
 )
 
 //获取es6.x的链接

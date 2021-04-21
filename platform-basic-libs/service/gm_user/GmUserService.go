@@ -2,8 +2,8 @@
 package gm_user
 
 import (
-	"ElasticView/model"
-	"ElasticView/platform-basic-libs/jwt"
+	"github.com/1340691923/ElasticView/model"
+	"github.com/1340691923/ElasticView/platform-basic-libs/jwt"
 )
 
 // GmUserService

@@ -5,11 +5,11 @@ import (
 	"fmt"
 	"strings"
 
-	"ElasticView/engine/es"
-	"ElasticView/engine/logs"
-	"ElasticView/platform-basic-libs/my_error"
-	"ElasticView/platform-basic-libs/response"
-	"ElasticView/platform-basic-libs/service/es_settings"
+	"github.com/1340691923/ElasticView/engine/es"
+	"github.com/1340691923/ElasticView/engine/logs"
+	"github.com/1340691923/ElasticView/platform-basic-libs/my_error"
+	"github.com/1340691923/ElasticView/platform-basic-libs/response"
+	"github.com/1340691923/ElasticView/platform-basic-libs/service/es_settings"
 
 	"github.com/gin-gonic/gin"
 	jsoniter "github.com/json-iterator/go"

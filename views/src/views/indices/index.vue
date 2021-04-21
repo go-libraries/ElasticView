@@ -2,7 +2,14 @@
   <div class="app-container">
     <el-card class="box-card">
       <div class="filter-container">
-        <el-select v-model="status" class="filter-item width150" clearable filterable @change="search">
+        <el-select
+          id="index-health-status"
+          v-model="status"
+          class="filter-item width150"
+          clearable
+          filterable
+          @change="search"
+        >
           <el-option label="索引健康状态" value="" />
           <el-option label="green" value="green" />
           <el-option label="yellow" value="yellow" />
@@ -11,14 +18,15 @@
 
         <el-tag class="filter-item">请输入关键词</el-tag>
 
-        <el-input v-model="input" class="filter-item width300" clearable @input="search" />
-        <el-button type="primary" class="filter-item" icon="el-icon-search" @click="search">搜索</el-button>
+        <el-input id="index-keyword" v-model="input" class="filter-item width300" clearable @input="search" />
+        <el-button id="index-search" type="primary" class="filter-item" icon="el-icon-search" @click="search">搜索</el-button>
         <el-button-group>
 
-          <el-button type="success" class="filter-item" icon="el-icon-plus" @click="openSettingDialog('','add')">新建索引
+          <el-button id="new-index" type="success" class="filter-item" icon="el-icon-plus" @click="openSettingDialog('','add')">新建索引
           </el-button>
 
           <el-button
+            id="readOnlyAllowDelete"
             v-loading="readOnlyAllowDeleteLoading"
             type="warning"
             class="filter-item"
@@ -29,6 +37,7 @@
           </el-button>
 
           <el-button
+            id="flushIndex"
             v-loading="loadingGroup['_flush']"
             type="info"
             class="filter-item"
@@ -42,9 +51,9 @@
       <div class="filter-container">
         <el-button-group>
           <el-button
+            id="closeIndex"
             v-loading="loadingGroup['close']"
             type="danger"
-
             icon="el-icon-circle-close"
             class="filter-item"
             @click="runCommandByIndex('close',selectIndexList.join(','))"
@@ -52,6 +61,7 @@
           </el-button>
 
           <el-button
+            id="openIndex"
             v-loading="loadingGroup['open']"
             type="success"
 
@@ -61,8 +71,8 @@
           >打开
           </el-button>
           <el-button
+            id="forcemergeIndex"
             v-loading="loadingGroup['_forcemerge']"
-
             icon="el-icon-connection"
             class="filter-item"
             @click="runCommandByIndex('_forcemerge',selectIndexList.join(','))"
@@ -77,6 +87,7 @@
             content="为了让最新的数据可以立即被搜索到"
           >
             <el-button
+              id="refreshIndex"
               slot="reference"
               v-loading="loadingGroup['_refresh']"
               class="filter-item"
@@ -96,6 +107,7 @@
             content="让数据持久化到磁盘中"
           >
             <el-button
+              id="flushIndex2"
               slot="reference"
               v-loading="loadingGroup['_flush']"
 
@@ -219,7 +231,16 @@
 
         <el-table-column align="center" label="操作" fixed="right" width="400">
           <template slot-scope="scope">
+
             <el-button-group>
+              <!--  <el-button
+                  v-if="Object.keys(mappings[scope.row.index].mappings).length == 0"
+                  type="warning"
+                  size="small"
+                  icon="el-icon-circle-plus-outline"
+                  @click="openMappingEditDialog(scope.row.index,false)"
+                >新增映射结构
+                </el-button>-->
               <el-button
                 type="primary"
                 size="small"
@@ -394,6 +415,7 @@
               content="让数据持久化到磁盘中"
             >
               <el-button
+
                 slot="reference"
                 v-loading="loadingGroup['_flush']"
                 size="small"
@@ -592,8 +614,9 @@ export default {
         this.mappingInfo = this.mappings[indexName].mappings
         this.mappingTitle = '新增字段'
       } else {
-        this.mappingTitle = '新增结构'
+        this.mappingTitle = '新增映射结构'
       }
+      this.indexName = indexName
 
       this.openMappings = true
     },

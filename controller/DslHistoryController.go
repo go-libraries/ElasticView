@@ -1,9 +1,9 @@
 package controller
 
 import (
-	"ElasticView/model"
-	"ElasticView/platform-basic-libs/jwt"
-	"ElasticView/platform-basic-libs/response"
+	"github.com/1340691923/ElasticView/model"
+	"github.com/1340691923/ElasticView/platform-basic-libs/jwt"
+	"github.com/1340691923/ElasticView/platform-basic-libs/response"
 
 	"github.com/gin-gonic/gin"
 )

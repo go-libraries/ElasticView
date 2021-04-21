@@ -3,11 +3,11 @@ package controller
 import (
 	"encoding/json"
 
-	"ElasticView/engine/db"
-	"ElasticView/engine/es"
-	"ElasticView/engine/logs"
-	"ElasticView/model"
-	"ElasticView/platform-basic-libs/response"
+	"github.com/1340691923/ElasticView/engine/db"
+	"github.com/1340691923/ElasticView/engine/es"
+	"github.com/1340691923/ElasticView/engine/logs"
+	"github.com/1340691923/ElasticView/model"
+	"github.com/1340691923/ElasticView/platform-basic-libs/response"
 
 	"github.com/gin-gonic/gin"
 	jsoniter "github.com/json-iterator/go"

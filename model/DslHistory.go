@@ -2,7 +2,7 @@
 package model
 
 import (
-	"ElasticView/engine/db"
+	"github.com/1340691923/ElasticView/engine/db"
 )
 
 /* http://sql2struct.atotoa.com 根据表结构生成 go结构体

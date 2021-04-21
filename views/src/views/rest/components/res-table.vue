@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-dialog width="80%" :visible.sync="dialogVisible" title="查询结果" @close="close">
+    <el-dialog width="95%" :visible.sync="dialogVisible" title="查询结果" @close="close">
       <div class="filter-container">
         <el-tag class="filter-item">请输入关键词</el-tag>
         <el-input v-model="input" class="filter-item" style="width: 300px" clearable @input="search" />
@@ -55,7 +55,6 @@
         <el-table-column align="center" label="操作" fixed="right" width="200">
           <template slot-scope="scope">
             <el-button-group>
-
               <el-button
                 v-if="ISDoc"
                 type="primary"

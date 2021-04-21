@@ -1,7 +1,7 @@
 package router
 
 import (
-	. "ElasticView/controller"
+	. "github.com/1340691923/ElasticView/controller"
 
 	"github.com/gin-gonic/gin"
 )

@@ -6,9 +6,9 @@ import (
 	"strings"
 	"sync"
 
-	"ElasticView/engine/es"
-	"ElasticView/platform-basic-libs/my_error"
-	"ElasticView/platform-basic-libs/response"
+	"github.com/1340691923/ElasticView/engine/es"
+	"github.com/1340691923/ElasticView/platform-basic-libs/my_error"
+	"github.com/1340691923/ElasticView/platform-basic-libs/response"
 
 	"github.com/gin-gonic/gin"
 	"github.com/olivere/elastic"

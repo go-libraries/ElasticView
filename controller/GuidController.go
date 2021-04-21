@@ -1,11 +1,11 @@
 package controller
 
 import (
-	"ElasticView/engine/db"
-	"ElasticView/model"
-	"ElasticView/platform-basic-libs/jwt"
-	"ElasticView/platform-basic-libs/response"
-	"ElasticView/platform-basic-libs/util"
+	"github.com/1340691923/ElasticView/engine/db"
+	"github.com/1340691923/ElasticView/model"
+	"github.com/1340691923/ElasticView/platform-basic-libs/jwt"
+	"github.com/1340691923/ElasticView/platform-basic-libs/response"
+	"github.com/1340691923/ElasticView/platform-basic-libs/util"
 
 	"github.com/gin-gonic/gin"
 )

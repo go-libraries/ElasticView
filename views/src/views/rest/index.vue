@@ -48,6 +48,24 @@ export default {
     }
   },
   mounted() {
+    this.$nextTick(() => {
+      var introJS = require('intro.js')
+
+      introJS().setOptions({
+        prevLabel: '上一步',
+        nextLabel: '下一步',
+        skipLabel: '跳过',
+        doneLabel: '完成'
+      }).onbeforechange((e) => {
+        console.log(e.getAttribute('guid'))
+        console.log(e)
+      }).oncomplete(() => {
+        // 点击结束按钮后执行的事件
+      }).onexit(() => {
+        // 点击跳过按钮后执行的事件
+      }).start()
+      // introJS().start() // 退出引导调用 exit() 即可
+    })
     this.mergeEsPathKeyWords()
     const editableTabs = sessionStorage.getItem('editableTabs')
     const editableTabsValue = sessionStorage.getItem('editableTabsValue')

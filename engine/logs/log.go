@@ -9,7 +9,7 @@ import (
 	"path/filepath"
 	"time"
 
-	"ElasticView/platform-basic-libs/util"
+	"github.com/1340691923/ElasticView/platform-basic-libs/util"
 
 	rotatelogs "github.com/lestrrat-go/file-rotatelogs"
 	"go.uber.org/zap"

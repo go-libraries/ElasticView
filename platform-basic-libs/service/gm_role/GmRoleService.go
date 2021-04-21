@@ -1,7 +1,7 @@
 //GM角色层
 package gm_role
 
-import "ElasticView/model"
+import "github.com/1340691923/ElasticView/model"
 
 // GmRoleService
 type GmRoleService struct {

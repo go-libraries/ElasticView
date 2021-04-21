@@ -3,7 +3,7 @@ package es_optimize
 import (
 	"context"
 
-	"ElasticView/engine/logs"
+	"github.com/1340691923/ElasticView/engine/logs"
 
 	"github.com/olivere/elastic"
 	"go.uber.org/zap"

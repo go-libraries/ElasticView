@@ -7,11 +7,11 @@ import (
 	"strconv"
 	"strings"
 
-	"ElasticView/engine/es"
-	"ElasticView/model"
-	"ElasticView/platform-basic-libs/jwt"
-	"ElasticView/platform-basic-libs/response"
-	"ElasticView/platform-basic-libs/service/es_optimize"
+	"github.com/1340691923/ElasticView/engine/es"
+	"github.com/1340691923/ElasticView/model"
+	"github.com/1340691923/ElasticView/platform-basic-libs/jwt"
+	"github.com/1340691923/ElasticView/platform-basic-libs/response"
+	"github.com/1340691923/ElasticView/platform-basic-libs/service/es_optimize"
 
 	"github.com/cch123/elasticsql"
 	"github.com/gin-gonic/gin"

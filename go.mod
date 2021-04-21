@@ -1,4 +1,4 @@
-module ElasticView
+module github.com/1340691923/ElasticView
 
 go 1.13
 

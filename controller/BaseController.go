@@ -2,8 +2,8 @@
 package controller
 
 import (
-	"ElasticView/platform-basic-libs/request"
-	"ElasticView/platform-basic-libs/response"
+	"github.com/1340691923/ElasticView/platform-basic-libs/request"
+	"github.com/1340691923/ElasticView/platform-basic-libs/response"
 )
 
 //父控制器结构体
