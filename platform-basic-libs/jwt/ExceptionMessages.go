@@ -1,5 +1,6 @@
 package jwt
 
+// 内置异常
 const (
 	ERROR_AUTH_TOKEN = 40006
 )

@@ -6,12 +6,10 @@ import (
 	"io/ioutil"
 )
 
-var err error
-
 func Compress(data string) ([]byte, error) {
 	buf := bytes.NewBuffer(nil)
 	gzW := gzip.NewWriter(buf)
-	_, err = gzW.Write([]byte(data))
+	_, err := gzW.Write([]byte(data))
 	if err != nil {
 		return nil, err
 	}

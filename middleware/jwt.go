@@ -1,3 +1,4 @@
+//中间件层
 package middleware
 
 import (
@@ -7,24 +8,22 @@ import (
 	"strings"
 	"time"
 
-	"ElasticView/engine/logs"
-	"ElasticView/platform-basic-libs/jwt"
-	"ElasticView/platform-basic-libs/my_error"
-	"ElasticView/platform-basic-libs/response"
-	"ElasticView/platform-basic-libs/service/gm_user"
-	"ElasticView/platform-basic-libs/util"
+	"github.com/1340691923/ElasticView/engine/logs"
+	"github.com/1340691923/ElasticView/platform-basic-libs/jwt"
+	"github.com/1340691923/ElasticView/platform-basic-libs/my_error"
+	"github.com/1340691923/ElasticView/platform-basic-libs/response"
+	"github.com/1340691923/ElasticView/platform-basic-libs/service/gm_user"
+	"github.com/1340691923/ElasticView/platform-basic-libs/util"
 
 	"github.com/gin-gonic/gin"
 )
 
 var res response.Response
-var err error
 
 // 处理跨域请求,支持options访问
-func Cors(ctx *gin.Context)  {
+func Cors(ctx *gin.Context) {
 
 	method := ctx.Request.Method
-	fmt.Println(method)
 	ctx.Header("Access-Control-Allow-Origin", "*")
 	ctx.Header("Access-Control-Allow-Headers", "Content-Type,AccessToken,X-CSRF-Token, Authorization, X-Token")
 	ctx.Header("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, PATCH, DELETE")
@@ -40,8 +39,7 @@ func Cors(ctx *gin.Context)  {
 }
 
 func JwtMiddleware(ctx *gin.Context) {
-
-
+	var err error
 	defer func() {
 		if r := recover(); r != nil {
 			//打印调用栈信息
@@ -65,7 +63,6 @@ func JwtMiddleware(ctx *gin.Context) {
 		ctx.Abort()
 		return
 	}
-
 
 	var claims *jwt.Claims
 	if util.GetToken(ctx) == "" {

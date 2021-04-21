@@ -6,14 +6,15 @@ import (
 	"strings"
 	"sync"
 
-	"ElasticView/engine/es"
-	"ElasticView/platform-basic-libs/my_error"
-	"ElasticView/platform-basic-libs/response"
+	"github.com/1340691923/ElasticView/engine/es"
+	"github.com/1340691923/ElasticView/platform-basic-libs/my_error"
+	"github.com/1340691923/ElasticView/platform-basic-libs/response"
 
 	"github.com/gin-gonic/gin"
 	"github.com/olivere/elastic"
 )
 
+// Es 索引控制器
 type EsIndexController struct {
 	BaseController
 }
@@ -21,7 +22,7 @@ type EsIndexController struct {
 //创建索引
 func (this EsIndexController) CreateAction(ctx *gin.Context) {
 	esIndexInfo := es.EsIndexInfo{}
-	err = ctx.Bind(&esIndexInfo)
+	err := ctx.Bind(&esIndexInfo)
 	if err != nil {
 		this.Error(ctx, err)
 		return
@@ -59,9 +60,10 @@ func (this EsIndexController) CreateAction(ctx *gin.Context) {
 	return
 }
 
+// 删除索引
 func (this EsIndexController) DeleteAction(ctx *gin.Context) {
 	esIndexInfo := es.EsIndexInfo{}
-	err = ctx.Bind(&esIndexInfo)
+	err := ctx.Bind(&esIndexInfo)
 	if err != nil {
 		this.Error(ctx, err)
 		return
@@ -85,9 +87,10 @@ func (this EsIndexController) DeleteAction(ctx *gin.Context) {
 	return
 }
 
+//获取索引配置信息
 func (this EsIndexController) GetSettingsAction(ctx *gin.Context) {
 	esIndexInfo := es.EsIndexInfo{}
-	err = ctx.Bind(&esIndexInfo)
+	err := ctx.Bind(&esIndexInfo)
 	if err != nil {
 		this.Error(ctx, err)
 		return
@@ -113,9 +116,10 @@ func (this EsIndexController) GetSettingsAction(ctx *gin.Context) {
 	return
 }
 
+//获取所有的索引配置信息
 func (this EsIndexController) GetSettingsInfoAction(ctx *gin.Context) {
 	esIndexInfo := es.EsIndexInfo{}
-	err = ctx.Bind(&esIndexInfo)
+	err := ctx.Bind(&esIndexInfo)
 	if err != nil {
 		this.Error(ctx, err)
 		return
@@ -141,10 +145,10 @@ func (this EsIndexController) GetSettingsInfoAction(ctx *gin.Context) {
 	return
 }
 
-//获取别名
+// 获取别名
 func (this EsIndexController) GetAliasAction(ctx *gin.Context) {
 	esAliasInfo := es.EsAliasInfo{}
-	err = ctx.Bind(&esAliasInfo)
+	err := ctx.Bind(&esAliasInfo)
 	if err != nil {
 		this.Error(ctx, err)
 		return
@@ -166,9 +170,10 @@ func (this EsIndexController) GetAliasAction(ctx *gin.Context) {
 	return
 }
 
+// 操作别名
 func (this EsIndexController) OperateAliasAction(ctx *gin.Context) {
 	esAliasInfo := es.EsAliasInfo{}
-	err = ctx.Bind(&esAliasInfo)
+	err := ctx.Bind(&esAliasInfo)
 	if err != nil {
 		this.Error(ctx, err)
 		return
@@ -234,9 +239,10 @@ func (this EsIndexController) OperateAliasAction(ctx *gin.Context) {
 	return
 }
 
+// 重建索引
 func (this EsIndexController) ReindexAction(ctx *gin.Context) {
 	esReIndexInfo := es.EsReIndexInfo{}
-	err = ctx.Bind(&esReIndexInfo)
+	err := ctx.Bind(&esReIndexInfo)
 	if err != nil {
 		this.Error(ctx, err)
 		return
@@ -275,9 +281,10 @@ func (this EsIndexController) ReindexAction(ctx *gin.Context) {
 	this.Success(ctx, response.OperateSuccess, res)
 }
 
+// 得到所有的索引名
 func (this EsIndexController) IndexNamesAction(ctx *gin.Context) {
 	esConnect := es.EsConnectID{}
-	err = ctx.Bind(&esConnect)
+	err := ctx.Bind(&esConnect)
 	if err != nil {
 		this.Error(ctx, err)
 		return
@@ -287,18 +294,25 @@ func (this EsIndexController) IndexNamesAction(ctx *gin.Context) {
 		this.Error(ctx, err)
 		return
 	}
-	indexNames, err := esClinet.(*es.EsClientV6).Client.IndexNames()
+	catIndicesResponse, err := esClinet.(*es.EsClientV6).Client.CatIndices().Human(true).Do(ctx)
 	if err != nil {
 		this.Error(ctx, err)
 		return
 	}
+	indexNames := []string{}
+
+	for _, catIndices := range catIndicesResponse {
+		indexNames = append(indexNames, catIndices.Index)
+	}
+
 	this.Success(ctx, response.SearchSuccess, indexNames)
 	return
 }
 
+// 获取索引的Stats
 func (this EsIndexController) StatsAction(ctx *gin.Context) {
 	esIndexInfo := es.EsIndexInfo{}
-	err = ctx.Bind(&esIndexInfo)
+	err := ctx.Bind(&esIndexInfo)
 	if err != nil {
 		this.Error(ctx, err)
 		return
@@ -322,8 +336,4 @@ func (this EsIndexController) StatsAction(ctx *gin.Context) {
 
 	this.Success(ctx, response.OperateSuccess, res)
 	return
-}
-
-func (this EsIndexController) OpenAction(ctx *gin.Context) {
-
 }

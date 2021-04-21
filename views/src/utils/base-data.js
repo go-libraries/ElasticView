@@ -24,7 +24,16 @@ export const esPathKeyWords = [
 
   { 'data': '_cat/aliases/{name}', 'value': '_cat/aliases/{name}' },
   { 'data': '_cat/allocation/{nodes}', 'value': '_cat/allocation/{nodes}' },
+  { 'data': '{indices}/_search', 'value': '{indices}/_search' },
+  { 'data': '{indices}/_count', 'value': '{indices}/_count' },
+  { 'data': '{indices}/{type}/_count', 'value': '{indices}/{type}/_count' },
+  { 'data': '{indices}/{type}/_delete_by_query', 'value': '{indices}/{type}/_delete_by_query' },
+  { 'data': '{indices}/_delete_by_query', 'value': '{indices}/_delete_by_query' },
   { 'data': '_cat/count/{indices}', 'value': '_cat/count/{indices}' },
+  {
+    'data': '{indices}/_alias',
+    'value': '{indices}/_alias'
+  },
   { 'data': '_cat/fielddata/{fields}', 'value': '_cat/fielddata/{fields}' },
   { 'data': '_cat', 'value': '_cat' },
   { 'data': '_cat/indices/{indices}', 'value': '_cat/indices/{indices}' },
@@ -51,11 +60,7 @@ export const esPathKeyWords = [
   { 'data': '_cluster/stats', 'value': '_cluster/stats' },
   { 'data': '_cluster/stats/nodes/{nodes}', 'value': '_cluster/stats/nodes/{nodes}' },
   { 'data': '_count', 'value': '_count' },
-  { 'data': '{indices}/_count', 'value': '{indices}/_count' },
-  { 'data': '{indices}/{type}/_count', 'value': '{indices}/{type}/_count' },
   { 'data': '{indices}/{type}/{id}/_create', 'value': '{indices}/{type}/{id}/_create' },
-  { 'data': '{indices}/_delete_by_query', 'value': '{indices}/_delete_by_query' },
-  { 'data': '{indices}/{type}/_delete_by_query', 'value': '{indices}/{type}/_delete_by_query' },
   { 'data': '_scripts/{id}', 'value': '_scripts/{id}' },
   { 'data': '{indices}/{type}/{id}', 'value': '{indices}/{type}/{id}' },
   { 'data': '{indices}/_doc/{id}', 'value': '{indices}/_doc/{id}' },
@@ -119,10 +124,7 @@ export const esPathKeyWords = [
     'value': '{indices}/_forcemerge'
   },
   { 'data': '_alias', 'value': '_alias' },
-  {
-    'data': '{indices}/_alias',
-    'value': '{indices}/_alias'
-  },
+
   {
     'data': '_mapping/field/{fields}',
     'value': '_mapping/field/{fields}'

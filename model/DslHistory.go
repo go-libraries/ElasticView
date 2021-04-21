@@ -1,13 +1,12 @@
+// 数据库实体层
 package model
 
 import (
-	"log"
-
-	"ElasticView/engine/db"
+	"github.com/1340691923/ElasticView/engine/db"
 )
 
-//http://sql2struct.atotoa.com/
-
+/* http://sql2struct.atotoa.com 根据表结构生成 go结构体
+GmDslHistoryModel DSL历史记录*/
 type GmDslHistoryModel struct {
 	ID         int      `gorm:"column:id" json:"id" form:"id" db:"id"`
 	Uid        int      `gorm:"column:uid" json:"uid" form:"uid" db:"uid"`
@@ -21,10 +20,12 @@ type GmDslHistoryModel struct {
 	Limit      int      `json:"limit"`
 }
 
+//表名
 func (this *GmDslHistoryModel) TableName() string {
 	return "gm_dsl_history"
 }
 
+// Insert
 func (this *GmDslHistoryModel) Insert() (err error) {
 	_, err = db.SqlBuilder.
 		Insert(this.TableName()).
@@ -37,6 +38,7 @@ func (this *GmDslHistoryModel) Insert() (err error) {
 	return
 }
 
+// Clean
 func (this *GmDslHistoryModel) Clean() (err error) {
 	_, err = db.SqlBuilder.
 		Delete(this.TableName()).
@@ -46,6 +48,7 @@ func (this *GmDslHistoryModel) Clean() (err error) {
 	return
 }
 
+// List
 func (this *GmDslHistoryModel) List() (gmDslHistoryModelList []GmDslHistoryModel, err error) {
 	builder := db.SqlBuilder.
 		Select("*").
@@ -63,7 +66,7 @@ func (this *GmDslHistoryModel) List() (gmDslHistoryModelList []GmDslHistoryModel
 	}
 
 	sql, args, err := builder.ToSql()
-	log.Println(sql, args, this)
+
 	if err != nil {
 		return
 	}
@@ -76,6 +79,7 @@ func (this *GmDslHistoryModel) List() (gmDslHistoryModelList []GmDslHistoryModel
 	return
 }
 
+// Count
 func (this *GmDslHistoryModel) Count() (count int, err error) {
 	builder := db.SqlBuilder.
 		Select("count(*)").

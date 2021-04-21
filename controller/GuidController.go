@@ -1,21 +1,22 @@
 package controller
 
 import (
-	"ElasticView/engine/db"
-	"ElasticView/model"
-	"ElasticView/platform-basic-libs/jwt"
-	"ElasticView/platform-basic-libs/response"
-	"ElasticView/platform-basic-libs/util"
+	"github.com/1340691923/ElasticView/engine/db"
+	"github.com/1340691923/ElasticView/model"
+	"github.com/1340691923/ElasticView/platform-basic-libs/jwt"
+	"github.com/1340691923/ElasticView/platform-basic-libs/response"
+	"github.com/1340691923/ElasticView/platform-basic-libs/util"
 
 	"github.com/gin-gonic/gin"
 )
 
+// 引导控制器
 type GuidController struct {
 	BaseController
 }
 
+// 完成新手引导
 func (this GuidController) Finish(ctx *gin.Context) {
-
 	c, err := jwt.ParseToken(ctx.GetHeader("X-Token"))
 	if err != nil {
 		this.Error(ctx, err)
@@ -42,6 +43,7 @@ func (this GuidController) Finish(ctx *gin.Context) {
 	this.Success(ctx, response.OperateSuccess, nil)
 }
 
+//是否完成新手引导
 func (this GuidController) IsFinish(ctx *gin.Context) {
 	c, err := jwt.ParseToken(ctx.GetHeader("X-Token"))
 	if err != nil {

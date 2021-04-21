@@ -1,17 +1,18 @@
+//路由层
 package router
 
 import (
-	. "ElasticView/controller"
-	"ElasticView/platform-basic-libs/util"
-	_ "ElasticView/statik"
+	"github.com/1340691923/ElasticView/platform-basic-libs/util"
 
-	. "ElasticView/middleware"
+	. "github.com/1340691923/ElasticView/controller"
+	. "github.com/1340691923/ElasticView/middleware"
+	_ "github.com/1340691923/ElasticView/statik"
 
 	"github.com/gin-gonic/gin"
 	"github.com/rakyll/statik/fs"
 )
 
-// statik -src=views/dist -f
+//  打包静态资源进二进制  statik -src=views/dist -f
 func Init() *gin.Engine {
 	app := gin.Default()
 	statikFS, err := fs.New()
@@ -33,6 +34,7 @@ func Init() *gin.Engine {
 
 	app.Use(Cors)
 	app.Any("/api/gm_user/login", UserController{}.Login)
+
 	app.Use(JwtMiddleware)
 	runGmUser(app)
 	runGmGuid(app)
@@ -43,11 +45,8 @@ func Init() *gin.Engine {
 	runDslHistory(app)
 	runEsTask(app)
 	runEsBackUp(app)
-	task := app.Group("/api/es_task")
-	{
-		task.POST("ListAction", TaskController{}.ListAction)
-		task.POST("CancelAction", TaskController{}.CancelAction)
+	runEsDoc(app)
 
-	}
 	return app
+
 }

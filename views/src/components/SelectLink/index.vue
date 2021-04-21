@@ -1,7 +1,7 @@
 <template>
   <div class="header-search">
     <el-select
-      v-model="link"
+      v-model="linkID"
       filterable
       default-first-option
       placeholder="请选择ES连接"
@@ -10,6 +10,7 @@
       <el-option :value="Number(0)" label="请选择ES连接" />
       <el-option v-for="item in opt" :key="item.id" :value="Number(item.id)" :label="item.remark" />
     </el-select>
+    <el-button @click="refresh">刷新</el-button>
   </div>
 </template>
 
@@ -22,16 +23,16 @@ export default {
   data() {
     return {
       opt: [],
-      link: '',
+      linkID: '',
       time: null,
-      timeSecend: 15
+      timeSecend: 60
     }
   },
   computed: {},
   watch: {},
   mounted() {
     const obj = this.$store.state.baseData.EsConnectID
-    this.link = Number(obj)
+    this.linkID = Number(obj)
     this.getEsOpt()
     this.startLoop()
   },
@@ -50,8 +51,15 @@ export default {
       }, this.timeSecend * 1000)
     },
     async getEsOpt() {
-      const res = await ListAction()
+      const res = await ListAction({ 'getByLocal': 1 })
       this.opt = res.data
+    },
+    refresh() {
+      this.getEsOpt()
+      this.$message({
+        type: 'success',
+        message: '刷新ES连接信息成功'
+      })
     },
     change(link) {
       this.$store.dispatch('baseData/SetEsConnect', link)

@@ -1,12 +1,15 @@
+//日志引擎层
 package logs
 
 import (
+	"errors"
+	"fmt"
 	"io"
 	"log"
 	"path/filepath"
 	"time"
 
-	"ElasticView/platform-basic-libs/util"
+	"github.com/1340691923/ElasticView/platform-basic-libs/util"
 
 	rotatelogs "github.com/lestrrat-go/file-rotatelogs"
 	"go.uber.org/zap"
@@ -15,11 +18,43 @@ import (
 
 var Logger *zap.Logger
 
-// 初始化日志 logger
-func InitLog(logPath string,storageDays int) {
-	if logPath == ""{
-		logPath = filepath.Join(util.GetCurrentDirectory(),"logs")
+type Log struct {
+	logPath     string
+	storageDays int
+}
+
+//Options方法
+type NewLogOptions func(log *Log)
+
+//设置日志目录
+func WithLogPath(logPath string) NewLogOptions {
+	return func(log *Log) {
+		log.logPath = logPath
 	}
+}
+
+//设置日志存活天数
+func WithStorageDays(storageDays int) NewLogOptions {
+	return func(log *Log) {
+		log.storageDays = storageDays
+	}
+}
+
+//App 构造方法
+func NewLog(opts ...NewLogOptions) *Log {
+	log := &Log{
+		logPath:     filepath.Join(util.GetCurrentDirectory(), "logs"),
+		storageDays: 3,
+	}
+	for _, opt := range opts {
+		opt(log)
+	}
+	return log
+}
+
+// 初始化日志 logger
+func (this *Log) InitLog() (logger *zap.Logger, err error) {
+
 	config := zapcore.EncoderConfig{
 		MessageKey: "msg",
 		TimeKey:    "ts",
@@ -32,7 +67,6 @@ func InitLog(logPath string,storageDays int) {
 	}
 	encoder := zapcore.NewConsoleEncoder(config)
 
-
 	infoLevel := zap.LevelEnablerFunc(func(lvl zapcore.Level) bool {
 		return lvl == zapcore.InfoLevel
 	})
@@ -40,30 +74,35 @@ func InitLog(logPath string,storageDays int) {
 		return lvl >= zapcore.WarnLevel && lvl >= zap.InfoLevel
 	})
 
-	infoWriter := getWriter(filepath.Join(logPath, "info.log"),storageDays)
-	warnWriter := getWriter(filepath.Join(logPath, "err.log"),storageDays)
+	infoWriter, err := this.getWriter(filepath.Join(this.logPath, "info.log"), this.storageDays)
+	if err != nil {
+		return nil, errors.New(fmt.Sprintf("日志启动异常:%s", err))
+	}
+	warnWriter, err := this.getWriter(filepath.Join(this.logPath, "err.log"), this.storageDays)
+	if err != nil {
+		return nil, errors.New(fmt.Sprintf("日志启动异常:%s", err))
+	}
 	var core zapcore.Core
 
 	core = zapcore.NewTee(
 		zapcore.NewCore(encoder, zapcore.AddSync(infoWriter), infoLevel),
 		zapcore.NewCore(encoder, zapcore.AddSync(warnWriter), warnLevel),
 	)
-
-	Logger = zap.New(core, zap.AddCaller(), zap.Development())
+	return zap.New(core, zap.AddCaller(), zap.Development()), nil
 }
 
-func getWriter(filename string,storageDays int) io.Writer {
+func (this *Log) getWriter(filename string, storageDays int) (io.Writer, error) {
 	// 生成rotatelogs的Logger 实际生成的文件名 info.log.YYmmddHH
 	hook, err := rotatelogs.New(
 		filename+".%Y%m%d", // 没有使用go风格反人类的format格式
 		rotatelogs.WithLinkName(filename),
-		rotatelogs.WithMaxAge(time.Hour*24*time.Duration(storageDays)),     // 保存3天
-		rotatelogs.WithRotationTime(time.Hour*24), //切割频率 24小时
+		rotatelogs.WithMaxAge(time.Hour*24*time.Duration(storageDays)), // 保存3天
+		rotatelogs.WithRotationTime(time.Hour*24),                      //切割频率 24小时
 	)
 	if err != nil {
-		log.Panic("日志启动异常", err)
+		return nil, errors.New(fmt.Sprintf("日志启动异常:%s", err))
 	}
-	return hook
+	return hook, nil
 }
 
 func Debug(format string, v ...interface{}) {

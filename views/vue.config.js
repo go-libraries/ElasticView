@@ -77,7 +77,8 @@ module.exports = {
         test: new RegExp('\\.(' + productionGzipExtensions.join('|') + ')$'),
         threshold: 10240,
         minRatio: 0.8
-      })
+      }),
+
     ]
   },
   chainWebpack(config) {
@@ -118,23 +119,23 @@ module.exports = {
       })
       .end()
 
-   /* config.module
-      .rule('scss')
-      .oneOf('vue')
-      .use('px2rem-loader')
-      .loader('px2rem-loader')
-      .before('postcss-loader') // this makes it work.
-      .options({ remUnit: 190, remPrecision: 4 })
-      .end()
-    config.module
-      .rule('css')
-      .oneOf('vue')
-      .use('px2rem-loader')
-      .loader('px2rem-loader')
-      .before('postcss-loader') // this makes it work.
-      .options({ remUnit: 190, remPrecision: 4 })
-      .end()
-*/
+    /* config.module
+       .rule('scss')
+       .oneOf('vue')
+       .use('px2rem-loader')
+       .loader('px2rem-loader')
+       .before('postcss-loader') // this makes it work.
+       .options({ remUnit: 190, remPrecision: 4 })
+       .end()
+     config.module
+       .rule('css')
+       .oneOf('vue')
+       .use('px2rem-loader')
+       .loader('px2rem-loader')
+       .before('postcss-loader') // this makes it work.
+       .options({ remUnit: 190, remPrecision: 4 })
+       .end()
+ */
     config
       // https://webpack.js.org/configuration/devtool/#development
       .when(process.env.NODE_ENV === 'development',

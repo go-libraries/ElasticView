@@ -4,11 +4,12 @@ import (
 	"strconv"
 	"strings"
 
-	"ElasticView/platform-basic-libs/my_error"
+	"github.com/1340691923/ElasticView/platform-basic-libs/my_error"
 
 	"github.com/gin-gonic/gin"
 )
 
+//自定义请求 辅助方法
 type Request struct {
 }
 

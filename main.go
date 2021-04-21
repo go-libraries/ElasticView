@@ -5,23 +5,34 @@ import (
 
 	_ "github.com/go-sql-driver/mysql"
 
-	"ElasticView/application"
-	"ElasticView/router"
+	"github.com/1340691923/ElasticView/application"
+	"github.com/1340691923/ElasticView/router"
 )
 
 // By 肖文龙
 func main() {
-	app := application.App{
-		ConfigFileDir:  "config",
-		ConfigFileName: "config.json",
-		AppName:        "ElasticView",
-	}
+	app := application.NewApp(
+		application.WithAppName("ElasticView"),
+		application.WithConfigFileDir("config"),
+		application.WithConfigFileName("config"),
+		application.WithConfigFileExt("json"),
+	)
 
-	app.InitConfig()
-	app.InitLogs()
-	app.InitMysql()
+	err := app.InitConfig().
+		InitLogs().
+		InitMysql().
+		InitTask().
+		Error()
+	if err != nil {
+		panic(err)
+	}
 
 	port := ":" + strconv.Itoa(application.GlobConfig.Port)
 	engine := router.Init()
-	engine.Run(port)
+
+	err = engine.Run(port)
+	if err != nil {
+		panic(err)
+	}
+
 }

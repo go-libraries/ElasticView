@@ -1,5 +1,6 @@
 package gm_user
 
+// 自定义业务异常
 const (
 	ERROR_AUTH_TOKEN = 40006
 	ERROR_AUTH       = 40007

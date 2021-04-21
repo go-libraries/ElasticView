@@ -1,17 +1,19 @@
 package controller
 
 import (
-	"ElasticView/model"
-	"ElasticView/platform-basic-libs/jwt"
-	"ElasticView/platform-basic-libs/response"
+	"github.com/1340691923/ElasticView/model"
+	"github.com/1340691923/ElasticView/platform-basic-libs/jwt"
+	"github.com/1340691923/ElasticView/platform-basic-libs/response"
 
 	"github.com/gin-gonic/gin"
 )
 
+// DSL语法查询历史记录
 type DslHistoryController struct {
 	BaseController
 }
 
+// 查询DSL历史记录列表
 func (this DslHistoryController) ListAction(ctx *gin.Context) {
 	c, err := jwt.ParseToken(ctx.GetHeader("X-Token"))
 	if err != nil {
@@ -39,6 +41,7 @@ func (this DslHistoryController) ListAction(ctx *gin.Context) {
 	this.Success(ctx, response.SearchSuccess, map[string]interface{}{"list": list, "count": count})
 }
 
+// 清空DSL查询记录
 func (this DslHistoryController) CleanAction(ctx *gin.Context) {
 	c, err := jwt.ParseToken(ctx.GetHeader("X-Token"))
 	if err != nil {

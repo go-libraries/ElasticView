@@ -1,11 +1,12 @@
 package router
 
 import (
-	. "ElasticView/controller"
+	. "github.com/1340691923/ElasticView/controller"
 
 	"github.com/gin-gonic/gin"
 )
 
+// ES基础操作 路由
 func runEs(app *gin.Engine) {
 	es := app.Group("/api/es")
 	{

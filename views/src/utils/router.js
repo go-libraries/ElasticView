@@ -84,7 +84,7 @@ export const asyncRoutes = [
     redirect: '/rest/index',
     alwaysShow: false,
     meta: {
-      title: 'Dev Tools',
+      title: '开发工具',
       icon: 'el-icon-edit'
     },
     children: [
@@ -93,7 +93,7 @@ export const asyncRoutes = [
         component: 'views/rest/index',
         name: 'index',
         meta: {
-          title: 'Dev Tools',
+          title: '开发工具',
           icon: 'el-icon-search'
         }
       }
@@ -181,7 +181,7 @@ export const asyncRoutes = [
     ]
   }
 ]
-// todo ...    映射增删改查  任务管理   查询可视化   监控数据可视化
+// todo ...    映射增删改查    查询可视化   监控数据可视化
 
 // 路由组件 映射 map
 export const RoutesComponentmaps = {

@@ -1,19 +1,22 @@
 package controller
 
 import (
-	"ElasticView/engine/es"
-	"ElasticView/platform-basic-libs/response"
+	"github.com/1340691923/ElasticView/engine/es"
+	"github.com/1340691923/ElasticView/platform-basic-libs/response"
+
 	"github.com/gin-gonic/gin"
 	"github.com/olivere/elastic"
 )
 
+// Es 任务控制器
 type TaskController struct {
 	BaseController
 }
 
+// 任务列表
 func (this TaskController) ListAction(ctx *gin.Context) {
 	taskListReq := es.TaskList{}
-	err = ctx.Bind(&taskListReq)
+	err := ctx.Bind(&taskListReq)
 	if err != nil {
 		this.Error(ctx, err)
 		return
@@ -25,7 +28,6 @@ func (this TaskController) ListAction(ctx *gin.Context) {
 	}
 
 	tasksListService := esClinet.(*es.EsClientV6).Client.TasksList().Detailed(true)
-
 
 	tasksListResponse, err := tasksListService.Do(ctx)
 	if err != nil {
@@ -45,9 +47,10 @@ func (this TaskController) ListAction(ctx *gin.Context) {
 	return
 }
 
+// 取消任务
 func (this TaskController) CancelAction(ctx *gin.Context) {
 	cancelTask := es.CancelTask{}
-	err = ctx.Bind(&cancelTask)
+	err := ctx.Bind(&cancelTask)
 	if err != nil {
 		this.Error(ctx, err)
 		return

@@ -3,19 +3,21 @@ package controller
 import (
 	"context"
 
-	"ElasticView/engine/es"
-	"ElasticView/platform-basic-libs/response"
+	"github.com/1340691923/ElasticView/engine/es"
+	"github.com/1340691923/ElasticView/platform-basic-libs/response"
 
 	"github.com/gin-gonic/gin"
 )
 
+// Es 映射控制器
 type EsMappingController struct {
 	BaseController
 }
 
+// Es 映射列表
 func (this EsMappingController) ListAction(ctx *gin.Context) {
-	esConnect := es.EsConnectID{}
-	err = ctx.Bind(&esConnect)
+	esConnect := es.EsMapGetProperties{}
+	err := ctx.Bind(&esConnect)
 	if err != nil {
 		this.Error(ctx, err)
 		return
@@ -25,17 +27,48 @@ func (this EsMappingController) ListAction(ctx *gin.Context) {
 		this.Error(ctx, err)
 		return
 	}
-	res, err := esClinet.GetMappings()
+	if esConnect.IndexName == "" {
+		res, err := esClinet.GetMappings()
+		if err != nil {
+			this.Error(ctx, err)
+			return
+		}
+		this.Success(ctx, response.SearchSuccess, res)
+	} else {
+		res, err := esClinet.(*es.EsClientV6).Client.GetMapping().Index(esConnect.IndexName).Do(ctx)
+		if err != nil {
+			this.Error(ctx, err)
+			return
+		}
+		this.Success(ctx, response.SearchSuccess, res)
+	}
+
+}
+
+/*func (this EsMappingController) GetPropertiesAction(ctx *gin.Context) {
+	esConnect := es.EsMapGetProperties{}
+	err := ctx.Bind(&esConnect)
+	if err != nil {
+		this.Error(ctx, err)
+		return
+	}
+	esClinet, err := es.GetEsClientV6ByID(esConnect.EsConnectID)
+	if err != nil {
+		this.Error(ctx, err)
+		return
+	}
+	res, err := esClinet.(*es.EsClientV6).Client.GetMapping().Index("")
 	if err != nil {
 		this.Error(ctx, err)
 		return
 	}
 	this.Success(ctx, response.SearchSuccess, res)
-}
+}*/
 
+// 修改映射
 func (this EsMappingController) UpdateMappingAction(ctx *gin.Context) {
 	updateMapping := es.UpdateMapping{}
-	err = ctx.Bind(&updateMapping)
+	err := ctx.Bind(&updateMapping)
 	if err != nil {
 		this.Error(ctx, err)
 		return

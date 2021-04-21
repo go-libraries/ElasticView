@@ -1,11 +1,12 @@
 package router
 
 import (
-	. "ElasticView/controller"
+	. "github.com/1340691923/ElasticView/controller"
 
 	"github.com/gin-gonic/gin"
 )
 
+// ES备份 路由
 func runEsBackUp(app *gin.Engine) {
 	backUp := app.Group("/api/backUp")
 	{

@@ -7,25 +7,26 @@ import (
 	"strconv"
 	"strings"
 
-	"ElasticView/engine/es"
-	"ElasticView/model"
-	"ElasticView/platform-basic-libs/jwt"
-	"ElasticView/platform-basic-libs/response"
-	"ElasticView/platform-basic-libs/service/es_optimize"
+	"github.com/1340691923/ElasticView/engine/es"
+	"github.com/1340691923/ElasticView/model"
+	"github.com/1340691923/ElasticView/platform-basic-libs/jwt"
+	"github.com/1340691923/ElasticView/platform-basic-libs/response"
+	"github.com/1340691923/ElasticView/platform-basic-libs/service/es_optimize"
 
 	"github.com/cch123/elasticsql"
 	"github.com/gin-gonic/gin"
 	"github.com/olivere/elastic"
 )
 
+//Es 基本操作
 type EsController struct {
 	BaseController
 }
 
-//Ping
+// Ping
 func (this EsController) PingAction(ctx *gin.Context) {
 	esConnect := es.EsConnect{}
-	err = ctx.Bind(&esConnect)
+	err := ctx.Bind(&esConnect)
 	if err != nil {
 		this.Error(ctx, err)
 		return
@@ -43,11 +44,11 @@ func (this EsController) PingAction(ctx *gin.Context) {
 	this.Success(ctx, response.OperateSuccess, data)
 }
 
-//Elasticsearch状态
+// Es 的CAT API
 func (this EsController) CatAction(ctx *gin.Context) {
 
 	esCat := es.EsCat{}
-	err = ctx.Bind(&esCat)
+	err := ctx.Bind(&esCat)
 	if err != nil {
 		this.Error(ctx, err)
 		return
@@ -71,7 +72,15 @@ func (this EsController) CatAction(ctx *gin.Context) {
 	case "CatAliases":
 		data, err = esClinet.(*es.EsClientV6).Client.CatAliases().Human(true).Do(ctx)
 	case "CatIndices":
-		data, err = esClinet.(*es.EsClientV6).Client.CatIndices().Human(true).Do(ctx)
+		if esCat.IndexBytesFormat != "" {
+			data, err = esClinet.(*es.EsClientV6).Client.CatIndices().Human(true).Bytes(esCat.IndexBytesFormat).Do(ctx)
+		} else {
+			data, err = esClinet.(*es.EsClientV6).Client.CatIndices().Human(true).Do(ctx)
+		}
+	case "CatSegments":
+		data, err = esClinet.(*es.EsClientV6).Client.IndexSegments().Human(true).Do(ctx)
+	case "CatStats":
+		data, err = esClinet.(*es.EsClientV6).Client.ClusterStats().Human(true).Do(ctx)
 	}
 
 	if err != nil {
@@ -85,7 +94,7 @@ func (this EsController) CatAction(ctx *gin.Context) {
 func (this EsController) RunDslAction(ctx *gin.Context) {
 
 	esRest := es.EsRest{}
-	err = ctx.Bind(&esRest)
+	err := ctx.Bind(&esRest)
 	if err != nil {
 		this.Error(ctx, err)
 		return
@@ -141,6 +150,7 @@ func (this EsController) RunDslAction(ctx *gin.Context) {
 	this.Success(ctx, response.OperateSuccess, res.Body)
 }
 
+// SQL 转换为 DSL
 func (this EsController) SqlToDslAction(ctx *gin.Context) {
 	sql := ctx.Request.FormValue("sql")
 	dsl, table, err := elasticsql.ConvertPretty(sql)
@@ -154,9 +164,10 @@ func (this EsController) SqlToDslAction(ctx *gin.Context) {
 	})
 }
 
+// 一些索引的操作
 func (this EsController) OptimizeAction(ctx *gin.Context) {
 	esOptimize := es.EsOptimize{}
-	err = ctx.Bind(&esOptimize)
+	err := ctx.Bind(&esOptimize)
 	if err != nil {
 		this.Error(ctx, err)
 		return
@@ -184,9 +195,10 @@ func (this EsController) OptimizeAction(ctx *gin.Context) {
 	this.Success(ctx, response.OperateSuccess, nil)
 }
 
+// 将索引恢复为可写状态   由于不可抗力，ES禁止写后，默认不会自动恢复
 func (this EsController) RecoverCanWrite(ctx *gin.Context) {
 	esConnect := es.EsConnectID{}
-	err = ctx.Bind(&esConnect)
+	err := ctx.Bind(&esConnect)
 	if err != nil {
 		this.Error(ctx, err)
 		return

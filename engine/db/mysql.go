@@ -1,3 +1,4 @@
+//MySql引擎层
 package db
 
 import (
@@ -9,7 +10,10 @@ import (
 	"github.com/jmoiron/sqlx"
 )
 
+// sqlx 全局变量
 var Sqlx *sqlx.DB
+
+// 用squirrel生成sql语句
 var SqlBuilder = squirrel.StatementBuilder
 
 type Eq = squirrel.Eq
@@ -22,11 +26,11 @@ type InsertBuilder = squirrel.InsertBuilder
 type UpdateBuilder = squirrel.UpdateBuilder
 
 // NewMySQL 创建一个连接MySQL的实体池
-func NewSQLX(dbSource string, maxOpenConns, maxIdleConns int) {
-
-	db, err := sqlx.Open("mysql", dbSource)
+func NewSQLX(dbSource string, maxOpenConns, maxIdleConns int) (db *sqlx.DB, err error) {
+	log.Println(dbSource)
+	db, err = sqlx.Open("mysql", dbSource)
 	if err != nil {
-		panic(err)
+		return
 	}
 	if maxOpenConns > 0 {
 		db.SetMaxOpenConns(maxOpenConns)
@@ -35,25 +39,29 @@ func NewSQLX(dbSource string, maxOpenConns, maxIdleConns int) {
 	if maxIdleConns > 0 {
 		db.SetMaxIdleConns(maxIdleConns)
 	}
-
+	err = db.Ping()
+	if err != nil {
+		return
+	}
 	go func() {
 		for {
-			err := db.Ping()
+			err = db.Ping()
 			if err != nil {
 				log.Println("mysql db can't connect!")
 			}
 			time.Sleep(time.Minute)
 		}
 	}()
-	Sqlx = db
 	return
 }
 
+// 创建分页查询
 func CreatePage(page, limit int) uint64 {
 	tmp := (page - 1) * limit
 	return uint64(tmp)
 }
 
+// 创建模糊查询
 func CreateLike(column string) string {
 	return fmt.Sprint("%", column, "%")
 }

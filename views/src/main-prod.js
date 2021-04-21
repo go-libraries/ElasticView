@@ -6,11 +6,13 @@ import 'normalize.css/normalize.css' // a modern alternative to CSS resets
 
 import '@/styles/index.scss' // global css
 
+import VueIntro from 'vue-introjs'
+Vue.use(VueIntro)
+import 'intro.js/introjs.css'
 // 复制粘贴
 import VueClipboard from 'vue-clipboard2'
 Vue.use(VueClipboard)
 
-import './utils/flexible'
 // excel导出
 import JsonExcel from 'vue-json-excel'
 Vue.component('downloadExcel', JsonExcel)
@@ -32,17 +34,6 @@ import * as filters from './filters' // global filters
 Vue.use(ELEMENT, {
   size: Cookies.get('size') || 'medium' // set element-ui default size
 })
-
-// 引入form-create 表单生成器
-import formCreate from '@form-create/element-ui'
-
-Vue.use(formCreate)
-
-import plTable from 'pl-table'
-
-import 'pl-table/themes/index.css'
-
-Vue.use(plTable)
 
 // 注册全局过滤器
 Object.keys(filters).forEach(key => {

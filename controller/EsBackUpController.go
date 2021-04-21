@@ -5,24 +5,26 @@ import (
 	"fmt"
 	"strings"
 
-	"ElasticView/engine/es"
-	"ElasticView/engine/logs"
-	"ElasticView/platform-basic-libs/my_error"
-	"ElasticView/platform-basic-libs/response"
-	"ElasticView/platform-basic-libs/service/es_settings"
+	"github.com/1340691923/ElasticView/engine/es"
+	"github.com/1340691923/ElasticView/engine/logs"
+	"github.com/1340691923/ElasticView/platform-basic-libs/my_error"
+	"github.com/1340691923/ElasticView/platform-basic-libs/response"
+	"github.com/1340691923/ElasticView/platform-basic-libs/service/es_settings"
 
 	"github.com/gin-gonic/gin"
 	jsoniter "github.com/json-iterator/go"
 	"github.com/olivere/elastic"
 )
 
+// 备份控制器
 type EsBackUpController struct {
 	BaseController
 }
 
+//快照仓库列表
 func (this EsBackUpController) SnapshotRepositoryListAction(ctx *gin.Context) {
 	esSnapshotInfo := es.EsSnapshotInfo{}
-	err = ctx.Bind(&esSnapshotInfo)
+	err := ctx.Bind(&esSnapshotInfo)
 	if err != nil {
 		this.Error(ctx, err)
 		return
@@ -87,9 +89,10 @@ func (this EsBackUpController) SnapshotRepositoryListAction(ctx *gin.Context) {
 	})
 }
 
+//新建快照仓库
 func (this EsBackUpController) SnapshotCreateRepositoryAction(ctx *gin.Context) {
 	snapshotCreateRepository := es.SnapshotCreateRepository{}
-	err = ctx.Bind(&snapshotCreateRepository)
+	err := ctx.Bind(&snapshotCreateRepository)
 	if err != nil {
 		this.Error(ctx, err)
 		return
@@ -160,9 +163,10 @@ func (this EsBackUpController) SnapshotCreateRepositoryAction(ctx *gin.Context) 
 	this.Success(ctx, response.OperateSuccess, nil)
 }
 
+//清理快照仓库
 func (this EsBackUpController) CleanupeRepositoryAction(ctx *gin.Context) {
 	cleanupeRepository := es.CleanupeRepository{}
-	err = ctx.Bind(&cleanupeRepository)
+	err := ctx.Bind(&cleanupeRepository)
 	if err != nil {
 		this.Error(ctx, err)
 		return
@@ -184,9 +188,10 @@ func (this EsBackUpController) CleanupeRepositoryAction(ctx *gin.Context) {
 	this.Success(ctx, response.OperateSuccess, res.Body)
 }
 
+//删除快照仓库
 func (this EsBackUpController) SnapshotDeleteRepositoryAction(ctx *gin.Context) {
 	snapshotDeleteRepository := es.SnapshotDeleteRepository{}
-	err = ctx.Bind(&snapshotDeleteRepository)
+	err := ctx.Bind(&snapshotDeleteRepository)
 	if err != nil {
 		this.Error(ctx, err)
 		return
@@ -206,9 +211,10 @@ func (this EsBackUpController) SnapshotDeleteRepositoryAction(ctx *gin.Context) 
 	this.Success(ctx, response.OperateSuccess, nil)
 }
 
+//创建快照
 func (this EsBackUpController) CreateSnapshotAction(ctx *gin.Context) {
 	createSnapshot := es.CreateSnapshot{}
-	err = ctx.Bind(&createSnapshot)
+	err := ctx.Bind(&createSnapshot)
 	if err != nil {
 		this.Error(ctx, err)
 		return
@@ -253,9 +259,10 @@ func (this EsBackUpController) CreateSnapshotAction(ctx *gin.Context) {
 	this.Success(ctx, response.OperateSuccess, res)
 }
 
+//快照列表
 func (this EsBackUpController) SnapshotListAction(ctx *gin.Context) {
 	snapshotList := es.SnapshotList{}
-	err = ctx.Bind(&snapshotList)
+	err := ctx.Bind(&snapshotList)
 	if err != nil {
 		this.Error(ctx, err)
 		return
@@ -284,9 +291,10 @@ func (this EsBackUpController) SnapshotListAction(ctx *gin.Context) {
 	this.Success(ctx, response.SearchSuccess, res.Body)
 }
 
+//删除快照
 func (this EsBackUpController) SnapshotDeleteAction(ctx *gin.Context) {
 	snapshotDelete := es.SnapshotDelete{}
-	err = ctx.Bind(&snapshotDelete)
+	err := ctx.Bind(&snapshotDelete)
 	if err != nil {
 		this.Error(ctx, err)
 		return
@@ -307,9 +315,10 @@ func (this EsBackUpController) SnapshotDeleteAction(ctx *gin.Context) {
 	this.Success(ctx, response.OperateSuccess, nil)
 }
 
+//快照详情
 func (this EsBackUpController) SnapshotDetailAction(ctx *gin.Context) {
 	snapshotDetail := es.SnapshotDetail{}
-	err = ctx.Bind(&snapshotDetail)
+	err := ctx.Bind(&snapshotDetail)
 	if err != nil {
 		this.Error(ctx, err)
 		return
@@ -332,9 +341,10 @@ func (this EsBackUpController) SnapshotDetailAction(ctx *gin.Context) {
 	this.Success(ctx, response.SearchSuccess, res.Body)
 }
 
+// 将索引恢复至快照时状态
 func (this EsBackUpController) SnapshotRestoreAction(ctx *gin.Context) {
 	snapshotRestore := es.SnapshotRestore{}
-	err = ctx.Bind(&snapshotRestore)
+	err := ctx.Bind(&snapshotRestore)
 	if err != nil {
 		this.Error(ctx, err)
 		return
@@ -379,9 +389,10 @@ func (this EsBackUpController) SnapshotRestoreAction(ctx *gin.Context) {
 	this.Success(ctx, response.OperateSuccess, res)
 }
 
+//得到快照状态
 func (this EsBackUpController) SnapshotStatusAction(ctx *gin.Context) {
 	snapshotStatus := es.SnapshotStatus{}
-	err = ctx.Bind(&snapshotStatus)
+	err := ctx.Bind(&snapshotStatus)
 	if err != nil {
 		this.Error(ctx, err)
 		return

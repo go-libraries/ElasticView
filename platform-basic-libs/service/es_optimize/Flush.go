@@ -2,11 +2,11 @@ package es_optimize
 
 import (
 	"context"
-	"log"
 
 	"github.com/olivere/elastic"
 )
 
+// Flush
 type Flush struct {
 	indexName []string
 }
@@ -20,7 +20,6 @@ func (this Flush) Do(client *elastic.Client) (err error) {
 		_, err = client.Flush().Do(context.Background())
 		return
 	}
-	log.Println("this.indexName", this.indexName)
 	_, err = client.Flush(this.indexName...).Do(context.Background())
 	return
 }

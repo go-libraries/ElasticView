@@ -1,5 +1,7 @@
 package es
 
+//一些需要用到的结构
+
 type Json map[string]interface{}
 
 type Sort struct {
@@ -16,6 +18,11 @@ type EsConnectID struct {
 	EsConnectID int `json:"es_connect"`
 }
 
+type EsMapGetProperties struct {
+	EsConnectID int    `json:"es_connect"`
+	IndexName   string `json:"index_name"`
+}
+
 type UpdateMapping struct {
 	EsConnect  int    `json:"es_connect"`
 	IndexName  string `json:"index_name"`
@@ -24,7 +31,7 @@ type UpdateMapping struct {
 }
 
 type TaskList struct {
-	EsConnect    int      `json:"es_connect"`
+	EsConnect int `json:"es_connect"`
 }
 
 type CancelTask struct {
@@ -120,8 +127,9 @@ type EsConnect struct {
 }
 
 type EsCat struct {
-	EsConnect int    `json:"es_connect"`
-	Cat       string `json:"cat"`
+	EsConnect        int    `json:"es_connect"`
+	Cat              string `json:"cat"`
+	IndexBytesFormat string `json:"index_bytes_format"`
 }
 
 type EsRest struct {
@@ -142,6 +150,21 @@ type EsIndexInfo struct {
 	Settings  Json   `json:"settings"`
 	IndexName string `json:"index_name"`
 	Types     string `json:"types"`
+}
+
+type EsDocDeleteRowByID struct {
+	EsConnect int    `json:"es_connect"`
+	ID        string `json:"id"`
+	IndexName string `json:"index_name"`
+	Type      string `json:"type"`
+}
+
+type EsDocUpdateByID struct {
+	EsConnect int    `json:"es_connect"`
+	ID        string `json:"id"`
+	JSON      Json   `json:"json"`
+	Type      string `json:"type_name"`
+	Index     string `json:"index"`
 }
 
 type EsMappingInfo struct {

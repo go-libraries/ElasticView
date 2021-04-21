@@ -10,10 +10,11 @@ export function DeleteAction(data) {
   })
 }
 
-export function ListAction() {
+export function ListAction(data) {
   return request({
     url: api + 'ListAction',
-    method: 'get'
+    method: 'get',
+    params: data
   })
 }
 

@@ -1,3 +1,4 @@
+//自定义响应 辅助方法层
 package response
 
 import (
@@ -8,15 +9,17 @@ import (
 	"strconv"
 	"strings"
 
-	"ElasticView/engine/logs"
-	. "ElasticView/platform-basic-libs/my_error"
-	"ElasticView/platform-basic-libs/util"
+	"github.com/1340691923/ElasticView/engine/logs"
+	"github.com/1340691923/ElasticView/platform-basic-libs/util"
+
+	. "github.com/1340691923/ElasticView/platform-basic-libs/my_error"
 
 	"github.com/gin-gonic/gin"
 	jsoniter "github.com/json-iterator/go"
 	"go.uber.org/zap"
 )
 
+//自定义响应方法
 type Response struct {
 	Code int         `json:"code"`
 	Msg  string      `json:"msg"`
