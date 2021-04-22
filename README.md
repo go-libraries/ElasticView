@@ -40,10 +40,10 @@ ElasticView
 
 ## 安装教程
 >安装教程
- * 第一步: 直接下载源码里的压缩包（windows用户下载ElasticView_windows.zip，linux用户下载ElasticView_linux.zip）
+ * 第一步: 下载release里面的对应压缩包，若下载不下来可直接下载源码根目录里的压缩包（windows用户下载ElasticView_windows.zip，linux用户下载ElasticView_linux.zip，mac用户下载 ElasticView_mac.zip）
  * 第二步: 解压后，新建mysql数据库 es_view，导入es_view.sql 
  * 第三步: 修改config.json文件中的 数据库连接信息，日志存放目录和应用启动端口等配置信息
- * 第四步：windows：双击ElasticView.exe  linux：chmod +x ElasticView && nohup ./ElasticView 
+ * 第四步：windows：双击ElasticView.exe  linux：chmod +x ElasticView && nohup ./ElasticView > ElasticView.log &
  * 第五步：浏览器访问对应ip:端口，初始用户名：admin，初始密码：admin
  
  ## 手动编译
