@@ -6,7 +6,7 @@
 
 ElasticView
 -----------
-[![Go Documentation](http://img.shields.io/badge/go-documentation-blue.svg?style=flat-square)](https://godoc.org/github.com/360EntSecGroup-Skylar/ElasticHD/main)
+[![Go Documentation](http://img.shields.io/badge/go-documentation-blue.svg?style=flat-square)](https://godoc.org/github.com/1340691923/ElasticView)
 [![license](https://img.shields.io/github/license/mashape/apistatus.svg?maxAge=2592000)](https://github.com/1340691923/ElasticView/blob/main/LICENSE)
 [![Release](https://img.shields.io/github/release/1340691923/ElasticView.svg?label=Release)](https://github.com/1340691923/ElasticView/releases/latest)
 > ElasticView 是一款用来监控elasticsearch状态和操作elasticsearch索引的web可视化工具。它由golang开发而成，具有部署方便，占用内存小等优点
