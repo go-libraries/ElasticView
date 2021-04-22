@@ -28,6 +28,12 @@ ElasticView
 ![image](https://raw.githubusercontent.com/1340691923/ElasticView/main/show_img/5.png)
 ![image](https://raw.githubusercontent.com/1340691923/ElasticView/main/show_img/6.png)
 ![image](https://raw.githubusercontent.com/1340691923/ElasticView/main/show_img/7.png)
+![image](https://raw.githubusercontent.com/1340691923/ElasticView/main/show_img/8.png)
+![image](https://raw.githubusercontent.com/1340691923/ElasticView/main/show_img/9.png)
+![image](https://raw.githubusercontent.com/1340691923/ElasticView/main/show_img/10.png)
+![image](https://raw.githubusercontent.com/1340691923/ElasticView/main/show_img/11.png)
+![image](https://raw.githubusercontent.com/1340691923/ElasticView/main/show_img/12.png)
+
 
 ## 应用程序下载
 [下载地址]( https://github.com/1340691923/ElasticView/releases/) 支持操作系统：windows，linux，mac
