@@ -6,7 +6,7 @@
   "port":8090,
   "mysql":{
     "username":"root",
-    "pwd":"801003",
+    "pwd":"123456",
     "ip":"127.0.0.1",
     "port":"3306",
     "dbName":"es_view",

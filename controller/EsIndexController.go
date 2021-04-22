@@ -3,6 +3,7 @@ package controller
 import (
 	"context"
 	"errors"
+	"fmt"
 	"strings"
 	"sync"
 
@@ -336,4 +337,28 @@ func (this EsIndexController) StatsAction(ctx *gin.Context) {
 
 	this.Success(ctx, response.OperateSuccess, res)
 	return
+}
+
+func (this EsIndexController) CatStatusAction(ctx *gin.Context) {
+	esIndexInfo := es.EsIndexInfo{}
+	err := ctx.Bind(&esIndexInfo)
+	if err != nil {
+		this.Error(ctx, err)
+		return
+	}
+	esClinet, err := es.GetEsClientV6ByID(esIndexInfo.EsConnect)
+	if err != nil {
+		this.Error(ctx, err)
+		return
+	}
+	res, err := esClinet.(*es.EsClientV6).Client.PerformRequest(ctx, elastic.PerformRequestOptions{
+		Method: "GET",
+		Path:   fmt.Sprintf("/_cat/indices/%s?h=status", esIndexInfo.IndexName),
+	})
+	if err != nil {
+		this.Error(ctx, err)
+		return
+	}
+
+	this.Success(ctx, response.SearchSuccess, res.Body)
 }

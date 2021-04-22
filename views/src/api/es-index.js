@@ -74,3 +74,11 @@ export function StatsAction(data) {
   })
 }
 
+export function CatStatusAction(data) {
+  return request({
+    url: api + 'CatStatusAction',
+    method: 'post',
+    data
+  })
+}
+

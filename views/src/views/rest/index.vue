@@ -32,6 +32,7 @@
   </div>
 </template>
 <script>
+import { clone } from '@/utils/index'
 import { esPathKeyWords } from '@/utils/base-data'
 import { ListAction } from '@/api/es-map'
 
@@ -48,25 +49,8 @@ export default {
     }
   },
   mounted() {
-    this.$nextTick(() => {
-      var introJS = require('intro.js')
-
-      introJS().setOptions({
-        prevLabel: '上一步',
-        nextLabel: '下一步',
-        skipLabel: '跳过',
-        doneLabel: '完成'
-      }).onbeforechange((e) => {
-        console.log(e.getAttribute('guid'))
-        console.log(e)
-      }).oncomplete(() => {
-        // 点击结束按钮后执行的事件
-      }).onexit(() => {
-        // 点击跳过按钮后执行的事件
-      }).start()
-      // introJS().start() // 退出引导调用 exit() 即可
-    })
     this.mergeEsPathKeyWords()
+
     const editableTabs = sessionStorage.getItem('editableTabs')
     const editableTabsValue = sessionStorage.getItem('editableTabsValue')
 
@@ -110,12 +94,11 @@ export default {
       const input = {}
       input['es_connect'] = this.$store.state.baseData.EsConnectID
       const res = await ListAction(input)
-
       if (res.code == 0) {
         const list = res.data
         const indices = Object.keys(list)
         this.queryData = []
-        const queryData = esPathKeyWords
+        const queryData = clone(esPathKeyWords)
 
         for (const esPathKeyWord of queryData) {
           if (esPathKeyWord.value.indexOf('{indices}') !== -1) {

@@ -122,8 +122,8 @@
 </template>
 
 <script>
-import { RunDslAction } from '@/api/es'
-import { CreateAction, GetSettingsAction } from '@/api/es-index'
+
+import { CreateAction, GetSettingsAction, CatStatusAction } from '@/api/es-index'
 import { clone } from '@/utils/index'
 
 export default {
@@ -344,9 +344,9 @@ export default {
     catIndexStatus() {
       const input = {}
       input['es_connect'] = this.$store.state.baseData.EsConnectID
-      input['method'] = 'GET'
-      input['path'] = '/_cat/indices/' + this.indexName + '?h=status'
-      RunDslAction(input).then(res => {
+      input['index_name'] = this.indexName
+
+      CatStatusAction(input).then(res => {
         if (res.code == 0 || res.code == 200) {
           console.log(res)
           this.isOpen = (res.data[0].status == 'open')
@@ -357,7 +357,7 @@ export default {
           })
         }
       }).catch(err => {
-
+        console.error(err)
       })
     },
     closeDialog() {

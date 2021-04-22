@@ -19,10 +19,17 @@
         <el-tag class="filter-item">请输入关键词</el-tag>
 
         <el-input id="index-keyword" v-model="input" class="filter-item width300" clearable @input="search" />
-        <el-button id="index-search" type="primary" class="filter-item" icon="el-icon-search" @click="search">搜索</el-button>
+        <el-button id="index-search" type="primary" class="filter-item" icon="el-icon-search" @click="search">搜索
+        </el-button>
         <el-button-group>
 
-          <el-button id="new-index" type="success" class="filter-item" icon="el-icon-plus" @click="openSettingDialog('','add')">新建索引
+          <el-button
+            id="new-index"
+            type="success"
+            class="filter-item"
+            icon="el-icon-plus"
+            @click="openSettingDialog('','add')"
+          >新建索引
           </el-button>
 
           <el-button
@@ -48,10 +55,10 @@
         </el-button-group>
 
       </div>
-      <div class="filter-container">
+      <div id="patch-operate" class="filter-container">
         <el-button-group>
           <el-button
-            id="closeIndex"
+            id="patchCloseIndex"
             v-loading="loadingGroup['close']"
             type="danger"
             icon="el-icon-circle-close"
@@ -61,7 +68,7 @@
           </el-button>
 
           <el-button
-            id="openIndex"
+            id="patchOpenIndex"
             v-loading="loadingGroup['open']"
             type="success"
 
@@ -71,12 +78,12 @@
           >打开
           </el-button>
           <el-button
-            id="forcemergeIndex"
+            id="patchForcemergeIndex"
             v-loading="loadingGroup['_forcemerge']"
             icon="el-icon-connection"
             class="filter-item"
             @click="runCommandByIndex('_forcemerge',selectIndexList.join(','))"
-          >强制合并索引【forcemerge操作,手动释放磁盘空间】
+          >强制合并索引
           </el-button>
 
           <el-popover
@@ -87,7 +94,7 @@
             content="为了让最新的数据可以立即被搜索到"
           >
             <el-button
-              id="refreshIndex"
+              id="patchRefreshIndex"
               slot="reference"
               v-loading="loadingGroup['_refresh']"
               class="filter-item"
@@ -107,7 +114,7 @@
             content="让数据持久化到磁盘中"
           >
             <el-button
-              id="flushIndex2"
+              id="patchFlushIndex"
               slot="reference"
               v-loading="loadingGroup['_flush']"
 
@@ -120,6 +127,7 @@
           </el-popover>
 
           <el-button
+            id="patchCacheClear"
             v-loading="loadingGroup['_cache/clear']"
             class="filter-item"
 
@@ -130,6 +138,7 @@
           </el-button>
 
           <el-button
+            id="patchDeleteIndex"
             v-loading="loadingGroup['deleteIndex']"
             class="filter-item"
             type="danger"
@@ -175,7 +184,7 @@
               type="success"
               size="small"
               icon="el-icon-success"
-              @click="runCommandByIndex('open',scope.row.index)"
+              @click="runCommandByIndex('close',scope.row.index)"
             >开启
             </el-button>
             <el-button
@@ -183,7 +192,7 @@
               type="danger"
               size="small"
               icon="el-icon-circle-close"
-              @click="runCommandByIndex('close',scope.row.index)"
+              @click="runCommandByIndex('open',scope.row.index)"
             >关闭
             </el-button>
           </template>
@@ -472,6 +481,10 @@
 </template>
 
 <script>
+import { Finish, IsFinish } from '@/api/guid'
+import Driver from 'driver.js' // import driver.js
+import 'driver.js/dist/driver.min.css' // import driver.js css
+import steps from '@/views/indices/guide'
 import { clone } from '@/utils/index'
 import { filterData } from '@/utils/table'
 import { CatAction, OptimizeAction, RecoverCanWrite } from '@/api/es'
@@ -494,6 +507,7 @@ export default {
 
   data() {
     return {
+      modName: '索引管理',
       aliasList: [],
       pointOut: esSettingsWords,
       settings: {},
@@ -541,10 +555,41 @@ export default {
     if (input != null) {
       this.input = input
     }
+    this.startGuid()
     this.GetMapAction()
     this.searchData()
   },
   methods: {
+    async finishGuid() {
+      const { data, code, msg } = await Finish({ 'guid_name': this.modName })
+    },
+    async startGuid() {
+      const { data, code, msg } = await IsFinish({ 'guid_name': this.modName })
+
+      if (!data) {
+        console.log('开始新手引导')
+        this.driver = new Driver({
+          className: 'scoped-class',
+          animate: true,
+          opacity: 0.75,
+          padding: 10,
+          allowClose: false,
+          overlayClickNext: false,
+          doneBtnText: '完成',
+          closeBtnText: '关闭',
+          nextBtnText: '下一步',
+          prevBtnText: '上一步',
+          onNext: (Element) => {
+            // console.log('Element', Element)
+          }
+        })
+        setTimeout(() => {
+          this.driver.defineSteps(steps)
+          this.driver.start()
+          this.finishGuid()
+        }, 500)
+      }
+    },
     selectChange(row) {
       this.selectIndexList = []
       for (const v of row) {
@@ -877,7 +922,7 @@ export default {
       }
       CatAction(form).then(res => {
         if (res.code == 0) {
-          let list = res.data
+          const list = res.data
 
           for (const index in list) {
             const obj = list[index]
@@ -891,12 +936,21 @@ export default {
             }
           }
 
-          list = filterData(list, this.status.trim())
-          list = filterData(list, this.input.trim())
-          this.list = list.filter((item, index) =>
+          let tmpList = []
+          if (this.status.trim() != '') {
+            for (const v of list) {
+              if (v['health'] == this.status.trim()) {
+                tmpList.push(v)
+              }
+            }
+          } else {
+            tmpList = list
+          }
+          tmpList = filterData(tmpList, this.input.trim())
+          this.list = tmpList.filter((item, index) =>
             index < this.page * this.limit && index >= this.limit * (this.page - 1)
           )
-          this.total = list.length
+          this.total = tmpList.length
         } else {
           this.$message({
             type: 'error',

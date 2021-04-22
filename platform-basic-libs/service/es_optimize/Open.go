@@ -3,6 +3,7 @@ package es_optimize
 import (
 	"context"
 	"errors"
+	"log"
 
 	"github.com/olivere/elastic"
 )
@@ -20,7 +21,10 @@ func (this *Open) Do(client *elastic.Client) (err error) {
 	if len(this.indexName) == 0 {
 		return errors.New("索引名不能为空")
 	}
+	log.Println("open")
+
 	_, err = client.OpenIndex(this.indexName[0]).Do(context.Background())
+
 	return
 }
 

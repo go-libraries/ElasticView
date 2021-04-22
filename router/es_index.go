@@ -19,6 +19,7 @@ func runEsIndex(app *gin.Engine) {
 		esIndex.POST("OperateAliasAction", EsIndexController{}.OperateAliasAction)
 		esIndex.POST("GetSettingsInfoAction", EsIndexController{}.GetSettingsInfoAction)
 		esIndex.POST("StatsAction", EsIndexController{}.StatsAction)
+		esIndex.POST("CatStatusAction", EsIndexController{}.CatStatusAction)
 
 	}
 }

@@ -330,7 +330,7 @@ export default {
           nextBtnText: '下一步',
           prevBtnText: '上一步',
           onNext: (Element) => {
-            console.log('Element', Element)
+            // console.log('Element', Element)
           }
         })
         setTimeout(() => {
