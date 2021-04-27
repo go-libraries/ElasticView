@@ -21,6 +21,7 @@ func (this *Forcemerge) SetIndexName(indexName string) {
 func (this *Forcemerge) Do(client *elastic.Client) (err error) {
 	//手动异步
 	go func() {
+
 		forcemergeRes, err := client.Forcemerge(this.indexName...).MaxNumSegments(1).Do(context.Background())
 		if err != nil {
 			logs.Logger.Error("强制合并索引操作异常", zap.Reflect("forcemergeRes", forcemergeRes), zap.String("err.Error()", err.Error()))
