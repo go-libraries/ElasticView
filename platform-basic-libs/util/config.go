@@ -22,7 +22,7 @@ func LoadJSONConfig(filename string, v interface{}) error {
 
 func JoinInt(s []int, sp string) string {
 	var tmp = make([]string, 0, len(s))
-	for i, _:= range s {
+	for i, _ := range s {
 		tmp = append(tmp, strconv.Itoa(s[i]))
 	}
 	return strings.Join(tmp, sp)

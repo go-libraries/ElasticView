@@ -57,7 +57,7 @@ func ClientIP(r *http.Request) string {
 func ClientPublicIP(r *http.Request) string {
 	var ip string
 	var ipArr = strings.Split(r.Header.Get("X-Forwarded-For"), ",")
-	for i, _ := range ipArr{
+	for i, _ := range ipArr {
 		ip = strings.TrimSpace(ipArr[i])
 		if ip != "" && !HasLocalIPddr(ip) {
 			return ip
