@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"strings"
+	"sync"
 
 	"github.com/1340691923/ElasticView/engine/es"
 	"github.com/1340691923/ElasticView/platform-basic-libs/my_error"
@@ -209,7 +210,7 @@ func (this EsIndexController) OperateAliasAction(ctx *gin.Context) {
 			this.Error(ctx, my_error.NewBusiness(es.ParmasNullError, es.IndexNameNullError))
 			return
 		}
-		wg := "github.com/1340691923/ElasticViewWaitGroup{}
+		wg := sync.WaitGroup{}
 		NewAliasNameListLen := len(esAliasInfo.NewAliasNameList)
 		if len(esAliasInfo.NewAliasNameList) > 10 {
 			err = errors.New("别名列表数量不能大于10")
