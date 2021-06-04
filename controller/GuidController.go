@@ -6,8 +6,7 @@ import (
 	"github.com/1340691923/ElasticView/platform-basic-libs/jwt"
 	"github.com/1340691923/ElasticView/platform-basic-libs/response"
 	"github.com/1340691923/ElasticView/platform-basic-libs/util"
-
-	"github.com/gin-gonic/gin"
+	. "github.com/gofiber/fiber/v2"
 )
 
 // 引导控制器
@@ -16,18 +15,16 @@ type GuidController struct {
 }
 
 // 完成新手引导
-func (this GuidController) Finish(ctx *gin.Context) {
-	c, err := jwt.ParseToken(ctx.GetHeader("X-Token"))
+func (this GuidController) Finish(ctx *Ctx) error {
+	c, err := jwt.ParseToken(ctx.Get("X-Token"))
 	if err != nil {
-		this.Error(ctx, err)
-		return
+		return this.Error(ctx, err)
 	}
 
 	gmGuidModel := model.GmGuidModel{}
-	err = ctx.Bind(&gmGuidModel)
+	err = ctx.BodyParser(&gmGuidModel)
 	if err != nil {
-		this.Error(ctx, err)
-		return
+		return this.Error(ctx, err)
 	}
 	_, err = db.SqlBuilder.
 		Insert(gmGuidModel.TableName()).
@@ -37,25 +34,22 @@ func (this GuidController) Finish(ctx *gin.Context) {
 		}).RunWith(db.Sqlx).Exec()
 
 	if err != nil {
-		this.Error(ctx, err)
-		return
+		return this.Error(ctx, err)
 	}
-	this.Success(ctx, response.OperateSuccess, nil)
+	return this.Success(ctx, response.OperateSuccess, nil)
 }
 
 //是否完成新手引导
-func (this GuidController) IsFinish(ctx *gin.Context) {
-	c, err := jwt.ParseToken(ctx.GetHeader("X-Token"))
+func (this GuidController) IsFinish(ctx *Ctx) error {
+	c, err := jwt.ParseToken(ctx.Get("X-Token"))
 	if err != nil {
-		this.Error(ctx, err)
-		return
+		return this.Error(ctx, err)
 	}
 
 	gmGuidModel := model.GmGuidModel{}
-	err = ctx.Bind(&gmGuidModel)
+	err = ctx.BodyParser(&gmGuidModel)
 	if err != nil {
-		this.Error(ctx, err)
-		return
+		return this.Error(ctx, err)
 	}
 	sql, args, err := db.SqlBuilder.
 		Select("count(*)").
@@ -66,14 +60,12 @@ func (this GuidController) IsFinish(ctx *gin.Context) {
 		}).ToSql()
 
 	if err != nil {
-		this.Error(ctx, err)
-		return
+		return this.Error(ctx, err)
 	}
 	var count int
 	err = db.Sqlx.Get(&count, sql, args...)
 	if util.FilterMysqlNilErr(err) {
-		this.Error(ctx, err)
-		return
+		return this.Error(ctx, err)
 	}
-	this.Success(ctx, response.SearchSuccess, count > 0)
+	return this.Success(ctx, response.SearchSuccess, count > 0)
 }

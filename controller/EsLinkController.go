@@ -5,11 +5,10 @@ import (
 
 	"github.com/1340691923/ElasticView/engine/db"
 	"github.com/1340691923/ElasticView/engine/es"
-	"github.com/1340691923/ElasticView/engine/logs"
 	"github.com/1340691923/ElasticView/model"
 	"github.com/1340691923/ElasticView/platform-basic-libs/response"
+	. "github.com/gofiber/fiber/v2"
 
-	"github.com/gin-gonic/gin"
 	jsoniter "github.com/json-iterator/go"
 )
 
@@ -19,46 +18,40 @@ type EsLinkController struct {
 }
 
 // 获取Es连接列表
-func (this EsLinkController) ListAction(ctx *gin.Context) {
-	logs.Logger.Sugar().Infof("logs.Logger.Sugar: %v\n", "111")
-	getByLocal := ctx.Request.FormValue("getByLocal")
+func (this EsLinkController) ListAction(ctx *Ctx) error {
+	getByLocal := ctx.FormValue("getByLocal")
 
 	if getByLocal == "1" {
-		this.Success(ctx, response.SearchSuccess, model.EsLinkList)
-		return
+		return this.Success(ctx, response.SearchSuccess, model.EsLinkList)
 	}
 
 	esLinkModel := model.EsLinkModel{}
 
 	list, err := esLinkModel.GetListAction()
 	if err != nil {
-		this.Error(ctx, err)
-		return
+		return this.Error(ctx, err)
 	}
-	this.Success(ctx, response.SearchSuccess, list)
+	return this.Success(ctx, response.SearchSuccess, list)
 }
 
 // 新增Es连接
-func (this EsLinkController) InsertAction(ctx *gin.Context) {
+func (this EsLinkController) InsertAction(ctx *Ctx) error {
 
 	var esLinkModel model.EsLinkModel
-	err := ctx.Bind(&esLinkModel)
+	err := ctx.BodyParser(&esLinkModel)
 	if err != nil {
-		this.Error(ctx, err)
-		return
+		return this.Error(ctx, err)
 	}
 	var json = jsoniter.ConfigCompatibleWithStandardLibrary
 	esB, err := json.Marshal(esLinkModel)
 
 	if err != nil {
-		this.Error(ctx, err)
-		return
+		return this.Error(ctx, err)
 	}
 	insertMap := map[string]interface{}{}
 	err = json.Unmarshal(esB, &insertMap)
 	if err != nil {
-		this.Error(ctx, err)
-		return
+		return this.Error(ctx, err)
 	}
 
 	delete(insertMap, "created")
@@ -70,37 +63,32 @@ func (this EsLinkController) InsertAction(ctx *gin.Context) {
 		RunWith(db.Sqlx).
 		Exec()
 	if err != nil {
-		this.Error(ctx, err)
-		return
+		return this.Error(ctx, err)
 	}
 	err = esLinkModel.FlushEsLinkList()
 	if err != nil {
-		this.Error(ctx, err)
-		return
+		return this.Error(ctx, err)
 	}
-	this.Success(ctx, response.OperateSuccess, nil)
+	return this.Success(ctx, response.OperateSuccess, nil)
 }
 
 // 修改Es连接信息
-func (this EsLinkController) UpdateAction(ctx *gin.Context) {
+func (this EsLinkController) UpdateAction(ctx *Ctx) error {
 	var esLinkModel model.EsLinkModel
-	err := ctx.Bind(&esLinkModel)
+	err := ctx.BodyParser(&esLinkModel)
 	if err != nil {
-		this.Error(ctx, err)
-		return
+		return this.Error(ctx, err)
 	}
 
 	esB, err := json.Marshal(esLinkModel)
 
 	if err != nil {
-		this.Error(ctx, err)
-		return
+		return this.Error(ctx, err)
 	}
 	insertMap := map[string]interface{}{}
 	err = json.Unmarshal(esB, &insertMap)
 	if err != nil {
-		this.Error(ctx, err)
-		return
+		return this.Error(ctx, err)
 	}
 
 	delete(insertMap, "id")
@@ -114,8 +102,7 @@ func (this EsLinkController) UpdateAction(ctx *gin.Context) {
 		RunWith(db.Sqlx).
 		Exec()
 	if err != nil {
-		this.Error(ctx, err)
-		return
+		return this.Error(ctx, err)
 	}
 
 	esCache := es.NewEsCache()
@@ -123,24 +110,22 @@ func (this EsLinkController) UpdateAction(ctx *gin.Context) {
 
 	err = esLinkModel.FlushEsLinkList()
 	if err != nil {
-		this.Error(ctx, err)
-		return
+		return this.Error(ctx, err)
 	}
 
-	this.Success(ctx, response.OperateSuccess, nil)
+	return this.Success(ctx, response.OperateSuccess, nil)
 }
 
 // 删除es连接
-func (this EsLinkController) DeleteAction(ctx *gin.Context) {
+func (this EsLinkController) DeleteAction(ctx *Ctx) error {
 
 	var req struct {
 		Id int `json:"id"`
 	}
 
-	err := ctx.Bind(&req)
+	err := ctx.BodyParser(&req)
 	if err != nil {
-		this.Error(ctx, err)
-		return
+		return this.Error(ctx, err)
 	}
 
 	_, err = db.SqlBuilder.
@@ -148,8 +133,7 @@ func (this EsLinkController) DeleteAction(ctx *gin.Context) {
 		Where(db.Eq{"id": req.Id}).RunWith(db.Sqlx).Exec()
 
 	if err != nil {
-		this.Error(ctx, err)
-		return
+		return this.Error(ctx, err)
 	}
 
 	esCache := es.NewEsCache()
@@ -157,8 +141,7 @@ func (this EsLinkController) DeleteAction(ctx *gin.Context) {
 	esLinkModel := model.EsLinkModel{}
 	err = esLinkModel.FlushEsLinkList()
 	if err != nil {
-		this.Error(ctx, err)
-		return
+		return this.Error(ctx, err)
 	}
-	this.Success(ctx, response.DeleteSuccess, nil)
+	return this.Success(ctx, response.DeleteSuccess, nil)
 }

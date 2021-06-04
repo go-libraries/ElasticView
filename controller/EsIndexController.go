@@ -10,8 +10,8 @@ import (
 	"github.com/1340691923/ElasticView/engine/es"
 	"github.com/1340691923/ElasticView/platform-basic-libs/my_error"
 	"github.com/1340691923/ElasticView/platform-basic-libs/response"
+	. "github.com/gofiber/fiber/v2"
 
-	"github.com/gin-gonic/gin"
 	"github.com/olivere/elastic"
 )
 
@@ -21,168 +21,140 @@ type EsIndexController struct {
 }
 
 //创建索引
-func (this EsIndexController) CreateAction(ctx *gin.Context) {
+func (this EsIndexController) CreateAction(ctx *Ctx) error {
 	esIndexInfo := es.EsIndexInfo{}
-	err := ctx.Bind(&esIndexInfo)
+	err := ctx.BodyParser(&esIndexInfo)
 	if err != nil {
-		this.Error(ctx, err)
-		return
+		return this.Error(ctx, err)
 	}
 	esClinet, err := es.GetEsClientV6ByID(esIndexInfo.EsConnect)
 	if err != nil {
-		this.Error(ctx, err)
-		return
+		return this.Error(ctx, err)
 	}
 
 	if esIndexInfo.IndexName == "" {
-		this.Error(ctx, my_error.NewBusiness(es.ParmasNullError, es.IndexNameNullError))
-		return
+		return this.Error(ctx, my_error.NewBusiness(es.ParmasNullError, es.IndexNameNullError))
 	}
-
+	var res interface{}
 	if esIndexInfo.Types == "update" {
-		res, err := esClinet.IndexPutSettings(esIndexInfo.IndexName, esIndexInfo.Settings)
+		res, err = esClinet.IndexPutSettings(esIndexInfo.IndexName, esIndexInfo.Settings)
 		if err != nil {
-			this.Error(ctx, err)
-			return
+			return this.Error(ctx, err)
 		}
-		this.Success(ctx, response.OperateSuccess, res)
-		return
+
 	} else {
-		res, err := esClinet.(*es.EsClientV6).Client.CreateIndex(esIndexInfo.IndexName).BodyJson(map[string]interface{}{
+		res, err = esClinet.(*es.EsClientV6).Client.CreateIndex(esIndexInfo.IndexName).BodyJson(map[string]interface{}{
 			"settings": esIndexInfo.Settings,
-		}).Do(ctx)
+		}).Do(ctx.Context())
 		if err != nil {
-			this.Error(ctx, err)
-			return
+			return this.Error(ctx, err)
 		}
-		this.Success(ctx, response.OperateSuccess, res)
-		return
 	}
-	return
+	return this.Success(ctx, response.OperateSuccess, res)
 }
 
 // 删除索引
-func (this EsIndexController) DeleteAction(ctx *gin.Context) {
+func (this EsIndexController) DeleteAction(ctx *Ctx) error {
 	esIndexInfo := es.EsIndexInfo{}
-	err := ctx.Bind(&esIndexInfo)
+	err := ctx.BodyParser(&esIndexInfo)
 	if err != nil {
-		this.Error(ctx, err)
-		return
+		return this.Error(ctx, err)
 	}
 	esClinet, err := es.GetEsClientV6ByID(esIndexInfo.EsConnect)
 	if err != nil {
-		this.Error(ctx, err)
-		return
+		return this.Error(ctx, err)
 	}
 
 	if esIndexInfo.IndexName == "" {
-		this.Error(ctx, my_error.NewBusiness(es.ParmasNullError, es.IndexNameNullError))
-		return
+		return this.Error(ctx, my_error.NewBusiness(es.ParmasNullError, es.IndexNameNullError))
+
 	}
 	_, err = esClinet.DeleteIndex(strings.Split(esIndexInfo.IndexName, ","))
 	if err != nil {
-		this.Error(ctx, err)
-		return
+		return this.Error(ctx, err)
 	}
-	this.Success(ctx, response.OperateSuccess, nil)
-	return
+	return this.Success(ctx, response.OperateSuccess, nil)
 }
 
 //获取索引配置信息
-func (this EsIndexController) GetSettingsAction(ctx *gin.Context) {
+func (this EsIndexController) GetSettingsAction(ctx *Ctx) error {
 	esIndexInfo := es.EsIndexInfo{}
-	err := ctx.Bind(&esIndexInfo)
+	err := ctx.BodyParser(&esIndexInfo)
 	if err != nil {
-		this.Error(ctx, err)
-		return
+		return this.Error(ctx, err)
 	}
 	esClinet, err := es.GetEsClientV6ByID(esIndexInfo.EsConnect)
 	if err != nil {
-		this.Error(ctx, err)
-		return
+		return this.Error(ctx, err)
 	}
 
 	if esIndexInfo.IndexName == "" {
 		this.Error(ctx, my_error.NewBusiness(es.ParmasNullError, es.IndexNameNullError))
-		return
 	}
 
-	res, err := esClinet.(*es.EsClientV6).Client.IndexGetSettings(esIndexInfo.IndexName).Do(ctx)
+	res, err := esClinet.(*es.EsClientV6).Client.IndexGetSettings(esIndexInfo.IndexName).Do(ctx.Context())
 	if err != nil {
-		this.Error(ctx, err)
-		return
+		return this.Error(ctx, err)
 	}
 
-	this.Success(ctx, response.OperateSuccess, res[esIndexInfo.IndexName].Settings)
-	return
+	return this.Success(ctx, response.OperateSuccess, res[esIndexInfo.IndexName].Settings)
 }
 
 //获取所有的索引配置信息
-func (this EsIndexController) GetSettingsInfoAction(ctx *gin.Context) {
+func (this EsIndexController) GetSettingsInfoAction(ctx *Ctx) error {
 	esIndexInfo := es.EsIndexInfo{}
-	err := ctx.Bind(&esIndexInfo)
+	err := ctx.BodyParser(&esIndexInfo)
 	if err != nil {
-		this.Error(ctx, err)
-		return
+		return this.Error(ctx, err)
 	}
 	esClinet, err := es.GetEsClientV6ByID(esIndexInfo.EsConnect)
 	if err != nil {
-		this.Error(ctx, err)
-		return
+		return this.Error(ctx, err)
 	}
 
 	if esIndexInfo.IndexName == "" {
-		this.Error(ctx, my_error.NewBusiness(es.ParmasNullError, es.IndexNameNullError))
-		return
+		return this.Error(ctx, my_error.NewBusiness(es.ParmasNullError, es.IndexNameNullError))
 	}
 
-	res, err := esClinet.(*es.EsClientV6).Client.IndexGetSettings(esIndexInfo.IndexName).Do(ctx)
+	res, err := esClinet.(*es.EsClientV6).Client.IndexGetSettings(esIndexInfo.IndexName).Do(ctx.Context())
 	if err != nil {
-		this.Error(ctx, err)
-		return
+		return this.Error(ctx, err)
 	}
 
-	this.Success(ctx, response.OperateSuccess, res)
-	return
+	return this.Success(ctx, response.OperateSuccess, res)
 }
 
 // 获取别名
-func (this EsIndexController) GetAliasAction(ctx *gin.Context) {
+func (this EsIndexController) GetAliasAction(ctx *Ctx) error {
 	esAliasInfo := es.EsAliasInfo{}
-	err := ctx.Bind(&esAliasInfo)
+	err := ctx.BodyParser(&esAliasInfo)
 	if err != nil {
-		this.Error(ctx, err)
-		return
+		return this.Error(ctx, err)
 	}
 	esClinet, err := es.GetEsClientV6ByID(esAliasInfo.EsConnect)
 	if err != nil {
-		this.Error(ctx, err)
-		return
+		return this.Error(ctx, err)
 	}
 
 	if esAliasInfo.IndexName == "" {
-		this.Error(ctx, my_error.NewBusiness(es.ParmasNullError, es.IndexNameNullError))
-		return
+		return this.Error(ctx, my_error.NewBusiness(es.ParmasNullError, es.IndexNameNullError))
 	}
 
-	aliasRes, err := esClinet.(*es.EsClientV6).Client.Aliases().Index(esAliasInfo.IndexName).Do(ctx)
+	aliasRes, err := esClinet.(*es.EsClientV6).Client.Aliases().Index(esAliasInfo.IndexName).Do(ctx.Context())
 
-	this.Success(ctx, response.OperateSuccess, aliasRes.Indices[esAliasInfo.IndexName].Aliases)
-	return
+	return this.Success(ctx, response.OperateSuccess, aliasRes.Indices[esAliasInfo.IndexName].Aliases)
 }
 
 // 操作别名
-func (this EsIndexController) OperateAliasAction(ctx *gin.Context) {
+func (this EsIndexController) OperateAliasAction(ctx *Ctx) error {
 	esAliasInfo := es.EsAliasInfo{}
-	err := ctx.Bind(&esAliasInfo)
+	err := ctx.BodyParser(&esAliasInfo)
 	if err != nil {
-		this.Error(ctx, err)
-		return
+		return this.Error(ctx, err)
 	}
 	esClinet, err := es.GetEsClientV6ByID(esAliasInfo.EsConnect)
 	if err != nil {
-		this.Error(ctx, err)
-		return
+		return this.Error(ctx, err)
 	}
 
 	const Add = 1
@@ -193,22 +165,20 @@ func (this EsIndexController) OperateAliasAction(ctx *gin.Context) {
 	switch esAliasInfo.Types {
 	case Add:
 		if esAliasInfo.IndexName == "" {
-			this.Error(ctx, my_error.NewBusiness(es.ParmasNullError, es.IndexNameNullError))
-			return
+			return this.Error(ctx, my_error.NewBusiness(es.ParmasNullError, es.IndexNameNullError))
+
 		}
-		res, err = esClinet.(*es.EsClientV6).Client.Alias().Add(esAliasInfo.IndexName, esAliasInfo.AliasName).Do(ctx)
+		res, err = esClinet.(*es.EsClientV6).Client.Alias().Add(esAliasInfo.IndexName, esAliasInfo.AliasName).Do(ctx.Context())
 	case Delete:
 		if esAliasInfo.IndexName == "" {
-			this.Error(ctx, my_error.NewBusiness(es.ParmasNullError, es.IndexNameNullError))
-			return
+			return this.Error(ctx, my_error.NewBusiness(es.ParmasNullError, es.IndexNameNullError))
 		}
-		res, err = esClinet.(*es.EsClientV6).Client.Alias().Remove(esAliasInfo.IndexName, esAliasInfo.AliasName).Do(ctx)
+		res, err = esClinet.(*es.EsClientV6).Client.Alias().Remove(esAliasInfo.IndexName, esAliasInfo.AliasName).Do(ctx.Context())
 	case MoveToAnotherIndex:
-		res, err = esClinet.(*es.EsClientV6).Client.Alias().Action(elastic.NewAliasAddAction(esAliasInfo.AliasName).Index(esAliasInfo.NewIndexList...)).Do(ctx)
+		res, err = esClinet.(*es.EsClientV6).Client.Alias().Action(elastic.NewAliasAddAction(esAliasInfo.AliasName).Index(esAliasInfo.NewIndexList...)).Do(ctx.Context())
 	case PatchAdd:
 		if esAliasInfo.IndexName == "" {
-			this.Error(ctx, my_error.NewBusiness(es.ParmasNullError, es.IndexNameNullError))
-			return
+			return this.Error(ctx, my_error.NewBusiness(es.ParmasNullError, es.IndexNameNullError))
 		}
 		wg := sync.WaitGroup{}
 		NewAliasNameListLen := len(esAliasInfo.NewAliasNameList)
@@ -232,26 +202,22 @@ func (this EsIndexController) OperateAliasAction(ctx *gin.Context) {
 	}
 
 	if err != nil {
-		this.Error(ctx, err)
-		return
+		return this.Error(ctx, err)
 	}
 
-	this.Success(ctx, response.OperateSuccess, res)
-	return
+	return this.Success(ctx, response.OperateSuccess, res)
 }
 
 // 重建索引
-func (this EsIndexController) ReindexAction(ctx *gin.Context) {
+func (this EsIndexController) ReindexAction(ctx *Ctx) error {
 	esReIndexInfo := es.EsReIndexInfo{}
-	err := ctx.Bind(&esReIndexInfo)
+	err := ctx.BodyParser(&esReIndexInfo)
 	if err != nil {
-		this.Error(ctx, err)
-		return
+		return this.Error(ctx, err)
 	}
 	esClinet, err := es.GetEsClientV6ByID(esReIndexInfo.EsConnect)
 	if err != nil {
-		this.Error(ctx, err)
-		return
+		return this.Error(ctx, err)
 	}
 	reindex := esClinet.(*es.EsClientV6).Client.Reindex()
 	urlValues := esReIndexInfo.UrlValues
@@ -274,31 +240,27 @@ func (this EsIndexController) ReindexAction(ctx *gin.Context) {
 		reindex = reindex.WaitForCompletion(*urlValues.WaitForCompletion)
 	}
 
-	res, err := reindex.Body(esReIndexInfo.Body).Do(ctx)
+	res, err := reindex.Body(esReIndexInfo.Body).Do(ctx.Context())
 	if err != nil {
-		this.Error(ctx, err)
-		return
+		return this.Error(ctx, err)
 	}
-	this.Success(ctx, response.OperateSuccess, res)
+	return this.Success(ctx, response.OperateSuccess, res)
 }
 
 // 得到所有的索引名
-func (this EsIndexController) IndexNamesAction(ctx *gin.Context) {
+func (this EsIndexController) IndexNamesAction(ctx *Ctx) error {
 	esConnect := es.EsConnectID{}
-	err := ctx.Bind(&esConnect)
+	err := ctx.BodyParser(&esConnect)
 	if err != nil {
-		this.Error(ctx, err)
-		return
+		return this.Error(ctx, err)
 	}
 	esClinet, err := es.GetEsClientV6ByID(esConnect.EsConnectID)
 	if err != nil {
-		this.Error(ctx, err)
-		return
+		return this.Error(ctx, err)
 	}
-	catIndicesResponse, err := esClinet.(*es.EsClientV6).Client.CatIndices().Human(true).Do(ctx)
+	catIndicesResponse, err := esClinet.(*es.EsClientV6).Client.CatIndices().Human(true).Do(ctx.Context())
 	if err != nil {
-		this.Error(ctx, err)
-		return
+		return this.Error(ctx, err)
 	}
 	indexNames := []string{}
 
@@ -306,59 +268,51 @@ func (this EsIndexController) IndexNamesAction(ctx *gin.Context) {
 		indexNames = append(indexNames, catIndices.Index)
 	}
 
-	this.Success(ctx, response.SearchSuccess, indexNames)
-	return
+	return this.Success(ctx, response.SearchSuccess, indexNames)
 }
 
 // 获取索引的Stats
-func (this EsIndexController) StatsAction(ctx *gin.Context) {
+func (this EsIndexController) StatsAction(ctx *Ctx) error {
 	esIndexInfo := es.EsIndexInfo{}
-	err := ctx.Bind(&esIndexInfo)
+	err := ctx.BodyParser(&esIndexInfo)
 	if err != nil {
-		this.Error(ctx, err)
-		return
+		return this.Error(ctx, err)
 	}
 	esClinet, err := es.GetEsClientV6ByID(esIndexInfo.EsConnect)
 	if err != nil {
-		this.Error(ctx, err)
-		return
+		return this.Error(ctx, err)
 	}
 
 	if esIndexInfo.IndexName == "" {
-		this.Error(ctx, my_error.NewBusiness(es.ParmasNullError, es.IndexNameNullError))
-		return
+		return this.Error(ctx, my_error.NewBusiness(es.ParmasNullError, es.IndexNameNullError))
+
 	}
 
-	res, err := esClinet.(*es.EsClientV6).Client.IndexStats(esIndexInfo.IndexName).Do(ctx)
+	res, err := esClinet.(*es.EsClientV6).Client.IndexStats(esIndexInfo.IndexName).Do(ctx.Context())
 	if err != nil {
-		this.Error(ctx, err)
-		return
+		return this.Error(ctx, err)
 	}
 
-	this.Success(ctx, response.OperateSuccess, res)
-	return
+	return this.Success(ctx, response.OperateSuccess, res)
 }
 
-func (this EsIndexController) CatStatusAction(ctx *gin.Context) {
+func (this EsIndexController) CatStatusAction(ctx *Ctx) error {
 	esIndexInfo := es.EsIndexInfo{}
-	err := ctx.Bind(&esIndexInfo)
+	err := ctx.BodyParser(&esIndexInfo)
 	if err != nil {
-		this.Error(ctx, err)
-		return
+		return this.Error(ctx, err)
 	}
 	esClinet, err := es.GetEsClientV6ByID(esIndexInfo.EsConnect)
 	if err != nil {
-		this.Error(ctx, err)
-		return
+		return this.Error(ctx, err)
 	}
-	res, err := esClinet.(*es.EsClientV6).Client.PerformRequest(ctx, elastic.PerformRequestOptions{
+	res, err := esClinet.(*es.EsClientV6).Client.PerformRequest(ctx.Context(), elastic.PerformRequestOptions{
 		Method: "GET",
 		Path:   fmt.Sprintf("/_cat/indices/%s?h=status", esIndexInfo.IndexName),
 	})
 	if err != nil {
-		this.Error(ctx, err)
-		return
+		return this.Error(ctx, err)
 	}
 
-	this.Success(ctx, response.SearchSuccess, res.Body)
+	return this.Success(ctx, response.SearchSuccess, res.Body)
 }

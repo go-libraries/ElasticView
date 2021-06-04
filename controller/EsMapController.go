@@ -5,8 +5,7 @@ import (
 
 	"github.com/1340691923/ElasticView/engine/es"
 	"github.com/1340691923/ElasticView/platform-basic-libs/response"
-
-	"github.com/gin-gonic/gin"
+	. "github.com/gofiber/fiber/v2"
 )
 
 // Es 映射控制器
@@ -15,68 +14,59 @@ type EsMappingController struct {
 }
 
 // Es 映射列表
-func (this EsMappingController) ListAction(ctx *gin.Context) {
+func (this EsMappingController) ListAction(ctx *Ctx) error {
 	esConnect := es.EsMapGetProperties{}
-	err := ctx.Bind(&esConnect)
+	err := ctx.BodyParser(&esConnect)
 	if err != nil {
-		this.Error(ctx, err)
-		return
+		return this.Error(ctx, err)
 	}
 	esClinet, err := es.GetEsClientV6ByID(esConnect.EsConnectID)
 	if err != nil {
-		this.Error(ctx, err)
-		return
+		return this.Error(ctx, err)
 	}
 	if esConnect.IndexName == "" {
 		res, err := esClinet.GetMappings()
 		if err != nil {
-			this.Error(ctx, err)
-			return
+			return this.Error(ctx, err)
 		}
-		this.Success(ctx, response.SearchSuccess, res)
+		return this.Success(ctx, response.SearchSuccess, res)
 	} else {
-		res, err := esClinet.(*es.EsClientV6).Client.GetMapping().Index(esConnect.IndexName).Do(ctx)
+		res, err := esClinet.(*es.EsClientV6).Client.GetMapping().Index(esConnect.IndexName).Do(ctx.Context())
 		if err != nil {
-			this.Error(ctx, err)
-			return
+			return this.Error(ctx, err)
 		}
-		this.Success(ctx, response.SearchSuccess, res)
+		return this.Success(ctx, response.SearchSuccess, res)
 	}
 
 }
 
-/*func (this EsMappingController) GetPropertiesAction(ctx *gin.Context) {
+/*func (this EsMappingController) GetPropertiesAction(ctx *fiber.Ctx) {
 	esConnect := es.EsMapGetProperties{}
-	err := ctx.Bind(&esConnect)
+	err := ctx.BodyParser(&esConnect)
 	if err != nil {
-		this.Error(ctx, err)
-		return
+		return this.Error(ctx, err)
 	}
 	esClinet, err := es.GetEsClientV6ByID(esConnect.EsConnectID)
 	if err != nil {
-		this.Error(ctx, err)
-		return
+		return this.Error(ctx, err)
 	}
 	res, err := esClinet.(*es.EsClientV6).Client.GetMapping().Index("")
 	if err != nil {
-		this.Error(ctx, err)
-		return
+		return this.Error(ctx, err)
 	}
-	this.Success(ctx, response.SearchSuccess, res)
+	return this.Success(ctx, response.SearchSuccess, res)
 }*/
 
 // 修改映射
-func (this EsMappingController) UpdateMappingAction(ctx *gin.Context) {
+func (this EsMappingController) UpdateMappingAction(ctx *Ctx) error {
 	updateMapping := es.UpdateMapping{}
-	err := ctx.Bind(&updateMapping)
+	err := ctx.BodyParser(&updateMapping)
 	if err != nil {
-		this.Error(ctx, err)
-		return
+		return this.Error(ctx, err)
 	}
 	esClinet, err := es.GetEsClientV6ByID(updateMapping.EsConnect)
 	if err != nil {
-		this.Error(ctx, err)
-		return
+		return this.Error(ctx, err)
 	}
 	res, err := esClinet.(*es.EsClientV6).Client.PutMapping().
 		Index(updateMapping.IndexName).
@@ -85,8 +75,7 @@ func (this EsMappingController) UpdateMappingAction(ctx *gin.Context) {
 		BodyJson(updateMapping.Properties).
 		Do(context.Background())
 	if err != nil {
-		this.Error(ctx, err)
-		return
+		return this.Error(ctx, err)
 	}
-	this.Success(ctx, response.OperateSuccess, res)
+	return this.Success(ctx, response.OperateSuccess, res)
 }

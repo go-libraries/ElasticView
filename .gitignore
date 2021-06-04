@@ -6,3 +6,5 @@
 /views/package-lock.json
 /test/
 /views/*.log
+/vue/node_modules/
+/vue/dist/

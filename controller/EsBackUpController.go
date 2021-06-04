@@ -10,8 +10,8 @@ import (
 	"github.com/1340691923/ElasticView/platform-basic-libs/my_error"
 	"github.com/1340691923/ElasticView/platform-basic-libs/response"
 	"github.com/1340691923/ElasticView/platform-basic-libs/service/es_settings"
+	. "github.com/gofiber/fiber/v2"
 
-	"github.com/gin-gonic/gin"
 	jsoniter "github.com/json-iterator/go"
 	"github.com/olivere/elastic"
 )
@@ -22,35 +22,30 @@ type EsBackUpController struct {
 }
 
 //快照仓库列表
-func (this EsBackUpController) SnapshotRepositoryListAction(ctx *gin.Context) {
+func (this EsBackUpController) SnapshotRepositoryListAction(ctx *Ctx) error {
 	esSnapshotInfo := es.EsSnapshotInfo{}
-	err := ctx.Bind(&esSnapshotInfo)
+	err := ctx.BodyParser(&esSnapshotInfo)
 	if err != nil {
-		this.Error(ctx, err)
-		return
+		return this.Error(ctx, err)
 	}
 	esClinet, err := es.GetEsClientV6ByID(esSnapshotInfo.EsConnect)
 	if err != nil {
-		this.Error(ctx, err)
-		return
+		return this.Error(ctx, err)
 	}
 
 	clusterSettings, err := es_settings.NewSettings(esClinet.(*es.EsClientV6).Client)
 	if err != nil {
-		this.Error(ctx, err)
-		return
+		return this.Error(ctx, err)
 	}
 	pathRepo := clusterSettings.GetPathRepo()
 
 	if len(pathRepo) == 0 {
-		this.Error(ctx, my_error.NewError(`path.repo没有设置`, 199999))
-		return
+		return this.Error(ctx, my_error.NewError(`path.repo没有设置`, 199999))
 	}
 
-	res, err := esClinet.(*es.EsClientV6).Client.SnapshotGetRepository(esSnapshotInfo.SnapshotInfoList...).Do(ctx)
+	res, err := esClinet.(*es.EsClientV6).Client.SnapshotGetRepository(esSnapshotInfo.SnapshotInfoList...).Do(ctx.Context())
 	if err != nil {
-		this.Error(ctx, err)
-		return
+		return this.Error(ctx, err)
 	}
 
 	type tmp struct {
@@ -82,7 +77,7 @@ func (this EsBackUpController) SnapshotRepositoryListAction(ctx *gin.Context) {
 		list = append(list, t)
 	}
 
-	this.Success(ctx, response.SearchSuccess, map[string]interface{}{
+	return this.Success(ctx, response.SearchSuccess, map[string]interface{}{
 		"list":     list,
 		"res":      res,
 		"pathRepo": pathRepo,
@@ -90,23 +85,20 @@ func (this EsBackUpController) SnapshotRepositoryListAction(ctx *gin.Context) {
 }
 
 //新建快照仓库
-func (this EsBackUpController) SnapshotCreateRepositoryAction(ctx *gin.Context) {
+func (this EsBackUpController) SnapshotCreateRepositoryAction(ctx *Ctx) error {
 	snapshotCreateRepository := es.SnapshotCreateRepository{}
-	err := ctx.Bind(&snapshotCreateRepository)
+	err := ctx.BodyParser(&snapshotCreateRepository)
 	if err != nil {
-		this.Error(ctx, err)
-		return
+		return this.Error(ctx, err)
 	}
 	esClinet, err := es.GetEsClientV6ByID(snapshotCreateRepository.EsConnect)
 	if err != nil {
-		this.Error(ctx, err)
-		return
+		return this.Error(ctx, err)
 	}
 
 	clusterSettings, err := es_settings.NewSettings(esClinet.(*es.EsClientV6).Client)
 	if err != nil {
-		this.Error(ctx, err)
-		return
+		return this.Error(ctx, err)
 	}
 	pathRepo := clusterSettings.GetPathRepo()
 	getAllowedUrls := clusterSettings.GetAllowedUrls()
@@ -137,92 +129,83 @@ func (this EsBackUpController) SnapshotCreateRepositoryAction(ctx *gin.Context) 
 	switch snapshotCreateRepository.Type {
 	case "fs":
 		if len(pathRepo) == 0 {
-			this.Error(ctx, errors.New("请先设置 path.repo"))
-			return
+			return this.Error(ctx, errors.New("请先设置 path.repo"))
+
 		}
 		settings["location"] = snapshotCreateRepository.Location
 	case "url":
 		if len(getAllowedUrls) == 0 {
-			this.Error(ctx, errors.New("请先设置 allowed_urls"))
-			return
+			return this.Error(ctx, errors.New("请先设置 allowed_urls"))
+
 		}
 		settings["url"] = snapshotCreateRepository.Location
 	default:
-		this.Error(ctx, errors.New("无效的type"))
-		return
+		return this.Error(ctx, errors.New("无效的type"))
+
 	}
 
 	_, err = esClinet.(*es.EsClientV6).Client.SnapshotCreateRepository(snapshotCreateRepository.Repository).Type(snapshotCreateRepository.Type).Settings(
 		settings,
-	).Do(ctx)
+	).Do(ctx.Context())
 	if err != nil {
-		this.Error(ctx, err)
-		return
+		return this.Error(ctx, err)
 	}
 
-	this.Success(ctx, response.OperateSuccess, nil)
+	return this.Success(ctx, response.OperateSuccess, nil)
 }
 
 //清理快照仓库
-func (this EsBackUpController) CleanupeRepositoryAction(ctx *gin.Context) {
+func (this EsBackUpController) CleanupeRepositoryAction(ctx *Ctx) error {
 	cleanupeRepository := es.CleanupeRepository{}
-	err := ctx.Bind(&cleanupeRepository)
+	err := ctx.BodyParser(&cleanupeRepository)
 	if err != nil {
-		this.Error(ctx, err)
-		return
+		return this.Error(ctx, err)
 	}
 	esClinet, err := es.GetEsClientV6ByID(cleanupeRepository.EsConnect)
 	if err != nil {
-		this.Error(ctx, err)
-		return
+		return this.Error(ctx, err)
 	}
-	res, err := esClinet.(*es.EsClientV6).Client.PerformRequest(ctx, elastic.PerformRequestOptions{
+	res, err := esClinet.(*es.EsClientV6).Client.PerformRequest(ctx.Context(), elastic.PerformRequestOptions{
 		Method: "POST",
 		Path:   fmt.Sprintf("/_snapshot/%s/_cleanup", cleanupeRepository.Repository),
 	})
 	if err != nil {
-		this.Error(ctx, err)
-		return
+		return this.Error(ctx, err)
 	}
 
-	this.Success(ctx, response.OperateSuccess, res.Body)
+	return this.Success(ctx, response.OperateSuccess, res.Body)
 }
 
 //删除快照仓库
-func (this EsBackUpController) SnapshotDeleteRepositoryAction(ctx *gin.Context) {
+func (this EsBackUpController) SnapshotDeleteRepositoryAction(ctx *Ctx) error {
 	snapshotDeleteRepository := es.SnapshotDeleteRepository{}
-	err := ctx.Bind(&snapshotDeleteRepository)
+	err := ctx.BodyParser(&snapshotDeleteRepository)
 	if err != nil {
-		this.Error(ctx, err)
-		return
+		return this.Error(ctx, err)
 	}
 	esClinet, err := es.GetEsClientV6ByID(snapshotDeleteRepository.EsConnect)
 	if err != nil {
-		this.Error(ctx, err)
-		return
+		return this.Error(ctx, err)
 	}
 
-	_, err = esClinet.(*es.EsClientV6).Client.SnapshotDeleteRepository(snapshotDeleteRepository.Repository).Do(ctx)
+	_, err = esClinet.(*es.EsClientV6).Client.SnapshotDeleteRepository(snapshotDeleteRepository.Repository).Do(ctx.Context())
 	if err != nil {
-		this.Error(ctx, err)
-		return
+		return this.Error(ctx, err)
 	}
 
-	this.Success(ctx, response.OperateSuccess, nil)
+	return this.Success(ctx, response.OperateSuccess, nil)
 }
 
 //创建快照
-func (this EsBackUpController) CreateSnapshotAction(ctx *gin.Context) {
+func (this EsBackUpController) CreateSnapshotAction(ctx *Ctx) error {
 	createSnapshot := es.CreateSnapshot{}
-	err := ctx.Bind(&createSnapshot)
+	err := ctx.BodyParser(&createSnapshot)
 	if err != nil {
-		this.Error(ctx, err)
-		return
+		return this.Error(ctx, err)
 	}
 	esClinet, err := es.GetEsClientV6ByID(createSnapshot.EsConnect)
 	if err != nil {
-		this.Error(ctx, err)
-		return
+		return this.Error(ctx, err)
 	}
 
 	snapshotCreateService := esClinet.(*es.EsClientV6).Client.
@@ -249,110 +232,98 @@ func (this EsBackUpController) CreateSnapshotAction(ctx *gin.Context) {
 		settings["include_global_state"] = *createSnapshot.IncludeGlobalState
 	}
 
-	res, err := snapshotCreateService.BodyJson(settings).Do(ctx)
+	res, err := snapshotCreateService.BodyJson(settings).Do(ctx.Context())
 
 	if err != nil {
-		this.Error(ctx, err)
-		return
+		return this.Error(ctx, err)
 	}
 
-	this.Success(ctx, response.OperateSuccess, res)
+	return this.Success(ctx, response.OperateSuccess, res)
 }
 
 //快照列表
-func (this EsBackUpController) SnapshotListAction(ctx *gin.Context) {
+func (this EsBackUpController) SnapshotListAction(ctx *Ctx) error {
 	snapshotList := es.SnapshotList{}
-	err := ctx.Bind(&snapshotList)
+	err := ctx.BodyParser(&snapshotList)
 	if err != nil {
-		this.Error(ctx, err)
-		return
+		return this.Error(ctx, err)
 	}
 	esClinet, err := es.GetEsClientV6ByID(snapshotList.EsConnect)
 	if err != nil {
-		this.Error(ctx, err)
-		return
+		return this.Error(ctx, err)
 	}
 
 	if snapshotList.Repository == "" {
-		this.Error(ctx, errors.New("请先选择快照存储库"))
-		return
+		return this.Error(ctx, errors.New("请先选择快照存储库"))
+
 	}
 
-	res, err := esClinet.(*es.EsClientV6).Client.PerformRequest(ctx, elastic.PerformRequestOptions{
+	res, err := esClinet.(*es.EsClientV6).Client.PerformRequest(ctx.Context(), elastic.PerformRequestOptions{
 		Method: "GET",
 		Path:   fmt.Sprintf("/_cat/snapshots/%s", snapshotList.Repository),
 	})
 
 	if err != nil {
-		this.Error(ctx, err)
-		return
+		return this.Error(ctx, err)
 	}
 
-	this.Success(ctx, response.SearchSuccess, res.Body)
+	return this.Success(ctx, response.SearchSuccess, res.Body)
 }
 
 //删除快照
-func (this EsBackUpController) SnapshotDeleteAction(ctx *gin.Context) {
+func (this EsBackUpController) SnapshotDeleteAction(ctx *Ctx) error {
 	snapshotDelete := es.SnapshotDelete{}
-	err := ctx.Bind(&snapshotDelete)
+	err := ctx.BodyParser(&snapshotDelete)
 	if err != nil {
-		this.Error(ctx, err)
-		return
+		return this.Error(ctx, err)
 	}
 	esClinet, err := es.GetEsClientV6ByID(snapshotDelete.EsConnect)
 	if err != nil {
-		this.Error(ctx, err)
-		return
+		return this.Error(ctx, err)
 	}
 
 	_, err = esClinet.(*es.EsClientV6).Client.
-		SnapshotDelete(snapshotDelete.Repository, snapshotDelete.Snapshot).Do(ctx)
+		SnapshotDelete(snapshotDelete.Repository, snapshotDelete.Snapshot).Do(ctx.Context())
 	if err != nil {
-		this.Error(ctx, err)
-		return
+		return this.Error(ctx, err)
 	}
 
-	this.Success(ctx, response.OperateSuccess, nil)
+	return this.Success(ctx, response.OperateSuccess, nil)
 }
 
 //快照详情
-func (this EsBackUpController) SnapshotDetailAction(ctx *gin.Context) {
+func (this EsBackUpController) SnapshotDetailAction(ctx *Ctx) error {
 	snapshotDetail := es.SnapshotDetail{}
-	err := ctx.Bind(&snapshotDetail)
+	err := ctx.BodyParser(&snapshotDetail)
 	if err != nil {
-		this.Error(ctx, err)
-		return
+		return this.Error(ctx, err)
 	}
 
 	esClinet, err := es.GetEsClientV6ByID(snapshotDetail.EsConnect)
 	if err != nil {
-		this.Error(ctx, err)
-		return
+		return this.Error(ctx, err)
 	}
 
-	res, err := esClinet.(*es.EsClientV6).Client.PerformRequest(ctx, elastic.PerformRequestOptions{
+	res, err := esClinet.(*es.EsClientV6).Client.PerformRequest(ctx.Context(), elastic.PerformRequestOptions{
 		Method: "GET",
 		Path:   fmt.Sprintf("/_snapshot/%s/%s", snapshotDetail.Repository, snapshotDetail.Snapshot),
 	})
 	if err != nil {
-		this.Error(ctx, err)
-		return
+		return this.Error(ctx, err)
 	}
-	this.Success(ctx, response.SearchSuccess, res.Body)
+	return this.Success(ctx, response.SearchSuccess, res.Body)
 }
 
 // 将索引恢复至快照时状态
-func (this EsBackUpController) SnapshotRestoreAction(ctx *gin.Context) {
+func (this EsBackUpController) SnapshotRestoreAction(ctx *Ctx) error {
 	snapshotRestore := es.SnapshotRestore{}
-	err := ctx.Bind(&snapshotRestore)
+	err := ctx.BodyParser(&snapshotRestore)
 	if err != nil {
-		this.Error(ctx, err)
-		return
+		return this.Error(ctx, err)
 	}
 	esClinet, err := es.GetEsClientV6ByID(snapshotRestore.EsConnect)
 	if err != nil {
-		this.Error(ctx, err)
-		return
+		return this.Error(ctx, err)
 	}
 
 	snapshotRestoreService := esClinet.(*es.EsClientV6).Client.SnapshotRestore(snapshotRestore.RepositoryName, snapshotRestore.SnapshotName)
@@ -380,36 +351,32 @@ func (this EsBackUpController) SnapshotRestoreAction(ctx *gin.Context) {
 		snapshotRestoreService.RenameReplacement(snapshotRestore.RenameReplacement)
 	}
 
-	res, err := snapshotRestoreService.Do(ctx)
+	res, err := snapshotRestoreService.Do(ctx.Context())
 
 	if err != nil {
-		this.Error(ctx, err)
-		return
+		return this.Error(ctx, err)
 	}
-	this.Success(ctx, response.OperateSuccess, res)
+	return this.Success(ctx, response.OperateSuccess, res)
 }
 
 //得到快照状态
-func (this EsBackUpController) SnapshotStatusAction(ctx *gin.Context) {
+func (this EsBackUpController) SnapshotStatusAction(ctx *Ctx) error {
 	snapshotStatus := es.SnapshotStatus{}
-	err := ctx.Bind(&snapshotStatus)
+	err := ctx.BodyParser(&snapshotStatus)
 	if err != nil {
-		this.Error(ctx, err)
-		return
+		return this.Error(ctx, err)
 	}
 	esClinet, err := es.GetEsClientV6ByID(snapshotStatus.EsConnect)
 	if err != nil {
-		this.Error(ctx, err)
-		return
+		return this.Error(ctx, err)
 	}
 
 	snapshotRestoreStatus := esClinet.(*es.EsClientV6).Client.SnapshotStatus().Repository(snapshotStatus.RepositoryName).Snapshot(snapshotStatus.SnapshotName)
 
-	res, err := snapshotRestoreStatus.Do(ctx)
+	res, err := snapshotRestoreStatus.Do(ctx.Context())
 
 	if err != nil {
-		this.Error(ctx, err)
-		return
+		return this.Error(ctx, err)
 	}
-	this.Success(ctx, response.SearchSuccess, res)
+	return this.Success(ctx, response.SearchSuccess, res)
 }

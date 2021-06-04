@@ -2,40 +2,27 @@
 package router
 
 import (
-	"github.com/1340691923/ElasticView/platform-basic-libs/util"
-
 	. "github.com/1340691923/ElasticView/controller"
 	. "github.com/1340691923/ElasticView/middleware"
-	_ "github.com/1340691923/ElasticView/statik"
-
-	"github.com/gin-gonic/gin"
-	"github.com/rakyll/statik/fs"
+	"github.com/1340691923/ElasticView/views"
+	. "github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/cors"
+	"github.com/gofiber/fiber/v2/middleware/filesystem"
 )
 
-//  打包静态资源进二进制  statik -src=views/dist -f
-func Init() *gin.Engine {
-	app := gin.Default()
-	statikFS, err := fs.New()
-	if err != nil {
-		panic(err)
-	}
-	app.GET("/", func(context *gin.Context) {
-		htmlStr := `
-			<html>
-				<body>	
-					<a href="view" style="display: block;text-align: center;">Hello ElasticView ! GO -></a>
-				</body>
-			</html>
-		`
-		context.Writer.Write(util.Str2bytes(htmlStr))
-	})
+func Init() *App {
+	app := New()
 
-	app.StaticFS("/view", statikFS)
+	app.Use("/", filesystem.New(filesystem.Config{
+		Root: views.GetFileSystem(),
+	}))
 
-	app.Use(Cors)
-	app.Any("/api/gm_user/login", UserController{}.Login)
+	app.Use(cors.New())
+	app.All("/api/gm_user/login", UserController{}.Login)
 
+	app.Use(Timer)
 	app.Use(JwtMiddleware)
+	/*app.Use(OperaterLog)*/
 	runGmUser(app)
 	runGmGuid(app)
 	runEsLink(app)
@@ -46,7 +33,5 @@ func Init() *gin.Engine {
 	runEsTask(app)
 	runEsBackUp(app)
 	runEsDoc(app)
-
 	return app
-
 }

@@ -13,7 +13,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/gin-gonic/gin"
+	. "github.com/gofiber/fiber/v2"
 	jsoniter "github.com/json-iterator/go"
 	"github.com/valyala/fasthttp"
 )
@@ -389,8 +389,8 @@ func FormIntDefault(r *http.Request, key string, def int) int {
 }
 
 // FormIntDefault 获取Form参数 如果出错则返回默认值
-func CtxFormIntDefault(ctx *gin.Context, key string, def int) int {
-	i, err := strconv.Atoi(ctx.Request.FormValue(key))
+func CtxFormIntDefault(ctx *Ctx, key string, def int) int {
+	i, err := strconv.Atoi(ctx.FormValue(key))
 	if err != nil {
 		return def
 	}
@@ -461,6 +461,6 @@ func FormFileValues(r *http.Request, key string) ([]string, error) {
 	return nil, http.ErrMissingFile
 }
 
-func GetToken(ctx *gin.Context) (token string) {
-	return ctx.GetHeader("X-Token")
+func GetToken(ctx *Ctx) (token string) {
+	return ctx.Get("X-Token")
 }

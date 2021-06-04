@@ -6,7 +6,7 @@ import (
 	"io/ioutil"
 )
 
-func Compress(data string) ([]byte, error) {
+func GzipCompress(data string) ([]byte, error) {
 	buf := bytes.NewBuffer(nil)
 	gzW := gzip.NewWriter(buf)
 	_, err := gzW.Write([]byte(data))
@@ -17,7 +17,7 @@ func Compress(data string) ([]byte, error) {
 	return buf.Bytes(), err
 }
 
-func UnCompress(data []byte) ([]byte, error) {
+func GzipUnCompress(data []byte) ([]byte, error) {
 	gzR, err := gzip.NewReader(bytes.NewReader(data))
 	if err != nil {
 		return nil, err

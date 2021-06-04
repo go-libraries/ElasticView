@@ -2,7 +2,7 @@
 package response
 
 import (
-	"io"
+	"net/http"
 	"os"
 	"reflect"
 	"runtime"
@@ -11,10 +11,10 @@ import (
 
 	"github.com/1340691923/ElasticView/engine/logs"
 	"github.com/1340691923/ElasticView/platform-basic-libs/util"
+	fiber "github.com/gofiber/fiber/v2"
 
 	. "github.com/1340691923/ElasticView/platform-basic-libs/my_error"
 
-	"github.com/gin-gonic/gin"
 	jsoniter "github.com/json-iterator/go"
 	"go.uber.org/zap"
 )
@@ -64,35 +64,37 @@ func (this *Response) DealErr(err error) (errorTrace []string) {
 }
 
 //正确信息
-func (this *Response) Success(ctx *gin.Context, msg string, data interface{}) {
-	this.send(ctx.Writer, msg, SUCCESS, data)
+func (this *Response) Success(ctx *fiber.Ctx, msg string, data interface{}) error {
+	this.send(ctx, msg, SUCCESS, data)
+	return nil
 }
 
 //错误信息
-func (this *Response) Error(ctx *gin.Context, err error) {
+func (this *Response) Error(ctx *fiber.Ctx, err error) error {
 	errorTrace := this.getTrace(err)
 
 	myErr := ErrorToErrorCode(err)
 
 	logs.Logger.Error("Error", zap.Strings("err", this.DealErr(myErr)))
 
-	this.send(ctx.Writer, myErr.Error(), myErr.Code(), errorTrace)
+	this.send(ctx, myErr.Error(), myErr.Code(), errorTrace)
+	return nil
 }
 
 //输出
-func (this *Response) send(ctx io.Writer, msg string, code int, data interface{}) {
+func (this *Response) send(ctx *fiber.Ctx, msg string, code int, data interface{}) error {
 	var res Response
 	res.Code = code
 	res.Msg = msg
 	res.Data = data
-	util.WriteJSON(ctx, res)
-	return
+	ctx.Status(http.StatusOK).JSON(res)
+	return nil
 }
 
 //输出
-func (this *Response) Output(ctx *gin.Context, data interface{}) {
-	util.WriteJSON(ctx.Writer, data)
-	return
+func (this *Response) Output(ctx *fiber.Ctx, data interface{}) error {
+	ctx.Status(http.StatusOK).JSON(data)
+	return nil
 }
 
 //得到trace信息

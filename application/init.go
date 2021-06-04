@@ -8,6 +8,7 @@ import (
 	"github.com/1340691923/ElasticView/engine/db"
 	"github.com/1340691923/ElasticView/engine/logs"
 	"github.com/1340691923/ElasticView/model"
+	"github.com/1340691923/ElasticView/platform-basic-libs/rbac"
 	"github.com/1340691923/ElasticView/platform-basic-libs/util"
 
 	"github.com/fsnotify/fsnotify"
@@ -144,6 +145,24 @@ func (this *App) InitMysql() *App {
 func (this *App) InitTask() *App {
 	esLinkModel := model.EsLinkModel{}
 	if err := esLinkModel.FlushEsLinkList(); err != nil {
+		this.err = err
+		return this
+	}
+	return this
+}
+
+//初始化项目启动任务
+func (this *App) InitRbac() *App {
+	config := GlobConfig.Mysql
+
+	if err := rbac.Run("mysql", fmt.Sprintf(
+		"%s:%s@tcp(%s:%s)/%s",
+		config.Username,
+		config.Pwd,
+		config.IP,
+		config.Port,
+		config.DbName),
+	); err != nil {
 		this.err = err
 		return this
 	}
