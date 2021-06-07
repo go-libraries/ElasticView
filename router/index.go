@@ -30,6 +30,7 @@ func Init() *App {
 	runEsMap(app)
 	runEsIndex(app)
 	runDslHistory(app)
+
 	runEsTask(app)
 	runEsBackUp(app)
 	runEsDoc(app)
