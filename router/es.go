@@ -42,7 +42,7 @@ func runEs(app *App) {
 
 		apiRouterConfig.MountApi(api_config.MountApiBasePramas{
 			Remark:       "SQL语法转ES语法",
-			Method:       api_config.MethodPost,
+			Method:       api_config.MethodGet,
 			AbsolutePath: AbsolutePath,
 			RelativePath: "SqlToDslAction",
 		}, es.(*Group), true, EsController{}.SqlToDslAction)

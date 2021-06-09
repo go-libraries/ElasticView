@@ -2,6 +2,7 @@ import { getInfo, login, logout } from '@/api/user'
 import { getToken, removeToken, setToken } from '@/utils/auth'
 import router, { resetRouter } from '@/router'
 import { RoutesComponentmaps } from '@/utils/router'
+import { message } from '@/utils/singleMsg.js'
 
 const state = {
   token: getToken(),
@@ -28,9 +29,7 @@ const mutations = {
   SET_ROLES: (state, roles) => {
     state.roles = roles
   },
-  SET_ChanNos: (state, channos) => {
-    state.channos = channos
-  },
+
   SET_ROLEID: (state, roleid) => {
     state.roleid = roleid
   }
@@ -45,7 +44,7 @@ const actions = {
         const { data, code, msg } = response
 
         if (code != 0) {
-          ELEMENT.Message({
+          message({
             message: msg || '未知错误',
             type: 'error',
             duration: 5 * 1000
@@ -89,7 +88,7 @@ const actions = {
         commit('SET_NAME', data.name)
         commit('SET_AVATAR', data.avatar)
         commit('SET_INTRODUCTION', data.introduction)
-        commit('SET_ChanNos', data.channos)
+
         commit('SET_ROLEID', data.roleId)
         resolve(data)
       }).catch(error => {
@@ -106,9 +105,6 @@ const actions = {
         commit('SET_ROLES', [])
         removeToken()
         resetRouter()
-
-        // reset visited views and cached views
-        // to fixed https://github.com/PanJiaChen/vue-element-admin/issues/2485
         dispatch('tagsView/delAllViews', null, { root: true })
 
         resolve()

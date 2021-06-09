@@ -22,6 +22,7 @@ func Init() *App {
 
 	app.Use(Timer)
 	app.Use(JwtMiddleware)
+	app.Use(Rbac)
 	/*app.Use(OperaterLog)*/
 	runGmUser(app)
 	runGmGuid(app)
@@ -30,7 +31,6 @@ func Init() *App {
 	runEsMap(app)
 	runEsIndex(app)
 	runDslHistory(app)
-
 	runEsTask(app)
 	runEsBackUp(app)
 	runEsDoc(app)

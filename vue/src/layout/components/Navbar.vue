@@ -77,7 +77,6 @@ export default {
     },
     async logout() {
       await this.$store.dispatch('user/logout')
-      // this.$websocket.dispatch("WEBSOCKET_CLOSE");
       this.$router.push(`/login?redirect=${this.$route.fullPath}`)
     }
   }

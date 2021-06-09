@@ -36,5 +36,11 @@ func runEsLink(app *App) {
 			AbsolutePath: AbsolutePath,
 			RelativePath: "ListAction",
 		}, esLink.(*Group), true, EsLinkController{}.ListAction)
+		apiRouterConfig.MountApi(api_config.MountApiBasePramas{
+			Remark:       "查看ES连接配置下拉选",
+			Method:       api_config.MethodGet,
+			AbsolutePath: AbsolutePath,
+			RelativePath: "OptAction",
+		}, esLink.(*Group), false, EsLinkController{}.OptAction)
 	}
 }

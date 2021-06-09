@@ -7,6 +7,7 @@ import (
 	"github.com/1340691923/ElasticView/platform-basic-libs/my_error"
 	"github.com/1340691923/ElasticView/platform-basic-libs/response"
 	"github.com/1340691923/ElasticView/platform-basic-libs/service/gm_user"
+	"github.com/1340691923/ElasticView/platform-basic-libs/util"
 	. "github.com/gofiber/fiber/v2"
 )
 
@@ -46,6 +47,15 @@ func (this UserController) UserInfo(ctx *Ctx) error {
 
 //退出登录
 func (this UserController) LogoutAction(ctx *Ctx) error {
+	token := this.GetToken(ctx)
+	var claims *jwt.Claims
+	claims, err := jwt.ParseToken(token)
+	if err != nil {
+		logs.Logger.Sugar().Errorf("LogoutAction err", err)
+		return this.Success(ctx, response.LogoutSuccess, nil)
+	}
+	util.TokenBucket.LoadOrStore(token, claims.ExpiresAt)
+
 	return this.Success(ctx, response.LogoutSuccess, nil)
 }
 

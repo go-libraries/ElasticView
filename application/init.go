@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"path/filepath"
+	"time"
 
 	"github.com/1340691923/ElasticView/engine/db"
 	"github.com/1340691923/ElasticView/engine/logs"
@@ -148,7 +149,20 @@ func (this *App) InitTask() *App {
 		this.err = err
 		return this
 	}
+	//go this.cleanExpireToken()
 	return this
+}
+
+//初始化项目启动任务
+func (this *App) cleanExpireToken() {
+	for {
+		time.Sleep(time.Second * 10)
+		now := time.Now().Unix()
+		util.TokenBucket.Range(func(key, value interface{}) bool {
+			log.Println(now, key, value)
+			return true
+		})
+	}
 }
 
 //初始化项目启动任务

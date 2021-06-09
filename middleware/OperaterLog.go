@@ -2,8 +2,6 @@
 package middleware
 
 import (
-	"log"
-
 	"github.com/1340691923/ElasticView/engine/logs"
 	"github.com/1340691923/ElasticView/model"
 	"github.com/1340691923/ElasticView/platform-basic-libs/jwt"
@@ -12,6 +10,7 @@ import (
 	jsoniter "github.com/json-iterator/go"
 )
 
+//fiber 没有将fasthttp的
 func OperaterLog(ctx *fiber.Ctx) error {
 	var err error
 	token := util.GetToken(ctx)
@@ -25,9 +24,14 @@ func OperaterLog(ctx *fiber.Ctx) error {
 	parmasMap := map[string]interface{}{}
 	bodyMap := map[string]interface{}{}
 
-	ctx.BodyParser(bodyMap)
-	log.Println(ctx.FormValue)
-
+	err = ctx.BodyParser(bodyMap)
+	if err != nil {
+		logs.Logger.Sugar().Errorf("ctx.BodyParser err:%s", err.Error())
+	}
+	err = ctx.QueryParser(parmasMap)
+	if err != nil {
+		logs.Logger.Sugar().Errorf("ctx.QueryParser err:%s", err.Error())
+	}
 	var json = jsoniter.ConfigCompatibleWithStandardLibrary
 
 	parmas, _ := json.MarshalToString(parmasMap)

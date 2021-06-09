@@ -3,6 +3,8 @@ import store from '@/store'
 
 import { getToken } from '@/utils/auth'
 
+import { message } from '@/utils/singleMsg.js'
+
 const CancelMsg = '用户已经取消请求'
 
 // create an axios instance
@@ -64,8 +66,12 @@ service.interceptors.response.use(
 
     // if the custom code is not 20000, it is judged as an error.
     if (res.code !== 0) {
-      // 50008: Illegal token; 50012: Other clients logged in; 50014: Token expired;
-      if (res.code === 40001 || res.code === 40002 || res.code === 40003) {
+
+      if(res.code === 40001){
+        message.error('请重新登录!')
+      }
+
+      if (res.code === 40002 || res.code === 40003) {
         // to re-login
         ELEMENT.MessageBox.confirm('未登录或登录超时，您可以取消以停留在此页，或重新登录', '确认注销', {
           confirmButtonText: '重新登录',
@@ -85,7 +91,7 @@ service.interceptors.response.use(
   },
   error => {
     if (error.message == CancelMsg) {
-      ELEMENT.Message({
+      message({
         message: '已经手动取消请求', // error.message,
         type: 'success',
         duration: 5 * 1000
@@ -93,7 +99,7 @@ service.interceptors.response.use(
       return Promise.reject(error)
     }
     console.error('err', error) // for debug
-    ELEMENT.Message({
+    message({
       message: '网络异常', // error.message,
       type: 'error',
       duration: 5 * 1000

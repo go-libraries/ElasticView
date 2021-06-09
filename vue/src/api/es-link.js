@@ -18,6 +18,15 @@ export function ListAction(data) {
   })
 }
 
+export function OptAction(data) {
+  return request({
+    url: api + 'OptAction',
+    method: 'get',
+    params: data
+  })
+}
+
+
 export function UpdateAction(data) {
   return request({
     url: api + 'UpdateAction',

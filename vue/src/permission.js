@@ -1,5 +1,6 @@
 import router from './router'
 import store from './store'
+import { message } from '@/utils/singleMsg.js'
 // import { Message } from 'element-ui'
 // import NProgress from 'nprogress' // progress bar
 
@@ -42,7 +43,7 @@ router.beforeEach(async(to, from, next) => {
         } catch (error) {
           // 清除token 并且重新登录
           await store.dispatch('user/resetToken')
-          ELEMENT.Message.error(error || 'Has Error')
+          message.error(error || 'Has Error')
           next(`/login?redirect=${to.path}`)
           // NProgress.done()
         }
@@ -54,7 +55,7 @@ router.beforeEach(async(to, from, next) => {
       // in the free login whitelist, go directly
       next()
     } else {
-      ELEMENT.Message.error('请先登录，谢谢')
+      message.error('请先登录，谢谢')
       // other pages that do not have permission to access are redirected to the login page.
       next(`/login?redirect=${to.path}`)
       // NProgress.done()

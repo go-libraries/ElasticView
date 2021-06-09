@@ -18,11 +18,17 @@ func JwtMiddleware(c *fiber.Ctx) error {
 
 	var err error
 	var claims *jwt.Claims
+	token := util.GetToken(c)
+	if _, logoff := util.TokenBucket.Load(token); logoff {
+		err = my_error.NewBusiness(TOKEN_ERROR, ERROR_AUTH_CHECK_TOKEN_FAIL)
+		return res.Error(c, err)
+	}
+
 	if util.GetToken(c) == "" {
 		err = my_error.NewBusiness(TOKEN_ERROR, INVALID_PARAMS)
 		return res.Error(c, err)
 	} else {
-		token := util.GetToken(c)
+
 		var service gm_user.GmUserService
 		claims, err = jwt.ParseToken(token)
 		if err != nil {

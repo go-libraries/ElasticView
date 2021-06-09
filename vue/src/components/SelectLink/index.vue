@@ -15,11 +15,11 @@
 </template>
 
 <script>
-import { ListAction } from '@/api/es-link'
+import { OptAction } from '@/api/es-link'
 
 export default {
   inject: ['reload'],
-  name: 'HeaderSearch',
+  name: 'SelectLink',
   data() {
     return {
       opt: [],
@@ -43,7 +43,6 @@ export default {
     this.time = null
     console.log('beforeDestroy')
   },
-
   methods: {
     startLoop() {
       this.time = setInterval(() => {
@@ -51,7 +50,7 @@ export default {
       }, this.timeSecend * 1000)
     },
     async getEsOpt() {
-      const res = await ListAction({ 'getByLocal': 1 })
+      const res = await OptAction({ 'getByLocal': 1 })
       this.opt = res.data
     },
     refresh() {

@@ -17,13 +17,13 @@ func runGmGuid(app *App) {
 			Method:       api_config.MethodPost,
 			AbsolutePath: AbsolutePath,
 			RelativePath: "Finish",
-		}, guid.(*Group), true, GuidController{}.Finish)
+		}, guid.(*Group), false, GuidController{}.Finish)
 
 		apiRouterConfig.MountApi(api_config.MountApiBasePramas{
 			Remark:       "判断是否完成新手引导",
 			Method:       api_config.MethodPost,
 			AbsolutePath: AbsolutePath,
 			RelativePath: "IsFinish",
-		}, guid.(*Group), true, GuidController{}.Finish)
+		}, guid.(*Group), false, GuidController{}.Finish)
 	}
 }

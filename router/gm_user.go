@@ -49,7 +49,7 @@ func runGmUser(app *App) {
 		}, gmUser.(*Group), true, RoleController{}.RolesDelAction)
 
 		apiRouterConfig.MountApi(api_config.MountApiBasePramas{
-			Remark:       "用户列表",
+			Remark:       "查询用户列表",
 			Method:       api_config.MethodAny,
 			AbsolutePath: AbsolutePath,
 			RelativePath: "userlist",
@@ -60,7 +60,7 @@ func runGmUser(app *App) {
 			Method:       api_config.MethodAny,
 			AbsolutePath: AbsolutePath,
 			RelativePath: "roleOption",
-		}, gmUser.(*Group), true, RoleController{}.RoleOptionAction)
+		}, gmUser.(*Group), false, RoleController{}.RoleOptionAction)
 
 		apiRouterConfig.MountApi(api_config.MountApiBasePramas{
 			Remark:       "通过ID获取用户信息",
@@ -96,6 +96,13 @@ func runGmUser(app *App) {
 			AbsolutePath: AbsolutePath,
 			RelativePath: "UrlConfig",
 		}, gmUser.(*Group), false, RbacController{}.UrlConfig)
+
+		apiRouterConfig.MountApi(api_config.MountApiBasePramas{
+			Remark:       "退出登录",
+			Method:       api_config.MethodPost,
+			AbsolutePath: AbsolutePath,
+			RelativePath: "logout",
+		}, gmUser.(*Group), false, UserController{}.LogoutAction)
 
 	}
 }

@@ -19,11 +19,6 @@ type EsLinkController struct {
 
 // 获取Es连接列表
 func (this EsLinkController) ListAction(ctx *Ctx) error {
-	getByLocal := ctx.FormValue("getByLocal")
-
-	if getByLocal == "1" {
-		return this.Success(ctx, response.SearchSuccess, model.EsLinkList)
-	}
 
 	esLinkModel := model.EsLinkModel{}
 
@@ -32,6 +27,23 @@ func (this EsLinkController) ListAction(ctx *Ctx) error {
 		return this.Error(ctx, err)
 	}
 	return this.Success(ctx, response.SearchSuccess, list)
+}
+
+func (this EsLinkController) OptAction(ctx *Ctx) error {
+
+	type Opt struct {
+		ID     int64  `json:"id"`
+		Remark string `json:"remark"`
+	}
+
+	var optList []Opt
+
+	for _, esLink := range model.EsLinkList {
+		optList = append(optList, Opt{ID: esLink.ID, Remark: esLink.Remark})
+	}
+
+	return this.Success(ctx, response.SearchSuccess, optList)
+
 }
 
 // 新增Es连接

@@ -55,7 +55,7 @@
               placeholder="角色详情信息"
             />
           </el-form-item>
-          <el-form-item label="菜单栏">
+          <el-form-item label="菜单栏" >
             <el-input v-model="filterText" placeholder="输入关键字进行过滤" style="width: 300px" />
             <el-button icon="el-icon-check" @click="quanxuan">全选</el-button>
             <el-tree
@@ -69,7 +69,7 @@
               class="permission-tree"
             />
           </el-form-item>
-          <el-form-item label="接口权限设置">
+          <el-form-item label="接口权限设置" v-if="role.id != 1">
             <el-transfer
               v-if="dialogVisible"
               v-model="role.api"
