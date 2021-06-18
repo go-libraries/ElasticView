@@ -6,18 +6,21 @@ import (
 	. "github.com/1340691923/ElasticView/middleware"
 	"github.com/1340691923/ElasticView/views"
 	. "github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/compress"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/filesystem"
 )
 
 func Init() *App {
 	app := New()
-
+	app.Use(cors.New())
+	app.Use(compress.New(compress.Config{
+		Level: compress.LevelBestSpeed, // 1
+	}))
 	app.Use("/", filesystem.New(filesystem.Config{
 		Root: views.GetFileSystem(),
 	}))
 
-	app.Use(cors.New())
 	app.All("/api/gm_user/login", UserController{}.Login)
 
 	app.Use(Timer)

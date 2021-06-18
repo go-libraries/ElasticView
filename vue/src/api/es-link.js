@@ -26,7 +26,6 @@ export function OptAction(data) {
   })
 }
 
-
 export function UpdateAction(data) {
   return request({
     url: api + 'UpdateAction',

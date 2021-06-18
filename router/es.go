@@ -2,7 +2,7 @@ package router
 
 import (
 	. "github.com/1340691923/ElasticView/controller"
-	api_config "github.com/1340691923/ElasticView/platform-basic-libs/api_config"
+	"github.com/1340691923/ElasticView/platform-basic-libs/api_config"
 	. "github.com/gofiber/fiber/v2"
 )
 
@@ -13,10 +13,10 @@ func runEs(app *App) {
 	es := app.Group(AbsolutePath)
 	{
 		apiRouterConfig.MountApi(api_config.MountApiBasePramas{
-			Remark:       "将索引恢复为可写状态   由于不可抗力，ES禁止写后，默认不会自动恢复",
+			Remark:       "将索引手动恢复为可写状态",
 			Method:       api_config.MethodPost,
 			AbsolutePath: AbsolutePath,
-			RelativePath: "SnapshotRepositoryListAction",
+			RelativePath: "RecoverCanWrite",
 		}, es.(*Group), true, EsController{}.RecoverCanWrite)
 
 		apiRouterConfig.MountApi(api_config.MountApiBasePramas{

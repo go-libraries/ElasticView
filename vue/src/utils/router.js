@@ -6,12 +6,11 @@ export const asyncRoutes = [
   {
     path: '/permission',
     component: 'layout',
-    redirect: '/permission/index',
+    redirect: '/permission/role',
     alwaysShow: true,
     meta: {
       title: '权限',
       icon: 'el-icon-user-solid'
-
     },
     children: [
       {
