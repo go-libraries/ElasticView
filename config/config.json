@@ -13,5 +13,6 @@
     "maxOpenConns":10,
     "maxIdleConns":10
   },
-  "appSecret": "1340691923@qq.com"
+  "appSecret": "1340691923@qq.com",
+  "deBug": true
 }

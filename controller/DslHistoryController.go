@@ -27,7 +27,6 @@ func (this DslHistoryController) ListAction(ctx *Ctx) error {
 
 	list, err := gmDslHistoryModel.List()
 	if err != nil {
-
 		return this.Error(ctx, err)
 	}
 	count, err := gmDslHistoryModel.Count()

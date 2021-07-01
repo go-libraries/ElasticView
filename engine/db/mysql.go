@@ -27,7 +27,6 @@ type UpdateBuilder = squirrel.UpdateBuilder
 
 // NewMySQL 创建一个连接MySQL的实体池
 func NewSQLX(dbSource string, maxOpenConns, maxIdleConns int) (db *sqlx.DB, err error) {
-	log.Println(dbSource)
 	db, err = sqlx.Open("mysql", dbSource)
 	if err != nil {
 		return
