@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-dialog width="95%" :visible.sync="dialogVisible" title="查询结果" @close="close">
+    <el-dialog :close-on-click-modal="false" width="95%" :visible.sync="dialogVisible" title="查询结果" @close="close">
       <div class="filter-container">
         <el-tag class="filter-item">请输入关键词</el-tag>
         <el-input v-model="input" class="filter-item" style="width: 300px" clearable @input="search" />

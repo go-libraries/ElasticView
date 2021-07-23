@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-dialog :visible.sync="open" :title="title" @close="closeDialog">
+    <el-dialog :close-on-click-modal="false" :visible.sync="open" :title="title" @close="closeDialog">
       <el-card class="box-card">
         <el-form label-width="500px" label-position="left">
           <el-form-item label="索引名称">
@@ -248,6 +248,7 @@ export default {
             message: res.msg
           })
           this.settingsType = 'update'
+          this.$emit('finished')
         } else {
           this.$message({
             type: 'error',

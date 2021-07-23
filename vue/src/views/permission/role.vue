@@ -42,7 +42,7 @@
         </el-table-column>
       </el-table>
 
-      <el-dialog width="70%" :visible.sync="dialogVisible" :title="dialogType==='edit'?'修改角色':'新建角色'">
+      <el-dialog :close-on-click-modal="false" width="70%" :visible.sync="dialogVisible" :title="dialogType==='edit'?'修改角色':'新建角色'">
         <el-form :model="role" label-width="120px" label-position="left">
           <el-form-item label="角色名">
             <el-input v-model="role.name" placeholder="角色名" />

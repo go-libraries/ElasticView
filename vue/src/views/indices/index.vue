@@ -273,7 +273,7 @@
         v-if="pageshow"
         class="pagination-container"
         :current-page="page"
-        :page-sizes="[10, 20, 30, 50,100,150,200]"
+        :page-sizes="[10, 20, 30, 50,100,150,200,500,1000]"
         :page-size="limit"
         layout="total, sizes, prev, pager, next, jumper"
         :total="total"
@@ -464,6 +464,7 @@
         v-if="openSettings"
         :index-name="indexName"
         :settings-type="settingsType"
+        :finished="search"
         :open="openSettings"
         @close="closeSettings"
       />

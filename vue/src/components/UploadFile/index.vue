@@ -17,7 +17,7 @@
       <el-button size="small" type="primary" icon="el-icon-upload">点击上传</el-button>
     </el-upload>
     <!--展示选中图片的区域-->
-    <el-dialog :visible.sync="dialogImgVisible" style="position: absolute;top: 0px;z-index: 25555">
+    <el-dialog :close-on-click-modal="false" :visible.sync="dialogImgVisible" style="position: absolute;top: 0px;z-index: 25555">
       <img
         width="100%"
         :src="dialogImageUrl"

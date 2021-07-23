@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-dialog :visible.sync="open" :title="title" width="95%" @close="closeDialog">
+    <el-dialog :close-on-click-modal="false" :visible.sync="open" :title="title" width="95%" @close="closeDialog">
       <el-card class="box-card">
         <div class="filter-container">
           <el-tag class="filter-item">类型名</el-tag>

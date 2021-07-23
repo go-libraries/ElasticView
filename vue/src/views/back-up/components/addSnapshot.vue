@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-dialog :visible.sync="open" title="创建快照" @close="closeDialog">
+    <el-dialog :close-on-click-modal="false" :visible.sync="open" title="创建快照" @close="closeDialog">
       <el-card class="box-card">
         <el-form label-width="500px" label-position="left">
           <el-form-item label="仓库名">

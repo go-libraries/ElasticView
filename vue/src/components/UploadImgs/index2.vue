@@ -20,7 +20,7 @@
           <i class="el-icon-plus" />
         </el-upload>
         <!--展示选中图片的区域-->
-        <el-dialog :visible.sync="dialogVisible">
+        <el-dialog :close-on-click-modal="false" :visible.sync="dialogVisible">
           <img
             width="100%"
             :src="dialogImageUrl"

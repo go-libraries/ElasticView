@@ -52,7 +52,7 @@
         </el-table-column>
       </el-table>
 
-      <el-dialog :visible.sync="dialogVisible" :title="dialogType==='edit'?'编辑用户信息':'新建用户信息'">
+      <el-dialog :close-on-click-modal="false" :visible.sync="dialogVisible" :title="dialogType==='edit'?'编辑用户信息':'新建用户信息'">
         <el-form :model="role" label-width="100px" label-position="left">
 
           <el-form-item label="用户名">

@@ -180,11 +180,11 @@ module.exports = {
           config.optimization.runtimeChunk('single')
         }
       )
-    config.when(process.env.NODE_ENV !== 'aaa', config => {
+    config.when(true, config => {
       config
         .entry('app')
         .clear()
-        .add('./src/main-prod.js')
+        .add('./src/main.js')
 
       // 通过externals加载外部CDN资源----1
       config.set('externals', {

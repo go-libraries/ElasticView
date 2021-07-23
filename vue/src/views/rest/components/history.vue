@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-dialog width="80%" :visible.sync="dialogVisible" title="历史记录" @close="close">
+    <el-dialog :close-on-click-modal="false" width="80%" :visible.sync="dialogVisible" title="历史记录" @close="close">
       <div class="filter-container">
         <el-tag class="filter-item">请选择索引名</el-tag>
         <index-select class="filter-item" :clearable="true" placeholder="请选择索引名" @change="changeIndex" />

@@ -1,6 +1,6 @@
 <template>
   <div :style="styles" class="float">
-    <span style="text-align: center;display:block;" class="font1">
+    <span v-if="!simple" style="text-align: center;display:block;" class="font1">
       <el-button size="small" icon="el-icon-refresh" @click="format">美化</el-button>
       <el-button
         v-clipboard:copy="value"
@@ -44,6 +44,10 @@ export default {
     pointOut: {
       type: Array,
       default: []
+    },
+    simple: {
+      type: Boolean,
+      default: false
     }
   },
   data() {

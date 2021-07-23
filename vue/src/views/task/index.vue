@@ -51,7 +51,8 @@
         >
           <el-option v-for="(taskID, index) in parentTaskIdList" :key="index" :label="taskID" :value="taskID" />
         </el-select>
-        <el-button type="success" @click="search">刷新</el-button>
+        <el-button type="primary" icon="el-icon-search" @click="search(true)">搜索</el-button>
+        <el-button type="success" icon="el-icon-refresh" @click="refresh">刷新</el-button>
       </div>
       <el-table
         :data="tableData"
@@ -292,8 +293,17 @@ export default {
       const time = Moment(stamp).format('YYYY-MM-DD HH:mm:ss')
       return time
     },
-    async search() {
-      const input = this.input
+    async search(clear) {
+      if (clear) {
+        this.input = {
+          task_id: [],
+          node_id: [],
+          parent_task_id: '',
+          actions: []
+        }
+      }
+
+      const input = {}
 
       input['es_connect'] = this.$store.state.baseData.EsConnectID
 
@@ -332,6 +342,10 @@ export default {
         this.nodeIdList = Array.from(nodeSet)
         this.actions = Array.from(actionsSet)
       }
+    },
+    async refresh() {
+      await this.search()
+      this.searchByFilter()
     }
   }
 }
