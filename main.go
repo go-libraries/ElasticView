@@ -13,7 +13,6 @@ import (
 
 	_ "github.com/go-sql-driver/mysql"
 
-
 	"go.uber.org/zap"
 )
 
@@ -25,10 +24,11 @@ var (
 )
 
 func init() {
-	flag.StringVar(&appName, "appName", "ReportPlatform", "应用名")
+	flag.StringVar(&appName, "appName", "ElasticView", "应用名")
 	flag.StringVar(&configFileDir, "configFileDir", "config", "配置文件夹名")
 	flag.StringVar(&configFileName, "configFileName", "config", "配置文件名")
 	flag.StringVar(&configFileExt, "configFileExt", "json", "配置文件后缀")
+	flag.Parse()
 }
 
 // By 肖文龙

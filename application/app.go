@@ -7,11 +7,10 @@ import (
 
 	"github.com/fsnotify/fsnotify"
 
-
 	"github.com/spf13/viper"
 )
 
-type InitFnObserver func()(err error)
+type InitFnObserver func() (err error)
 
 // Options方法
 type NewAppOptions func(app *App)
@@ -23,7 +22,7 @@ type App struct {
 	configFileExt,
 	appName string
 	InitFnObservers []InitFnObserver
-	err error
+	err             error
 }
 
 // 设置配置文件格式   例如:json,conf 等等
@@ -66,7 +65,7 @@ func NewApp(opts ...NewAppOptions) *App {
 	app := &App{
 		configFileDir:  "config",
 		configFileName: "config.json",
-		appName:        "github.com/1340691923/ReportPlatform",
+		appName:        "github.com/1340691923/ElasticView",
 	}
 	for _, opt := range opts {
 		opt(app)
@@ -111,10 +110,10 @@ func (this *App) InitConfig() *App {
 	return this
 }
 
-func (this *App) NotifyInitFnObservers()*App{
-	for _,fnObserver := range this.InitFnObservers{
+func (this *App) NotifyInitFnObservers() *App {
+	for _, fnObserver := range this.InitFnObservers {
 		this.err = fnObserver()
-		if this.err != nil{
+		if this.err != nil {
 			return this
 		}
 	}

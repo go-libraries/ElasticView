@@ -166,7 +166,6 @@ func (this EsIndexController) OperateAliasAction(ctx *Ctx) error {
 	case Add:
 		if esAliasInfo.IndexName == "" {
 			return this.Error(ctx, my_error.NewBusiness(es.ParmasNullError, es.IndexNameNullError))
-
 		}
 		res, err = esClinet.(*es.EsClientV6).Client.Alias().Add(esAliasInfo.IndexName, esAliasInfo.AliasName).Do(ctx.Context())
 	case Delete:
