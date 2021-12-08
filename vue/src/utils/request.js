@@ -107,4 +107,10 @@ service.interceptors.response.use(
   }
 )
 
+service.defaults.transformResponse = [
+  data=>{
+    return jsonlint.parse(data)
+  }
+]
+
 export default service

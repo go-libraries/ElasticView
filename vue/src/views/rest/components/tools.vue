@@ -198,6 +198,10 @@ export default {
     title: {
       type: String,
       default: ''
+    },
+    max: {
+      type: Number,
+      default: 8
     }
   },
   data() {
@@ -402,14 +406,23 @@ export default {
       this.input.path = obj.data
     },
     querySearch(queryString, cb) {
-      let queryData = clone(this.queryData)
-      if (queryString == '') {
-        cb(this.queryData)
-        return
+      let queryData = JSON.parse(JSON.stringify(this.queryData))
+      if (queryString.trim() == '') {
+        if (queryData.length > this.max) {
+          cb(queryData.slice(0, this.max))
+        } else {
+          cb(queryData)
+        }
+        return;
       }
+
       queryData = filterData(queryData, queryString.trim())
-      console.log('queryData', queryData, this.queryData)
-      cb(queryData)
+
+      if (queryData.length > this.max) {
+        cb(queryData.slice(0, this.max))
+      } else {
+        cb(queryData)
+      }
     },
     MeetingConfirmBox(title) {
       return new Promise((resolve, reject) => {

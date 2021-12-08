@@ -1,7 +1,5 @@
 import Vue from 'vue'
 
-var { SqlParser } = require('@/utils/stringify')
-
 import Cookies from 'js-cookie'
 
 import 'normalize.css/normalize.css' // a modern alternative to CSS resets
@@ -50,7 +48,6 @@ import { message } from './utils/singleMsg.js'
 
 Vue.prototype.$message = message
 
-Vue.prototype.$SqlParser = SqlParser
 new Vue({
   el: '#app',
   router,

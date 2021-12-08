@@ -178,17 +178,6 @@ export const asyncRoutes = [
         }
       }
     ]
-  }, {
-    path: '/devtools',
-    component: 'layout',
-    children: [
-      {
-        path: 'sql2strut',
-        component: 'views/devtools/sql2strut',
-        name: 'sql2strut',
-        meta: { title: 'sql转结构体', icon: 'el-icon-refresh' }
-      }
-    ]
   }
 ]
 // todo ...    映射增删改查    查询可视化   监控数据可视化
@@ -206,7 +195,6 @@ export const RoutesComponentmaps = {
   'views/indices/reindex': () => import('@/views/indices/reindex'),
   'views/task/index': () => import('@/views/task/index'),
   'views/back-up/index': () => import('@/views/back-up/index'),
-  'views/back-up/snapshot': () => import('@/views/back-up/snapshot'),
-  'views/devtools/sql2strut': () => import('@/views/devtools/sql2strut')
+  'views/back-up/snapshot': () => import('@/views/back-up/snapshot')
 }
 
