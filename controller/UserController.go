@@ -19,13 +19,13 @@ type UserController struct {
 // 登录
 func (this UserController) Login(ctx *Ctx) error {
 	type User struct {
-		Username string
-		Password string
+		Username string `json:"username"`
+		Password string `json:"password"`
 	}
 	var user User
 	err := ctx.BodyParser(&user)
 	if err != nil {
-		logs.Logger.Sugar().Errorf("登陆失败", err)
+		logs.Logger.Sugar().Errorf("登录失败", err)
 		err = my_error.NewBusiness(gm_user.AUTH_ERROR, gm_user.ERROR_AUTH)
 		return this.Error(ctx, err)
 	}
@@ -35,11 +35,11 @@ func (this UserController) Login(ctx *Ctx) error {
 	var gmUserService gm_user.GmUserService
 	token, err := gmUserService.CheckLogin(username, password)
 	if err != nil {
-		logs.Logger.Sugar().Errorf("登陆失败", err)
+		logs.Logger.Sugar().Errorf("登录失败", err)
 		err = my_error.NewBusiness(gm_user.AUTH_ERROR, gm_user.ERROR_AUTH)
 		return this.Error(ctx, err)
 	}
-	return this.Success(ctx, "登陆成功", map[string]interface{}{"token": token})
+	return this.Success(ctx, "登录成功", map[string]interface{}{"token": token})
 }
 
 // 用户详细信息
@@ -54,7 +54,7 @@ func (this UserController) UserInfo(ctx *Ctx) error {
 	if err != nil {
 		return this.Error(ctx, err)
 	}
-	return this.Success(ctx, "登陆成功", map[string]interface{}{"roles": []string{"admin"}, "introduction": info.Description, "name": info.RoleName, "list": info.RoleList, "avatar": ""})
+	return this.Success(ctx, "登录成功", map[string]interface{}{"roles": []string{"admin"}, "introduction": info.Description, "name": info.RoleName, "list": info.RoleList, "avatar": ""})
 }
 
 //退出登录
