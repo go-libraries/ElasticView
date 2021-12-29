@@ -18,8 +18,20 @@ type UserController struct {
 
 // 登录
 func (this UserController) Login(ctx *Ctx) error {
-	username := ctx.FormValue("username")
-	password := ctx.FormValue("password")
+	type User struct {
+		Username string
+		Password string
+	}
+	var user User
+	err := ctx.BodyParser(&user)
+	if err != nil {
+		logs.Logger.Sugar().Errorf("登陆失败", err)
+		err = my_error.NewBusiness(gm_user.AUTH_ERROR, gm_user.ERROR_AUTH)
+		return this.Error(ctx, err)
+	}
+	username := user.Username
+	password := user.Password
+
 	var gmUserService gm_user.GmUserService
 	token, err := gmUserService.CheckLogin(username, password)
 	if err != nil {
